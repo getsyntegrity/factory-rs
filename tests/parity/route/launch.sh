@@ -1,12 +1,16 @@
 #!/bin/sh
 # Runs one `route` build inside a rust-anything sandbox (the current directory).
-# Usage: launch.sh original|rust <route args...>
+# Usage: launch.sh original|rust|rust-all|rust-tripwire <route args...>
 #
 # route finds factory/ from its own location, so the build under test is
 # installed at ./factory/bin/route next to the case's fixtures. The Python
 # `job` from the frozen oracle is installed beside it unless the case ships its
-# own double at factory/bin/job. Everything this script installs is removed
-# afterwards so only route's own effects show up in the recorded files.
+# own double at factory/bin/job. `rust-all` installs the Rust job instead, with
+# the oracle's Python job beside it as factory/bin/job.py (its fallback);
+# `rust-tripwire` installs a job.py that fails loudly, to prove route never
+# needs the Python job.
+# Everything this script installs is removed afterwards so only route's own
+# effects show up in the recorded files.
 set -u
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../.." && pwd)
@@ -14,7 +18,7 @@ mode=$1
 shift
 case "$mode" in
   original) route_src="$root/.oracle/v2/factory/bin/route" ;;
-  rust) route_src="$root/target/release/route" ;;
+  rust|rust-all|rust-tripwire) route_src="$root/target/release/route" ;;
   *) echo "launch.sh: unknown mode $mode" >&2; exit 2 ;;
 esac
 
@@ -26,6 +30,15 @@ cp "$route_src" factory/bin/route
 chmod +x factory/bin/route
 if [ -e factory/bin/job ]; then
   chmod +x factory/bin/job
+elif [ "$mode" = rust-all ] || [ "$mode" = rust-tripwire ]; then
+  cp "$root/target/release/job" factory/bin/job
+  if [ "$mode" = rust-tripwire ]; then
+    printf '#!/bin/sh\necho "TRIPWIRE: Python job called: $*" >&2\nexit 97\n' > factory/bin/job.py
+  else
+    cp "$root/.oracle/v2/factory/bin/job" factory/bin/job.py
+  fi
+  chmod +x factory/bin/job factory/bin/job.py
+  installed_job=1
 else
   cp "$root/.oracle/v2/factory/bin/job" factory/bin/job
   chmod +x factory/bin/job
@@ -40,7 +53,7 @@ factory/bin/route "$@"
 rc=$?
 
 rm -f factory/bin/route
-[ "$installed_job" = 1 ] && rm -f factory/bin/job
+[ "$installed_job" = 1 ] && rm -f factory/bin/job factory/bin/job.py
 [ "$made_bin" = 1 ] && rmdir factory/bin 2>/dev/null
 [ "$made_factory" = 1 ] && rmdir factory 2>/dev/null
 exit "$rc"

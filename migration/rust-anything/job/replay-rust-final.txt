@@ -1,0 +1,8 @@
+28/33 cases passed
+- agents-05-invalid-json: stderr
+- example-001: stderr
+- sync-15-keys-appended-in: stderr
+- sync-16-job-json-invalid: stderr
+- sync-17-config-missing: stderr
+Report: /home/pablog/factory-rs/tests/parity/job/rust/app-cases/replay-report.md
+exit 1

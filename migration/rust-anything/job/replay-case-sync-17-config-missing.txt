@@ -1,0 +1,3 @@
+0/1 cases passed
+- sync-17-config-missing: stderr
+Report: /home/pablog/factory-rs/tests/parity/job/rust/app-cases/replay-report.md

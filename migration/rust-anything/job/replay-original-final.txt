@@ -1,0 +1,2 @@
+33/33 cases passed
+Report: /home/pablog/factory-rs/tests/parity/job/rust/app-cases/replay-report.md
