@@ -1,0 +1,428 @@
+   Compiling factory-rs v0.1.0 (/home/pablog/factory-rs)
+warning: constant `REVIEW_STAGES` is never used
+  --> src/job/sync.rs:13:7
+   |
+13 | const REVIEW_STAGES: [&str; 5] = ["review", "approve", "merging", "merged", "needs-human"];
+   |       ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `sync` is never used
+  --> src/job/sync.rs:29:8
+   |
+29 | pub fn sync(job: &mut Job, file: &str, config: &Value, ws: &dyn Workspace) -> Result<(), String> {
+   |        ^^^^
+
+warning: `factory-rs` (lib test) generated 2 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.84s
+     Running unittests src/lib.rs (target/debug/build/factory-rs/edc422fd7432d024/out/factory_rs-edc422fd7432d024)
+
+running 104 tests
+test job::cost::tests::broken_transcript_lines_are_named ... FAILED
+test job::cost::tests::no_transcripts_cost_nothing ... FAILED
+test job::cost::tests::incomplete_prices_are_named ... FAILED
+test job::cost::tests::needle_may_span_two_text_blocks_joined_by_a_space ... FAILED
+test job::cost::tests::crlf_transcripts_read_like_python_text_mode ... FAILED
+test job::cost::tests::non_assistant_or_usage_less_entries_are_ignored ... FAILED
+test job::cost::tests::prompt_blocks_are_joined_and_non_dict_blocks_ignored ... FAILED
+test job::sync::tests::header_keys_are_stripped_and_upper_cased_and_values_stripped ... FAILED
+test job::cost::tests::unknown_model_with_tokens_is_refused_like_v2 ... FAILED
+test job::sync::tests::header_stops_at_the_first_blank_line ... FAILED
+test job::cost::tests::zero_token_messages_need_no_price ... FAILED
+test job::sync::tests::header_treats_whitespace_only_lines_as_blank_and_splits_like_python ... FAILED
+test job::sync::tests::verdict_accepts_only_exact_pass_or_changes ... FAILED
+test job::cost::tests::prices_every_token_kind_last_usage_per_message_wins_and_rounds_like_python ... FAILED
+test job::cost::tests::transcripts_of_other_jobs_and_empty_files_are_skipped ... FAILED
+test job::tests::config_problems_are_named ... FAILED
+test job::tests::agents_02_only_intake_stage ... FAILED
+test job::tests::agents_04_no_intake ... FAILED
+test job::tests::agents_03_only_accepted_intake ... FAILED
+test job::tests::agents_06_spec_is_stored_with_python_formatting ... FAILED
+test job::tests::huge_issue_numbers_match_no_job ... FAILED
+test job::tests::io_failures_are_named ... FAILED
+test job::tests::div_job_02_invalid_job_json_is_named ... FAILED
+test job::tests::owns_sync_with_one_job_and_agents_with_job_and_spec ... FAILED
+test job::tests::agents_07_by_issue_number ... FAILED
+test job::tests::agents_08_unknown_job ... FAILED
+test job::tests::leaves_every_other_argv_to_the_fallback ... FAILED
+test job::tests::div_job_05_missing_config_is_checked_before_the_arguments ... FAILED
+test job::tests::div_job_04_invalid_agent_set_is_named_without_saving ... FAILED
+test job::tests::div_job_01_missing_reviews_fails_after_saving_like_v2 ... FAILED
+test job::tests::sync_01_fresh_job_rewrites_job_json_unchanged ... FAILED
+test job::tests::job_json_shape_problems_are_named ... FAILED
+test job::tests::agents_01_accepted_intake_records_the_agent_set ... FAILED
+test job::tests::sync_04_crlf_intake_and_blank_surfaces ... FAILED
+test job::tests::sync_03_header_keys_are_case_and_space_insensitive_and_stop_at_blank ... FAILED
+test job::tests::sync_02_intake_header_is_recorded ... FAILED
+test job::tests::missing_prices_are_named ... FAILED
+test job::tests::sync_11_unknown_job ... FAILED
+test job::tests::sync_07_round_without_checks_has_no_gate ... FAILED
+test job::tests::sync_08_lone_cr_ends_the_first_line ... FAILED
+test job::tests::sync_10_unknown_issue_number ... FAILED
+test job::tests::sync_09_issue_number_loads_and_locks_every_job ... FAILED
+test job::tests::div_job_03_missing_config_is_named ... FAILED
+test job::tests::sync_05_review_round_reads_gate_and_verdicts ... FAILED
+test py::tests::dumps_escapes_like_ensure_ascii ... ok
+test job::tests::sync_18_id_with_path_characters ... FAILED
+test py::tests::dumps_indent_matches_python ... ok
+test py::tests::dumps_scalars_and_arrays ... ok
+test py::tests::dumps_uses_float_repr ... ok
+test job::tests::sync_14_json_is_written_like_python ... FAILED
+test job::tests::sync_13_unknown_model_is_refused_without_saving ... FAILED
+test job::tests::sync_06_reviews_are_kept_outside_review_stages ... FAILED
+test job::tests::sync_12_cost_from_transcripts ... FAILED
+test py::tests::repr_escapes_backslash_and_control_characters ... ok
+test py::tests::dumps_uses_python_separators_and_keeps_key_order ... ok
+test py::tests::float_repr_matches_python ... ok
+test py::tests::repr_escapes_single_quote_when_both_quotes_appear ... ok
+test py::tests::repr_of_none_is_none ... ok
+test py::tests::repr_keeps_printable_non_ascii ... ok
+test py::tests::repr_switches_to_double_quotes_when_only_single_quotes_appear ... ok
+test py::tests::repr_uses_single_quotes_by_default ... ok
+test py::tests::splitlines_splits_on_every_python_line_boundary ... ok
+test py::tests::strip_removes_python_whitespace_only ... ok
+test py::tests::str_of_matches_python_str ... ok
+test py::tests::truthy_matches_python_bool ... ok
+test py::tests::universal_newlines_reads_cr_and_crlf_as_lf ... ok
+test route::tests::case_03_sync_error_is_reported_stripped ... ok
+test route::tests::case_01_no_args_prints_usage ... ok
+test route::tests::case_02_two_args_prints_usage ... ok
+test route::tests::case_04_null_intake_is_refused ... ok
+test route::tests::case_05_low_risk_routes_code_haiku ... ok
+test route::tests::case_06_medium_risk_routes_code_sonnet ... ok
+test route::tests::case_07_high_risk_routes_code_sonnet ... ok
+test route::tests::case_09_security_surface_adds_security ... ok
+test route::tests::case_08_ui_surface_adds_ux_and_ui ... ok
+test route::tests::case_11_unknown_risk_lists_routing_keys ... ok
+test route::tests::case_10_surfaces_add_in_order ... ok
+test route::tests::case_12_unknown_surface_lists_surface_keys ... ok
+test route::tests::div_route_01_missing_config_is_named ... ok
+test route::tests::config_without_tables_is_named ... ok
+test route::tests::case_13_sync_failure_stops_before_reading_job ... ok
+test route::tests::case_14_agents_failure_is_reported_with_python_json_argument ... ok
+test route::tests::case_15a_unresolvable_id_reports_job_error ... ok
+test route::tests::case_18_missing_risk_is_shown_as_none ... ok
+test route::tests::case_17_agents_refusal_from_job_is_reported ... ok
+test route::tests::case_19_risk_is_shown_with_python_repr ... ok
+test route::tests::div_route_02_invalid_config_is_named_with_its_position ... ok
+test route::tests::div_route_04_missing_config_wins_over_bad_arguments ... ok
+test route::tests::unreadable_config_is_named ... ok
+test system::tests::factory_is_the_parent_of_the_executables_bin_directory ... ok
+test route::tests::empty_routing_entry_counts_as_unknown_risk ... ok
+test route::tests::empty_intake_object_counts_as_no_intake ... ok
+test route::tests::surface_overrides_keep_first_position_and_take_new_model ... ok
+test route::tests::invalid_job_json_is_named_with_its_position ... ok
+test route::tests::div_route_03_id_without_job_folder_is_named ... ok
+test route::tests::job_that_cannot_start_is_named ... ok
+test system::tests::route_main_reports_an_unknown_executable_path ... ok
+test system::tests::job_nonzero_exit_is_a_failure ... ok
+test system::tests::job_that_cannot_start_is_an_error ... ok
+test system::tests::read_reports_missing_files ... ok
+test system::tests::read_resolves_paths_inside_factory ... ok
+test system::tests::route_main_passes_non_utf8_args_lossily ... ok
+test system::tests::job_passes_args_and_captures_stderr_but_not_stdout ... ok
+test system::tests::route_main_runs_route_against_the_executables_installation ... ok
+
+failures:
+
+---- job::cost::tests::broken_transcript_lines_are_named stdout ----
+
+thread 'job::cost::tests::broken_transcript_lines_are_named' (4056443) panicked at src/job/cost.rs:18:5:
+not yet implemented
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- job::cost::tests::no_transcripts_cost_nothing stdout ----
+
+thread 'job::cost::tests::no_transcripts_cost_nothing' (4056447) panicked at src/job/cost.rs:18:5:
+not yet implemented
+
+---- job::cost::tests::incomplete_prices_are_named stdout ----
+
+thread 'job::cost::tests::incomplete_prices_are_named' (4056445) panicked at src/job/cost.rs:18:5:
+not yet implemented
+
+---- job::cost::tests::needle_may_span_two_text_blocks_joined_by_a_space stdout ----
+
+thread 'job::cost::tests::needle_may_span_two_text_blocks_joined_by_a_space' (4056446) panicked at src/job/cost.rs:18:5:
+not yet implemented
+
+---- job::cost::tests::crlf_transcripts_read_like_python_text_mode stdout ----
+
+thread 'job::cost::tests::crlf_transcripts_read_like_python_text_mode' (4056444) panicked at src/job/cost.rs:18:5:
+not yet implemented
+
+---- job::cost::tests::non_assistant_or_usage_less_entries_are_ignored stdout ----
+
+thread 'job::cost::tests::non_assistant_or_usage_less_entries_are_ignored' (4056448) panicked at src/job/cost.rs:18:5:
+not yet implemented
+
+---- job::cost::tests::prompt_blocks_are_joined_and_non_dict_blocks_ignored stdout ----
+
+thread 'job::cost::tests::prompt_blocks_are_joined_and_non_dict_blocks_ignored' (4056450) panicked at src/job/cost.rs:18:5:
+not yet implemented
+
+---- job::sync::tests::header_keys_are_stripped_and_upper_cased_and_values_stripped stdout ----
+
+thread 'job::sync::tests::header_keys_are_stripped_and_upper_cased_and_values_stripped' (4056454) panicked at src/job/sync.rs:19:5:
+not yet implemented
+
+---- job::cost::tests::unknown_model_with_tokens_is_refused_like_v2 stdout ----
+
+thread 'job::cost::tests::unknown_model_with_tokens_is_refused_like_v2' (4056452) panicked at src/job/cost.rs:18:5:
+not yet implemented
+
+---- job::sync::tests::header_stops_at_the_first_blank_line stdout ----
+
+thread 'job::sync::tests::header_stops_at_the_first_blank_line' (4056455) panicked at src/job/sync.rs:19:5:
+not yet implemented
+
+---- job::cost::tests::zero_token_messages_need_no_price stdout ----
+
+thread 'job::cost::tests::zero_token_messages_need_no_price' (4056453) panicked at src/job/cost.rs:18:5:
+not yet implemented
+
+---- job::sync::tests::header_treats_whitespace_only_lines_as_blank_and_splits_like_python stdout ----
+
+thread 'job::sync::tests::header_treats_whitespace_only_lines_as_blank_and_splits_like_python' (4056456) panicked at src/job/sync.rs:19:5:
+not yet implemented
+
+---- job::sync::tests::verdict_accepts_only_exact_pass_or_changes stdout ----
+
+thread 'job::sync::tests::verdict_accepts_only_exact_pass_or_changes' (4056457) panicked at src/job/sync.rs:25:5:
+not yet implemented
+
+---- job::cost::tests::prices_every_token_kind_last_usage_per_message_wins_and_rounds_like_python stdout ----
+
+thread 'job::cost::tests::prices_every_token_kind_last_usage_per_message_wins_and_rounds_like_python' (4056449) panicked at src/job/cost.rs:18:5:
+not yet implemented
+
+---- job::cost::tests::transcripts_of_other_jobs_and_empty_files_are_skipped stdout ----
+
+thread 'job::cost::tests::transcripts_of_other_jobs_and_empty_files_are_skipped' (4056451) panicked at src/job/cost.rs:18:5:
+not yet implemented
+
+---- job::tests::config_problems_are_named stdout ----
+
+thread 'job::tests::config_problems_are_named' (4056465) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::agents_02_only_intake_stage stdout ----
+
+thread 'job::tests::agents_02_only_intake_stage' (4056459) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::agents_04_no_intake stdout ----
+
+thread 'job::tests::agents_04_no_intake' (4056461) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::agents_03_only_accepted_intake stdout ----
+
+thread 'job::tests::agents_03_only_accepted_intake' (4056460) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::agents_06_spec_is_stored_with_python_formatting stdout ----
+
+thread 'job::tests::agents_06_spec_is_stored_with_python_formatting' (4056462) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::huge_issue_numbers_match_no_job stdout ----
+
+thread 'job::tests::huge_issue_numbers_match_no_job' (4056471) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::io_failures_are_named stdout ----
+
+thread 'job::tests::io_failures_are_named' (4056472) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::div_job_02_invalid_job_json_is_named stdout ----
+
+thread 'job::tests::div_job_02_invalid_job_json_is_named' (4056467) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::owns_sync_with_one_job_and_agents_with_job_and_spec stdout ----
+
+thread 'job::tests::owns_sync_with_one_job_and_agents_with_job_and_spec' (4056476) panicked at src/job/mod.rs:54:9:
+not yet implemented
+
+---- job::tests::agents_07_by_issue_number stdout ----
+
+thread 'job::tests::agents_07_by_issue_number' (4056463) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::agents_08_unknown_job stdout ----
+
+thread 'job::tests::agents_08_unknown_job' (4056464) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::leaves_every_other_argv_to_the_fallback stdout ----
+
+thread 'job::tests::leaves_every_other_argv_to_the_fallback' (4056474) panicked at src/job/mod.rs:54:9:
+not yet implemented
+
+---- job::tests::div_job_05_missing_config_is_checked_before_the_arguments stdout ----
+
+thread 'job::tests::div_job_05_missing_config_is_checked_before_the_arguments' (4056470) panicked at src/job/mod.rs:54:9:
+not yet implemented
+
+---- job::tests::div_job_04_invalid_agent_set_is_named_without_saving stdout ----
+
+thread 'job::tests::div_job_04_invalid_agent_set_is_named_without_saving' (4056469) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::div_job_01_missing_reviews_fails_after_saving_like_v2 stdout ----
+
+thread 'job::tests::div_job_01_missing_reviews_fails_after_saving_like_v2' (4056466) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_01_fresh_job_rewrites_job_json_unchanged stdout ----
+
+thread 'job::tests::sync_01_fresh_job_rewrites_job_json_unchanged' (4056477) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::job_json_shape_problems_are_named stdout ----
+
+thread 'job::tests::job_json_shape_problems_are_named' (4056473) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::agents_01_accepted_intake_records_the_agent_set stdout ----
+
+thread 'job::tests::agents_01_accepted_intake_records_the_agent_set' (4056458) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_04_crlf_intake_and_blank_surfaces stdout ----
+
+thread 'job::tests::sync_04_crlf_intake_and_blank_surfaces' (4056480) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_03_header_keys_are_case_and_space_insensitive_and_stop_at_blank stdout ----
+
+thread 'job::tests::sync_03_header_keys_are_case_and_space_insensitive_and_stop_at_blank' (4056479) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_02_intake_header_is_recorded stdout ----
+
+thread 'job::tests::sync_02_intake_header_is_recorded' (4056478) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::missing_prices_are_named stdout ----
+
+thread 'job::tests::missing_prices_are_named' (4056475) panicked at src/job/mod.rs:69:5:
+not yet implemented
+
+---- job::tests::sync_11_unknown_job stdout ----
+
+thread 'job::tests::sync_11_unknown_job' (4056487) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_07_round_without_checks_has_no_gate stdout ----
+
+thread 'job::tests::sync_07_round_without_checks_has_no_gate' (4056483) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_08_lone_cr_ends_the_first_line stdout ----
+
+thread 'job::tests::sync_08_lone_cr_ends_the_first_line' (4056484) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_10_unknown_issue_number stdout ----
+
+thread 'job::tests::sync_10_unknown_issue_number' (4056486) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_09_issue_number_loads_and_locks_every_job stdout ----
+
+thread 'job::tests::sync_09_issue_number_loads_and_locks_every_job' (4056485) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::div_job_03_missing_config_is_named stdout ----
+
+thread 'job::tests::div_job_03_missing_config_is_named' (4056468) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_05_review_round_reads_gate_and_verdicts stdout ----
+
+thread 'job::tests::sync_05_review_round_reads_gate_and_verdicts' (4056481) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_18_id_with_path_characters stdout ----
+
+thread 'job::tests::sync_18_id_with_path_characters' (4056491) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_14_json_is_written_like_python stdout ----
+
+thread 'job::tests::sync_14_json_is_written_like_python' (4056490) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_13_unknown_model_is_refused_without_saving stdout ----
+
+thread 'job::tests::sync_13_unknown_model_is_refused_without_saving' (4056489) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_06_reviews_are_kept_outside_review_stages stdout ----
+
+thread 'job::tests::sync_06_reviews_are_kept_outside_review_stages' (4056482) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+---- job::tests::sync_12_cost_from_transcripts stdout ----
+
+thread 'job::tests::sync_12_cost_from_transcripts' (4056488) panicked at src/job/mod.rs:63:5:
+not yet implemented
+
+
+failures:
+    job::cost::tests::broken_transcript_lines_are_named
+    job::cost::tests::crlf_transcripts_read_like_python_text_mode
+    job::cost::tests::incomplete_prices_are_named
+    job::cost::tests::needle_may_span_two_text_blocks_joined_by_a_space
+    job::cost::tests::no_transcripts_cost_nothing
+    job::cost::tests::non_assistant_or_usage_less_entries_are_ignored
+    job::cost::tests::prices_every_token_kind_last_usage_per_message_wins_and_rounds_like_python
+    job::cost::tests::prompt_blocks_are_joined_and_non_dict_blocks_ignored
+    job::cost::tests::transcripts_of_other_jobs_and_empty_files_are_skipped
+    job::cost::tests::unknown_model_with_tokens_is_refused_like_v2
+    job::cost::tests::zero_token_messages_need_no_price
+    job::sync::tests::header_keys_are_stripped_and_upper_cased_and_values_stripped
+    job::sync::tests::header_stops_at_the_first_blank_line
+    job::sync::tests::header_treats_whitespace_only_lines_as_blank_and_splits_like_python
+    job::sync::tests::verdict_accepts_only_exact_pass_or_changes
+    job::tests::agents_01_accepted_intake_records_the_agent_set
+    job::tests::agents_02_only_intake_stage
+    job::tests::agents_03_only_accepted_intake
+    job::tests::agents_04_no_intake
+    job::tests::agents_06_spec_is_stored_with_python_formatting
+    job::tests::agents_07_by_issue_number
+    job::tests::agents_08_unknown_job
+    job::tests::config_problems_are_named
+    job::tests::div_job_01_missing_reviews_fails_after_saving_like_v2
+    job::tests::div_job_02_invalid_job_json_is_named
+    job::tests::div_job_03_missing_config_is_named
+    job::tests::div_job_04_invalid_agent_set_is_named_without_saving
+    job::tests::div_job_05_missing_config_is_checked_before_the_arguments
+    job::tests::huge_issue_numbers_match_no_job
+    job::tests::io_failures_are_named
+    job::tests::job_json_shape_problems_are_named
+    job::tests::leaves_every_other_argv_to_the_fallback
+    job::tests::missing_prices_are_named
+    job::tests::owns_sync_with_one_job_and_agents_with_job_and_spec
+    job::tests::sync_01_fresh_job_rewrites_job_json_unchanged
+    job::tests::sync_02_intake_header_is_recorded
+    job::tests::sync_03_header_keys_are_case_and_space_insensitive_and_stop_at_blank
+    job::tests::sync_04_crlf_intake_and_blank_surfaces
+    job::tests::sync_05_review_round_reads_gate_and_verdicts
+    job::tests::sync_06_reviews_are_kept_outside_review_stages
+    job::tests::sync_07_round_without_checks_has_no_gate
+    job::tests::sync_08_lone_cr_ends_the_first_line
+    job::tests::sync_09_issue_number_loads_and_locks_every_job
+    job::tests::sync_10_unknown_issue_number
+    job::tests::sync_11_unknown_job
+    job::tests::sync_12_cost_from_transcripts
+    job::tests::sync_13_unknown_model_is_refused_without_saving
+    job::tests::sync_14_json_is_written_like_python
+    job::tests::sync_18_id_with_path_characters
+
+test result: FAILED. 55 passed; 49 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `--lib`

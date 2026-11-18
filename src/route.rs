@@ -29,13 +29,7 @@ pub trait Factory {
     fn job(&self, args: &[&str]) -> io::Result<JobOutput>;
 }
 
-/// The process result route must reproduce.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Outcome {
-    pub code: i32,
-    pub stdout: String,
-    pub stderr: String,
-}
+pub use crate::Outcome;
 
 pub fn run(args: &[String], factory: &dyn Factory) -> Outcome {
     match route(args, factory) {

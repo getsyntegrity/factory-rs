@@ -16,7 +16,7 @@ Branch: `feat/job-sync-agents` (from `develop`). Delivery: `ask-on-risk`. Test r
 | ID | Specs | Task | Route | Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
 | T1 | S1 S2 | Record v2 `job sync`/`job agents` cases (harness `tests/parity/job`, transcript fixtures, twice, original replay 100%) | inline | done | 33 cases; second recording identical; original replay 33/33; oracle clean |
-| T2 | S1 S2 S3 S4 | Rust job store + `sync` (header, reviews, gate, cost from transcripts, lock, save as Python `json.dumps(indent=2)`), RED→GREEN | inline | pending | |
+| T2 | S1 S2 S3 S4 | Rust job store + `sync` (header, reviews, gate, cost from transcripts, lock, save as Python `json.dumps(indent=2)`), RED→GREEN | inline | done | RED 49 failing (`migration/rust-anything/job/red-cargo-test.txt`), GREEN 106/106 unit tests incl. every recorded sync/agents case |
 | T3 | S1 S3 S4 S5 | `agents` + `job` binary dispatch with `job.py` fallback, RED→GREEN | inline | pending | |
 | T4 | S2 S4 S5 | Replay job cases and route cases against Rust (route + job), gates, coverage, MIGRATION.md | inline | pending | |
 
@@ -27,3 +27,4 @@ Route evidence: every task is one sequential unit of the same behavior, no paral
 - L1 (2026-11-18, user): "arrancá el próximo slice: job sync y agents"
 - L2: Rust toolchain found at 1.100.0 (was 1.96.0 at the start of the route slice; not changed by this session's commands in this turn). Gates will run on 1.100.0.
 - L3 (T1): 33 cases recorded (32 inputs + tool-added example-001). Findings: pathlib glob in Python 3.12 includes hidden dirs (`.hidden/subagents` is priced); sync-15 saves job.json and then crashes with KeyError 'reviews' (crash after the write); header parsing stops at a whitespace-only line; tracebacks in agents-05, sync-15, sync-16, sync-17, example-001.
+- L4 (T2): sync, cost and the agents rules ported; unit tests load the recorded cases' inputs and expected stdout/stderr/exit/job.json. Faithfulness fixes found while porting: `job["agents"] and job["stage"] in ...` and `stage != "intake" or ...` short-circuit, `j["issue"]` is a hard key access.
