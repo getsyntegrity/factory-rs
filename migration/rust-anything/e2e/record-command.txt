@@ -1,0 +1,1 @@
+rust-anything app record tests/parity/e2e --inputs tests/parity/e2e/inputs.jsonl --no-traps --name factory --normalize timestamps -- sh launch.sh original

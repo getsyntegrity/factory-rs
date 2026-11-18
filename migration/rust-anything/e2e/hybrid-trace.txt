@@ -1,0 +1,19 @@
+      1 full-cycle advance ID approve
+      1 full-cycle advance ID build
+      1 full-cycle advance ID gate
+      1 full-cycle advance ID review
+      1 full-cycle advance ID spec
+      1 full-cycle merge ID
+      3 rework-rounds advance ID build
+      3 rework-rounds advance ID gate
+      1 rework-rounds advance ID needs-human
+      2 rework-rounds advance ID review
+      1 rework-rounds advance ID spec
+      1 waiting-loop advance ID build
+      1 waiting-loop advance ID intake
+      2 waiting-loop advance ID needs-human
+      1 waiting-loop advance ID needs-info
+      1 waiting-loop advance ID spec
+full-cycle: steps run 12, by Python 6
+waiting-loop: steps run 12, by Python 6
+rework-rounds: steps run 16, by Python 10

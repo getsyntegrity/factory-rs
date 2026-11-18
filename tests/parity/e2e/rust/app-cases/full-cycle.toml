@@ -1,0 +1,5 @@
+bin.name = "factory"
+args = ["full-cycle"]
+status.code = 0
+fs.sandbox = true
+fs.base = "full-cycle.in"

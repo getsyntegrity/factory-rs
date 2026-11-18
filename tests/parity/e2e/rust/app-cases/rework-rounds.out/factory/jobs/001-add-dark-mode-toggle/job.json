@@ -1,0 +1,35 @@
+{
+  "id": "001-add-dark-mode-toggle",
+  "issue": 5,
+  "title": "Add dark mode toggle",
+  "issue_url": "https://github.com/acme/app/issues/5",
+  "pr": 7,
+  "pr_url": "https://github.com/acme/app/pull/7",
+  "branch": "factory/001-add-dark-mode-toggle",
+  "worktree": "[CWD]/.worktrees/001-add-dark-mode-toggle",
+  "stage": "needs-human",
+  "round": 3,
+  "round_limit": 3,
+  "intake": {
+    "decision": "ACCEPT",
+    "rescoped": false,
+    "risk": "medium",
+    "surfaces": [
+      "security"
+    ]
+  },
+  "agents": {
+    "reviewers": {
+      "code": "sonnet",
+      "security": "opus"
+    }
+  },
+  "gate": "PASS",
+  "reviews": {
+    "code": "CHANGES",
+    "security": "PASS"
+  },
+  "cost_usd": 0.0,
+  "started": "[..]",
+  "ended": "[..]"
+}

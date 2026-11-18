@@ -1,0 +1,1 @@
+normalized second-record diff exit 0

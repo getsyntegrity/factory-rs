@@ -1,0 +1,7 @@
+== hold and wait
+python holds, rust waits: waited 2.01s (hold 2s), exit 0 -> PASS
+rust holds, python waits: waited 2.02s (hold 2s), exit 0 -> PASS
+python holds, control waits: waited 0.00s (hold 2s), exit 0 -> PASS
+rust holds, control waits: waited 0.00s (hold 2s), exit 0 -> PASS
+== race: Rust sync and Python sync together, 300 runs
+race runs: 300, failures: 0

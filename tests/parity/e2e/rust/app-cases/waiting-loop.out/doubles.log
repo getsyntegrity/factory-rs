@@ -1,0 +1,171 @@
+$ gh (cwd .)
+  [issue]
+  [view]
+  [5]
+  [--json]
+  [number,title,body,author,labels,state,url,comments]
+$ gh (cwd .)
+  [issue]
+  [view]
+  [5]
+  [--json]
+  [number,title,body,author,labels,state,url,comments]
+$ gh (cwd .)
+  [api]
+  [user]
+  [--jq]
+  [.login]
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [5]
+  [--body]
+  [<!-- factory -->
+### Factory intake: NEEDS-INFO
+
+## Questions
+- Which page?]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [5]
+  [--add-label]
+  [factory:needs-info]
+$ gh (cwd .)
+  [issue]
+  [list]
+  [--label]
+  [factory]
+  [--state]
+  [open]
+  [--limit]
+  [200]
+  [--json]
+  [number,title]
+$ gh (cwd .)
+  [issue]
+  [view]
+  [5]
+  [--json]
+  [number,title,body,author,labels,state,url,comments]
+$ gh (cwd .)
+  [api]
+  [user]
+  [--jq]
+  [.login]
+$ gh (cwd .)
+  [issue]
+  [view]
+  [5]
+  [--json]
+  [number,title,body,author,labels,state,url,comments]
+$ gh (cwd .)
+  [api]
+  [user]
+  [--jq]
+  [.login]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [5]
+  [--remove-label]
+  [factory:needs-info]
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [5]
+  [--body]
+  [<!-- factory -->
+### Factory intake: ACCEPT (risk low, surfaces: none)
+
+## Summary
+- Settings page.]
+$ git (cwd .)
+  [fetch]
+  [origin]
+  [main]
+$ git (cwd .)
+  [worktree]
+  [add]
+  [-b]
+  [factory/001-add-dark-mode-toggle]
+  [[CWD]/.worktrees/001-add-dark-mode-toggle]
+  [origin/main]
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [5]
+  [--body]
+  [<!-- factory -->
+### Factory: needs a human
+
+## Why
+The builder is blocked:
+
+No API key.]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [5]
+  [--add-label]
+  [factory:needs-human]
+$ gh (cwd .)
+  [api]
+  [user]
+  [--jq]
+  [.login]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [5]
+  [--remove-label]
+  [factory:needs-human]
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [5]
+  [--body]
+  [<!-- factory -->
+### Factory: needs a human
+
+## Why
+The builder is blocked:
+
+Still no key.]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [5]
+  [--add-label]
+  [factory:needs-human]
+$ gh (cwd .)
+  [api]
+  [user]
+  [--jq]
+  [.login]
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [5]
+  [--body]
+  [<!-- factory -->
+### Factory: rejected
+
+By @factory-operator while the job was needs-human.
+
+Not worth it.]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [5]
+  [--remove-label]
+  [factory,factory:needs-human]
+$ git (cwd .)
+  [worktree]
+  [remove]
+  [--force]
+  [[CWD]/.worktrees/001-add-dark-mode-toggle]
+$ git (cwd .)
+  [branch]
+  [-D]
+  [factory/001-add-dark-mode-toggle]

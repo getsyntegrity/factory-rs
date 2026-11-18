@@ -1,0 +1,151 @@
+$ gh (cwd .)
+  [issue]
+  [view]
+  [5]
+  [--json]
+  [number,title,body,author,labels,state,url,comments]
+$ gh (cwd .)
+  [issue]
+  [view]
+  [5]
+  [--json]
+  [number,title,body,author,labels,state,url,comments]
+$ gh (cwd .)
+  [api]
+  [user]
+  [--jq]
+  [.login]
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [5]
+  [--body]
+  [<!-- factory -->
+### Factory intake: ACCEPT (risk high, surfaces: ui)
+
+## Summary
+- Add the toggle.]
+$ git (cwd .)
+  [fetch]
+  [origin]
+  [main]
+$ git (cwd .)
+  [worktree]
+  [add]
+  [-b]
+  [factory/001-add-dark-mode-toggle]
+  [[CWD]/.worktrees/001-add-dark-mode-toggle]
+  [origin/main]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [status]
+  [--porcelain]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [rev-list]
+  [--count]
+  [origin/main..HEAD]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [fetch]
+  [origin]
+  [factory/001-add-dark-mode-toggle]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [rev-parse]
+  [HEAD]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [rev-parse]
+  [origin/factory/001-add-dark-mode-toggle]
+$ gh (cwd .)
+  [pr]
+  [list]
+  [--head]
+  [factory/001-add-dark-mode-toggle]
+  [--state]
+  [open]
+  [--json]
+  [number,url]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [rev-parse]
+  [HEAD]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [diff]
+  [--name-status]
+  [origin/main...HEAD]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [rev-parse]
+  [HEAD]
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [state]
+$ gh (cwd .)
+  [issue]
+  [list]
+  [--label]
+  [factory]
+  [--state]
+  [open]
+  [--limit]
+  [200]
+  [--json]
+  [number,title]
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [state]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [fetch]
+  [origin]
+  [main]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [merge]
+  [--no-edit]
+  [origin/main]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [rev-parse]
+  [HEAD]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [diff]
+  [--name-status]
+  [origin/main...HEAD]
+$ git (cwd ./.worktrees/001-add-dark-mode-toggle)
+  [push]
+  [origin]
+  [factory/001-add-dark-mode-toggle]
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [isDraft]
+$ gh (cwd .)
+  [pr]
+  [ready]
+  [7]
+$ gh (cwd .)
+  [pr]
+  [merge]
+  [7]
+  [--merge]
+$ git (cwd .)
+  [push]
+  [origin]
+  [--delete]
+  [factory/001-add-dark-mode-toggle]
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [state]
+$ git (cwd .)
+  [worktree]
+  [remove]
+  [--force]
+  [[CWD]/.worktrees/001-add-dark-mode-toggle]
+$ git (cwd .)
+  [branch]
+  [-D]
+  [factory/001-add-dark-mode-toggle]

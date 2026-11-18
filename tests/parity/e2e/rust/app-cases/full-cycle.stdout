@@ -1,0 +1,45 @@
+### factory/bin/job create 5
+001-add-dark-mode-toggle
+exit=0
+### agent writes factory/jobs/001-add-dark-mode-toggle/intake.md
+### factory/bin/route 001-add-dark-mode-toggle
+001-add-dark-mode-toggle: reviewers code sonnet, ux sonnet, ui haiku
+exit=0
+### factory/bin/job advance 001-add-dark-mode-toggle spec
+001-add-dark-mode-toggle: spec (round 0)
+exit=0
+### agent writes factory/jobs/001-add-dark-mode-toggle/spec.md
+### factory/bin/job advance 001-add-dark-mode-toggle build
+001-add-dark-mode-toggle: build (round 1)
+exit=0
+### agent writes factory/jobs/001-add-dark-mode-toggle/build.md
+### factory/bin/job advance 001-add-dark-mode-toggle gate
+001-add-dark-mode-toggle: gate (round 1)
+exit=0
+### factory/bin/gate 001-add-dark-mode-toggle
+GATE: PASS (001-add-dark-mode-toggle round 1, checks.sh exit 0 in 0s)
+exit=0
+### factory/bin/job advance 001-add-dark-mode-toggle review
+001-add-dark-mode-toggle: review (round 1)
+exit=0
+### agent writes factory/jobs/001-add-dark-mode-toggle/round-1/review-code.md
+### agent writes factory/jobs/001-add-dark-mode-toggle/round-1/review-ux.md
+### agent writes factory/jobs/001-add-dark-mode-toggle/round-1/review-ui.md
+### factory/bin/job sync 001-add-dark-mode-toggle
+001-add-dark-mode-toggle: review round 1 gate PASS code:PASS ux:PASS ui:PASS
+exit=0
+### factory/bin/job advance 001-add-dark-mode-toggle approve
+001-add-dark-mode-toggle: approve (round 1)
+exit=0
+### agent writes factory/jobs/001-add-dark-mode-toggle/decision.md
+### factory/bin/job queue
+resume	5	001-add-dark-mode-toggle	approve	round 1
+exit=0
+### factory/bin/job merge 001-add-dark-mode-toggle
+001-add-dark-mode-toggle: merged PR #7
+exit=0
+### factory/bin/job summary
+job                       issue  stage   round  pr  cost   time
+001-add-dark-mode-toggle  #5     merged  1      #7  $0.00  0m
+total $0.00 (API-equivalent, factory agents only)
+exit=0

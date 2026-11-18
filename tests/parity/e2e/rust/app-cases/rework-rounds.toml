@@ -1,0 +1,5 @@
+bin.name = "factory"
+args = ["rework-rounds"]
+status.code = 0
+fs.sandbox = true
+fs.base = "rework-rounds.in"

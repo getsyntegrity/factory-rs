@@ -1,0 +1,10 @@
+diff --color -r -x rust-anything.json tests/parity/e2e-probe-1/rust/app-cases/full-cycle.out/factory/jobs/001-add-dark-mode-toggle/job.json tests/parity/e2e-probe-2/rust/app-cases/full-cycle.out/factory/jobs/001-add-dark-mode-toggle/job.json
+36c36
+<   "ended": "2026-11-18T16:16:26Z"
+---
+>   "ended": "2026-11-18T16:16:[..]"
+diff --color -r -x rust-anything.json tests/parity/e2e-probe-1/rust/app-cases/waiting-loop.out/factory/jobs/001-add-dark-mode-toggle/job.json tests/parity/e2e-probe-2/rust/app-cases/waiting-loop.out/factory/jobs/001-add-dark-mode-toggle/job.json
+30c30
+<   "ended": "2026-11-18T16:16:26Z"
+---
+>   "ended": "2026-11-18T16:16:29Z"

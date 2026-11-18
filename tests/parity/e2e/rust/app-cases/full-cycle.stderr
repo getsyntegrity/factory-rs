@@ -1,0 +1,12 @@
+### factory/bin/job create 5
+### factory/bin/route 001-add-dark-mode-toggle
+### factory/bin/job advance 001-add-dark-mode-toggle spec
+### factory/bin/job advance 001-add-dark-mode-toggle build
+### factory/bin/job advance 001-add-dark-mode-toggle gate
+### factory/bin/gate 001-add-dark-mode-toggle
+### factory/bin/job advance 001-add-dark-mode-toggle review
+### factory/bin/job sync 001-add-dark-mode-toggle
+### factory/bin/job advance 001-add-dark-mode-toggle approve
+### factory/bin/job queue
+### factory/bin/job merge 001-add-dark-mode-toggle
+### factory/bin/job summary
