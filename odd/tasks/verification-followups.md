@@ -20,7 +20,7 @@ Branch: `feat/verification-gaps` (local commits after the step-1 push). Follow-u
 | T2 | S1 S3 | gate --hook event/matcher and per-case effect table, fail-open marked, Owner decision recorded | inline | done | MIGRATION.md "gate --hook: event, matcher and fail-open"; exit codes re-run with launch.sh rust --hook; docs read via a claude-code-guide subagent |
 | T3 | S1 S4 | Merge procedure: two runs, gh capture to doubles-format fixtures, sanitising list | inline | done | MIGRATION.md "Merge validation against real GitHub" (runs A/B, capture, sanitising, incorporation); tests/parity/capture-gh.sh round-tripped against a fake gh |
 | T4 | S1 S5 | Lock primitives (verified with strace), OS, repeat command | inline | done | MIGRATION.md "Lock primitives": identical openat+flock(LOCK_EX) observed on both; Linux Mint 22.3 / 7.0.0-38 |
-| T5 | S6 | AUDIT.md split lines, hook table + fail-open risk, re-run run_audit.sh | inline | pending | |
+| T5 | S6 | AUDIT.md split lines, hook table + fail-open risk, re-run run_audit.sh | inline | done | AUDIT.md (a)–(d), hook table, fail-open risk; run_audit.sh A1–A11 re-run, run_audit.out updated |
 
 ## Log
 

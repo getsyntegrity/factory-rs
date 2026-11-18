@@ -6,9 +6,9 @@ uncommitted changes in .oracle/v2: 0
 
 == A2 gates
 fmt OK
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.07s
-test result: ok. 236 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
-    Finished `release` profile [optimized] target(s) in 0.02s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
+test result: ok. 236 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+    Finished `release` profile [optimized] target(s) in 0.03s
 line coverage 97.46%
 
 == A3 skill usage
@@ -74,7 +74,7 @@ ALL: 474/623 (76.1%)
   feat/job-create-queue     917be03 [origin/feat/job-create-queue] feat(job): port create and queue
   feat/job-sync-agents      49c9476 [origin/feat/job-sync-agents] feat(job): add job binary with python fallback and replay parity
   feat/job-waiting-commands c2d1223 [origin/feat/job-waiting-commands] feat(job): port summary, feedback and reject
-* feat/verification-gaps    203a154 docs(migration): stderr consumer audit and manual GitHub merge plan
+* feat/verification-gaps    efe8fc4 [origin/feat/verification-gaps: ahead 5] docs(migration): two-run GitHub merge validation with captured fixtures
 uncommitted: 2
 
 == A10 who answers each e2e step (hybrid)
@@ -91,3 +91,10 @@ by Python:
       3 advance <id> review
       3 advance <id> spec
       1 merge <id>
+
+== A11 gate --hook exit codes, v2 (recorded) vs Rust (run now)
+hook-01-stop-hook-active   v2 0  rust 0  does not block (builder stops)
+hook-02-checks-pass        v2 0  rust 0  does not block (builder stops)
+hook-03-checks-fail        v2 2  rust 2  BLOCKS (stderr to the builder)
+hook-04-invalid-stdin      v2 1  rust 1  non-blocking error: builder stops = fail-open
+hook-05-no-job-in-prompt   v2 1  rust 1  non-blocking error: builder stops = fail-open

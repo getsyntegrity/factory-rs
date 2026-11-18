@@ -56,3 +56,14 @@ echo "uncommitted: $(git status --short | wc -l)"
 
 section "A10 who answers each e2e step (hybrid)"
 sh tests/parity/e2e/trace.sh
+
+section "A11 gate --hook exit codes, v2 (recorded) vs Rust (run now)"
+for c in hook-01-stop-hook-active hook-02-checks-pass hook-03-checks-fail hook-04-invalid-stdin hook-05-no-job-in-prompt; do
+  v2=$(grep -o 'status.code = [0-9]*' "tests/parity/gate/rust/app-cases/$c.toml" | sed 's/status.code = //'); v2=${v2:-0}
+  w=$(mktemp -d)
+  cp -R "tests/parity/gate/rust/app-cases/$c.in/." "$w/" 2>/dev/null
+  rust=$(cd "$w" && sh "$OLDPWD/tests/parity/gate/launch.sh" rust --hook < "$OLDPWD/tests/parity/gate/rust/app-cases/$c.stdin" > /dev/null 2>&1; echo $?)
+  rm -rf "$w"
+  case "$rust" in 0) effect="does not block (builder stops)";; 2) effect="BLOCKS (stderr to the builder)";; *) effect="non-blocking error: builder stops = fail-open";; esac
+  printf '%-26s v2 %s  rust %s  %s\n' "$c" "$v2" "$rust" "$effect"
+done
