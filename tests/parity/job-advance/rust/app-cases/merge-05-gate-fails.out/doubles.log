@@ -1,0 +1,45 @@
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [state]
+$ git (cwd ./wt)
+  [fetch]
+  [origin]
+  [main]
+$ git (cwd ./wt)
+  [merge]
+  [--no-edit]
+  [origin/main]
+$ git (cwd ./wt)
+  [rev-parse]
+  [HEAD]
+$ git (cwd ./wt)
+  [diff]
+  [--name-status]
+  [origin/main...HEAD]
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [isDraft]
+$ gh (cwd .)
+  [pr]
+  [comment]
+  [7]
+  [--body]
+  [<!-- factory -->
+### Factory: needs a human
+
+## Why
+The gate failed after syncing with main. See round-2/merge-checks.md.
+
+GATE: FAIL (001-add-a-thing round 2, checks.sh exit 1 in 0s)]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [1]
+  [--add-label]
+  [factory:needs-human]

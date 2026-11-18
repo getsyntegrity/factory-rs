@@ -1,0 +1,1 @@
+job: run the gate first: factory/bin/gate 001-add-a-thing

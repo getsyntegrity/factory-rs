@@ -1,0 +1,20 @@
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [1]
+  [--body]
+  [<!-- factory -->
+### Factory intake: ACCEPT (risk low, surfaces: none)
+
+]
+$ git (cwd .)
+  [fetch]
+  [origin]
+  [main]
+$ git (cwd .)
+  [worktree]
+  [add]
+  [-b]
+  [factory/001-add-a-thing]
+  [wt]
+  [origin/main]

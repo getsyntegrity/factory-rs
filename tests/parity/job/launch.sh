@@ -5,7 +5,9 @@
 # job finds the repository from its own location (factory/bin/job), so the
 # build under test is installed at ./factory/bin/job next to the fixtures. The
 # Rust build also gets v2's Python job beside it as factory/bin/job.py, its
-# fallback for every subcommand it does not own.
+# fallback for every subcommand it does not own. `job merge` runs
+# factory/bin/gate, so the matching gate build (v2's, or the Rust one) is
+# installed too.
 #
 # Transcripts: a case may ship Claude Code transcripts under
 # claude-config/projects/REPO/. job looks for them under
@@ -18,18 +20,20 @@
 # doubles/<tool>/<key>.{stdout,stderr,code}, where <key> is its first three
 # arguments joined by "_" when such files exist, else its first two (anything
 # outside [A-Za-z0-9-] becomes "_"); without those files it prints nothing
-# and exits 0.
+# and exits 0. For the n-th call with the same key, <key>.<n>.{stdout,...}
+# win when they exist, so a double can change state (a PR that merges).
 #
 # Everything this script installs is removed afterwards.
 set -u
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../.." && pwd)
 oracle_job="$root/.oracle/v2/factory/bin/job"
+oracle_gate="$root/.oracle/v2/factory/bin/gate"
 mode=$1
 shift
 case "$mode" in
-  original) job_src="$oracle_job" ;;
-  rust) job_src="$root/target/release/job" ;;
+  original) job_src="$oracle_job"; gate_src="$oracle_gate" ;;
+  rust) job_src="$root/target/release/job"; gate_src="$root/target/release/gate" ;;
   *) echo "launch.sh: unknown mode $mode" >&2; exit 2 ;;
 esac
 
@@ -41,6 +45,8 @@ mkdir -p factory/bin
 cp "$job_src" factory/bin/job
 chmod +x factory/bin/job
 [ "$mode" = rust ] && cp "$oracle_job" factory/bin/job.py && chmod +x factory/bin/job.py
+cp "$gate_src" factory/bin/gate
+chmod +x factory/bin/gate
 
 config=$(mktemp -d)
 if [ -d claude-config ]; then
@@ -71,21 +77,27 @@ key3=$(printf '%s_%s_%s' "${1:-}" "${2:-}" "${3:-}" | sed 's/[^A-Za-z0-9-]/_/g')
 key2=$(printf '%s_%s' "${1:-}" "${2:-}" | sed 's/[^A-Za-z0-9-]/_/g')
 answers="$DOUBLES_SANDBOX/doubles/$tool/$key3"
 ls "$answers".* >/dev/null 2>&1 || answers="$DOUBLES_SANDBOX/doubles/$tool/$key2"
+count="$DOUBLES_STATE/$tool-$(basename "$answers")"
+n=$(( $(cat "$count" 2>/dev/null || echo 0) + 1 ))
+echo "$n" > "$count"
+ls "$answers.$n".* >/dev/null 2>&1 && answers="$answers.$n"
 [ -f "$answers.stdout" ] && cat "$answers.stdout"
 [ -f "$answers.stderr" ] && cat "$answers.stderr" >&2
 exit "$(cat "$answers.code" 2>/dev/null || echo 0)"
 DOUBLE
   chmod +x "$doubles/$tool"
 done
+mkdir "$doubles/state"
 DOUBLES_SANDBOX="$repo"
+DOUBLES_STATE="$doubles/state"
 PATH="$doubles:$PATH"
-export DOUBLES_SANDBOX PATH
+export DOUBLES_SANDBOX DOUBLES_STATE PATH
 
 factory/bin/job "$@"
 rc=$?
 
 rm -rf "$config" "$doubles"
-rm -f factory/bin/job factory/bin/job.py
+rm -f factory/bin/job factory/bin/job.py factory/bin/gate
 [ "$made_bin" = 1 ] && rmdir factory/bin 2>/dev/null
 [ "$made_factory" = 1 ] && rmdir factory 2>/dev/null
 exit "$rc"

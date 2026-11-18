@@ -1,0 +1,85 @@
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/approve-04-needs-human.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/approve-04-needs-human.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:38Z"
+---
+>   "ended": "2026-11-18T16:13:41Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/blocked-01-needs-human.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/blocked-01-needs-human.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:38Z"
+---
+>   "ended": "2026-11-18T16:13:[..]"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/blocked-02-no-blocked-se.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/blocked-02-no-blocked-se.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:38Z"
+---
+>   "ended": "2026-11-18T16:13:[..]"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/blocked-03-draft-pr.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/blocked-03-draft-pr.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:38Z"
+---
+>   "ended": "2026-11-18T16:13:41Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/blocked-04-ready-pr.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/blocked-04-ready-pr.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:38Z"
+---
+>   "ended": "2026-11-18T16:13:41Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/gate-07-needs-human-last.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/gate-07-needs-human-last.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:38Z"
+---
+>   "ended": "2026-11-18T16:13:41Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/intake-01-needs-info.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/intake-01-needs-info.out/factory/jobs/001-add-a-thing/job.json
+32c32
+<   "ended": "2026-11-18T16:13:[..]"
+---
+>   "ended": "2026-11-18T16:13:40Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/intake-04-rejected.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/intake-04-rejected.out/factory/jobs/001-add-a-thing/job.json
+32c32
+<   "ended": "2026-11-18T16:13:[..]"
+---
+>   "ended": "2026-11-18T16:13:40Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/merge-01-already-merged.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/merge-01-already-merged.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:38Z"
+---
+>   "ended": "2026-11-18T16:13:41Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/merge-02-happy-path.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/merge-02-happy-path.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:[..]"
+---
+>   "ended": "2026-11-18T16:13:41Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/merge-03-draft-pr.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/merge-03-draft-pr.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:[..]"
+---
+>   "ended": "2026-11-18T16:13:41Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/merge-04-conflict.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/merge-04-conflict.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:[..]"
+---
+>   "ended": "2026-11-18T16:13:41Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/merge-05-gate-fails.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/merge-05-gate-fails.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:39Z"
+---
+>   "ended": "2026-11-18T16:13:41Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/merge-06-push-fails.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/merge-06-push-fails.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:[..]"
+---
+>   "ended": "2026-11-18T16:13:41Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/merge-09-gh-merge-fails.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/merge-09-gh-merge-fails.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:39Z"
+---
+>   "ended": "2026-11-18T16:13:41Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/merge-10-from-approve-fu.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/merge-10-from-approve-fu.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:39Z"
+---
+>   "ended": "2026-11-18T16:13:41Z"
+diff --color -r -x rust-anything.json tests/parity/ja-probe-1/rust/app-cases/review-07-needs-human-la.out/factory/jobs/001-add-a-thing/job.json tests/parity/ja-probe-2/rust/app-cases/review-07-needs-human-la.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T16:13:38Z"
+---
+>   "ended": "2026-11-18T16:13:41Z"

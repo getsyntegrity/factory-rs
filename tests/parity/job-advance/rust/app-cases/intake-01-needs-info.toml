@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["advance", "001-add-a-thing", "needs-info"]
+status.code = 0
+fs.sandbox = true
+fs.base = "intake-01-needs-info.in"

@@ -1,0 +1,1 @@
+job: `git rev-parse HEAD` failed: fatal: bad

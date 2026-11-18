@@ -1,0 +1,10 @@
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [state]
+$ git (cwd ./wt)
+  [fetch]
+  [origin]
+  [main]

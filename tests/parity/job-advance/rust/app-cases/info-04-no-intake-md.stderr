@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "[CWD]/factory/bin/job", line 718, in <module>
+    main(sys.argv[1:])
+  File "[CWD]/factory/bin/job", line 693, in main
+    job = advance(sync(resolve(args[0])), args[1])
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "[CWD]/factory/bin/job", line 411, in advance
+    (d / "intake.md").rename(d / f"intake-{k}.md")
+  File "/usr/lib/python3.12/pathlib.py", line 1365, in rename
+    os.rename(self, target)
+FileNotFoundError: [Errno 2] No such file or directory: '[CWD]/factory/jobs/001-add-a-thing/intake.md' -> '[CWD]/factory/jobs/001-add-a-thing/intake-1.md'

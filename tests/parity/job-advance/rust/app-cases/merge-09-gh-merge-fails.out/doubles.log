@@ -1,0 +1,62 @@
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [state]
+$ git (cwd ./wt)
+  [fetch]
+  [origin]
+  [main]
+$ git (cwd ./wt)
+  [merge]
+  [--no-edit]
+  [origin/main]
+$ git (cwd ./wt)
+  [rev-parse]
+  [HEAD]
+$ git (cwd ./wt)
+  [diff]
+  [--name-status]
+  [origin/main...HEAD]
+$ git (cwd ./wt)
+  [push]
+  [origin]
+  [factory/001-add-a-thing]
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [isDraft]
+$ gh (cwd .)
+  [pr]
+  [merge]
+  [7]
+  [--merge]
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [isDraft]
+$ gh (cwd .)
+  [pr]
+  [comment]
+  [7]
+  [--body]
+  [<!-- factory -->
+### Factory: needs a human
+
+## Why
+The merge failed:
+
+```
+`gh pr merge 7 --merge` failed: Pull request is not mergeable
+```]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [1]
+  [--add-label]
+  [factory:needs-human]

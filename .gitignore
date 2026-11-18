@@ -7,3 +7,4 @@ tests/parity/job/rust/app-cases/replay-report.md
 tests/parity/gate/rust/app-cases/replay-report.md
 tests/parity/job-reject/rust/app-cases/replay-report.md
 tests/parity/job-queue/rust/app-cases/replay-report.md
+tests/parity/job-advance/rust/app-cases/replay-report.md

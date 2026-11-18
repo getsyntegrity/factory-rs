@@ -1,0 +1,18 @@
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [1]
+  [--body]
+  [<!-- factory -->
+### Factory: needs a human
+
+## Why
+The builder is blocked:
+
+(no Blocked section)]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [1]
+  [--add-label]
+  [factory:needs-human]

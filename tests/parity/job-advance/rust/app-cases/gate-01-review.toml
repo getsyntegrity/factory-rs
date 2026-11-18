@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["advance", "001-add-a-thing", "review"]
+status.code = 0
+fs.sandbox = true
+fs.base = "gate-01-review.in"

@@ -19,7 +19,7 @@ Branch: `feat/verification-gaps` (stacked on `feat/job-create-queue`). Delivery:
 | ID | Specs | Task | Route | Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
 | T1 | S2 | Push the three branches over SSH; write the stacked PR titles, bases and bodies for the user | inline | done | pushed (git branch -vv shows origin tracking); migration/prs/ |
-| T2 | S3 | Record v2 cases for every advance transition still in Python, merge, section/escalate/check_reviews_done/git, errors and crashes; originals 100% | inline | pending | |
+| T2 | S3 | Record v2 cases for every advance transition still in Python, merge, section/escalate/check_reviews_done/git, errors and crashes; originals 100% | inline | done | tests/parity/job-advance: 70 cases, 70/70 vs v2; earlier five 119/119; unnormalized twice differ only in `ended`; normalized twice identical |
 | T3 | S4 | Hybrid end-to-end harness vs all-v2, cross-language job.json hand-offs, concurrent lock check | inline | pending | |
 | T4 | S5 S6 | stderr-consumer audit (report only) and the real-GitHub merge validation procedure in MIGRATION.md | inline | pending | |
 | T5 | S7 | Re-audited report with a verifying command per claim, "Riesgos del modo híbrido" | inline | pending | |
@@ -30,3 +30,4 @@ Route evidence: sequential verification work; no writer delegated.
 
 - L1 (2026-11-18, user): the six-step verification brief quoted in S1–S8.
 - L2 (2026-11-18, user answer): "Push SSH, PRs los abrís vos (Recomendado)" — chosen because step 1 contradicted MIGRATION.md:41 ("No push, PR, release or real GitHub call") and step 5 ("ni ejecutes gh real en esta sesión"), and PR creation would need the user's gh session (not authorized). Pushed over SSH: feat/gate, feat/job-waiting-commands, feat/job-create-queue.
+- L3 (T2): the job harness now installs the matching `gate` (merge runs factory/bin/gate) and its doubles can answer per call number (`<key>.<n>.*`) so a PR can merge mid-case; both changes left every earlier case unchanged (replays 45/45, 7/7, 16/16). Hybrid replay of job-advance: 67/70; the 3 differences are v2 crashes whose traceback names `factory/bin/job.py` instead of `factory/bin/job` (stderr only).

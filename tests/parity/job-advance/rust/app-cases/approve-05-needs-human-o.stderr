@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "[CWD]/factory/bin/job", line 718, in <module>
+    main(sys.argv[1:])
+  File "[CWD]/factory/bin/job", line 693, in main
+    job = advance(sync(resolve(args[0])), args[1])
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "[CWD]/factory/bin/job", line 491, in advance
+    body = f"### Factory: needs a human\n\n{(d / 'decision.md').read_text().split(chr(10), 1)[1].strip()}"
+                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range

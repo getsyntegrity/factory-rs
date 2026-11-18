@@ -1,0 +1,24 @@
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [1]
+  [--body]
+  [<!-- factory -->
+### Factory intake: ACCEPT (risk high, surfaces: ui, security)
+
+## Summary
+- Add it.
+
+## Notes
+more]
+$ git (cwd .)
+  [fetch]
+  [origin]
+  [main]
+$ git (cwd .)
+  [worktree]
+  [add]
+  [-b]
+  [factory/001-add-a-thing]
+  [wt]
+  [origin/main]

@@ -1,0 +1,1 @@
+job: `git status --porcelain` failed: fatal: not a git repository

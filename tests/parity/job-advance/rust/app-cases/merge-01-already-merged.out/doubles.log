@@ -1,0 +1,21 @@
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [state]
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [state]
+$ git (cwd .)
+  [worktree]
+  [remove]
+  [--force]
+  [wt]
+$ git (cwd .)
+  [branch]
+  [-D]
+  [factory/001-add-a-thing]

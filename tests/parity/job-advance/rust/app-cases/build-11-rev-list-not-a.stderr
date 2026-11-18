@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "[CWD]/factory/bin/job", line 718, in <module>
+    main(sys.argv[1:])
+  File "[CWD]/factory/bin/job", line 693, in main
+    job = advance(sync(resolve(args[0])), args[1])
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "[CWD]/factory/bin/job", line 424, in advance
+    require(int(git(job, "rev-list", "--count", f"origin/{BASE}..HEAD").stdout) > 0,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: 'many\n'

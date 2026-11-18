@@ -1,0 +1,19 @@
+$ git (cwd ./wt)
+  [rev-parse]
+  [HEAD]
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [1]
+  [--body]
+  [<!-- factory -->
+### Factory: needs a human
+
+## Why
+The gate failed in round 3, the last allowed round. See round-3/checks.md.]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [1]
+  [--add-label]
+  [factory:needs-human]

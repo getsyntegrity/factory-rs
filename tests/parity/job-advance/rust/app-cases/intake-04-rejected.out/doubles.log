@@ -1,0 +1,25 @@
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [1]
+  [--body]
+  [<!-- factory -->
+### Factory intake: REJECT
+
+## Why
+Out of scope.]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [1]
+  [--remove-label]
+  [factory]
+$ git (cwd .)
+  [worktree]
+  [remove]
+  [--force]
+  [wt]
+$ git (cwd .)
+  [branch]
+  [-D]
+  [factory/001-add-a-thing]

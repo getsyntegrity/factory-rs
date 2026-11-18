@@ -1,0 +1,16 @@
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [1]
+  [--body]
+  [<!-- factory -->
+### Factory intake: NEEDS-INFO
+
+## Questions
+- Which page?]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [1]
+  [--add-label]
+  [factory:needs-info]

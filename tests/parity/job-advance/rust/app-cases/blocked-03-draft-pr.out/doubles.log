@@ -1,0 +1,28 @@
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [isDraft]
+$ gh (cwd .)
+  [pr]
+  [ready]
+  [7]
+$ gh (cwd .)
+  [pr]
+  [comment]
+  [7]
+  [--body]
+  [<!-- factory -->
+### Factory: needs a human
+
+## Why
+The builder is blocked:
+
+The API key is missing.]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [1]
+  [--add-label]
+  [factory:needs-human]

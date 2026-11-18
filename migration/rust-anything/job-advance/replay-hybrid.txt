@@ -1,0 +1,6 @@
+67/70 cases passed
+- approve-05-needs-human-o: stderr
+- build-11-rev-list-not-a: stderr
+- info-04-no-intake-md: stderr
+Report: /home/pablog/factory-rs/tests/parity/job-advance/rust/app-cases/replay-report.md
+exit 1

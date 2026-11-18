@@ -1,0 +1,7 @@
+$ git (cwd ./wt)
+  [status]
+  [--porcelain]
+$ git (cwd ./wt)
+  [rev-list]
+  [--count]
+  [origin/main..HEAD]

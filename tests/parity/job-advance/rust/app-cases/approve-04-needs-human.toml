@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["advance", "001-add-a-thing", "needs-human"]
+status.code = 0
+fs.sandbox = true
+fs.base = "approve-04-needs-human.in"

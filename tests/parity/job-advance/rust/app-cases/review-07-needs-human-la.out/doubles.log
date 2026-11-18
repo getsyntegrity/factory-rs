@@ -1,0 +1,22 @@
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [isDraft]
+$ gh (cwd .)
+  [pr]
+  [comment]
+  [7]
+  [--body]
+  [<!-- factory -->
+### Factory: needs a human
+
+## Why
+Review rounds exhausted. Outstanding CHANGES in round-3/ from: code.]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [1]
+  [--add-label]
+  [factory:needs-human]

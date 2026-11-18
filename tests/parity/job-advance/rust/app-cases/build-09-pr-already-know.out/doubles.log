@@ -1,0 +1,17 @@
+$ git (cwd ./wt)
+  [status]
+  [--porcelain]
+$ git (cwd ./wt)
+  [rev-list]
+  [--count]
+  [origin/main..HEAD]
+$ git (cwd ./wt)
+  [fetch]
+  [origin]
+  [factory/001-add-a-thing]
+$ git (cwd ./wt)
+  [rev-parse]
+  [HEAD]
+$ git (cwd ./wt)
+  [rev-parse]
+  [origin/factory/001-add-a-thing]

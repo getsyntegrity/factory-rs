@@ -1,0 +1,43 @@
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [state]
+$ git (cwd ./wt)
+  [fetch]
+  [origin]
+  [main]
+$ git (cwd ./wt)
+  [merge]
+  [--no-edit]
+  [origin/main]
+$ git (cwd ./wt)
+  [merge]
+  [--abort]
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [isDraft]
+$ gh (cwd .)
+  [pr]
+  [comment]
+  [7]
+  [--body]
+  [<!-- factory -->
+### Factory: needs a human
+
+## Why
+The branch conflicts with main:
+
+```
+CONFLICT (content): Merge conflict in app.py
+```]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [1]
+  [--add-label]
+  [factory:needs-human]

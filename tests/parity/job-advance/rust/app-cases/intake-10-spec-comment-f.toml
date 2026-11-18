@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["advance", "001-add-a-thing", "spec"]
+status.code = 1
+fs.sandbox = true
+fs.base = "intake-10-spec-comment-f.in"

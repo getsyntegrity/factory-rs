@@ -1,0 +1,60 @@
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [state]
+$ git (cwd ./wt)
+  [fetch]
+  [origin]
+  [main]
+$ git (cwd ./wt)
+  [merge]
+  [--no-edit]
+  [origin/main]
+$ git (cwd ./wt)
+  [rev-parse]
+  [HEAD]
+$ git (cwd ./wt)
+  [diff]
+  [--name-status]
+  [origin/main...HEAD]
+$ git (cwd ./wt)
+  [push]
+  [origin]
+  [factory/001-add-a-thing]
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [isDraft]
+$ gh (cwd .)
+  [pr]
+  [ready]
+  [7]
+$ gh (cwd .)
+  [pr]
+  [merge]
+  [7]
+  [--merge]
+$ git (cwd .)
+  [push]
+  [origin]
+  [--delete]
+  [factory/001-add-a-thing]
+$ gh (cwd .)
+  [pr]
+  [view]
+  [7]
+  [--json]
+  [state]
+$ git (cwd .)
+  [worktree]
+  [remove]
+  [--force]
+  [wt]
+$ git (cwd .)
+  [branch]
+  [-D]
+  [factory/001-add-a-thing]
