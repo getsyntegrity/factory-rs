@@ -21,7 +21,7 @@ Branch: `feat/verification-gaps` (stacked on `feat/job-create-queue`). Delivery:
 | T1 | S2 | Push the three branches over SSH; write the stacked PR titles, bases and bodies for the user | inline | done | pushed (git branch -vv shows origin tracking); migration/prs/ |
 | T2 | S3 | Record v2 cases for every advance transition still in Python, merge, section/escalate/check_reviews_done/git, errors and crashes; originals 100% | inline | done | tests/parity/job-advance: 70 cases, 70/70 vs v2; earlier five 119/119; unnormalized twice differ only in `ended`; normalized twice identical |
 | T3 | S4 | Hybrid end-to-end harness vs all-v2, cross-language job.json hand-offs, concurrent lock check | inline | done | tests/parity/e2e: 3 scenarios, 40 steps (18 Rust, 22 Python), hybrid 3/3 ×5; locks both directions PASS + control; 300 races, 0 failures |
-| T4 | S5 S6 | stderr-consumer audit (report only) and the real-GitHub merge validation procedure in MIGRATION.md | inline | pending | |
+| T4 | S5 S6 | stderr-consumer audit (report only) and the real-GitHub merge validation procedure in MIGRATION.md | inline | done | MIGRATION.md "Who reads stderr" (9 consumers, none affected in meaning) and "Merge validation against real GitHub" |
 | T5 | S7 | Re-audited report with a verifying command per claim, "Riesgos del modo híbrido" | inline | pending | |
 
 Route evidence: sequential verification work; no writer delegated.
