@@ -19,7 +19,7 @@ Branch: `feat/verification-gaps` (local commits after the step-1 push). Follow-u
 | T1 | S2 | Push feat/verification-gaps; PR 4 and the final stack order in migration/prs/ | inline | done | pushed (`git branch -vv`); `git merge-base --is-ancestor feat/job-create-queue feat/verification-gaps` exits 0 |
 | T2 | S1 S3 | gate --hook event/matcher and per-case effect table, fail-open marked, Owner decision recorded | inline | pending | |
 | T3 | S1 S4 | Merge procedure: two runs, gh capture to doubles-format fixtures, sanitising list | inline | pending | |
-| T4 | S1 S5 | Lock primitives (verified with strace), OS, repeat command | inline | pending | |
+| T4 | S1 S5 | Lock primitives (verified with strace), OS, repeat command | inline | done | MIGRATION.md "Lock primitives": identical openat+flock(LOCK_EX) observed on both; Linux Mint 22.3 / 7.0.0-38 |
 | T5 | S6 | AUDIT.md split lines, hook table + fail-open risk, re-run run_audit.sh | inline | pending | |
 
 ## Log

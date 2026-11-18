@@ -800,6 +800,48 @@ runs. The latest run (`migration/rust-anything/e2e/concurrency.txt`):
 | Control: lock-free read while held (must not wait) | 0.00 s, PASS (both holders) |
 | Race: Rust and Python `job sync` started together | 300 runs, 0 failures (both exit 0, job.json valid, same stdout) |
 
+### Lock primitives (both sides)
+
+| | Python (v2 `factory/bin/job`) | Rust (`src/job/disk.rs`) |
+| --- | --- | --- |
+| Code | `fcntl.flock(_locks[job_id], fcntl.LOCK_EX)` on `open(job_dir(job_id) / ".lock", "w")` (module `fcntl`, `load()`, job:110–116) | `File::create(jobs/<id>/.lock)?` then `file.lock()?`: `std::fs::File::lock` from the **standard library**, no crate (`Disk::lock`, disk.rs:125–126) |
+| File | `factory/jobs/<id>/.lock`, created or truncated | the same file |
+| Syscalls (observed) | `openat(…/.lock, O_WRONLY\|O_CREAT\|O_TRUNC\|O_CLOEXEC, 0666)`, then `flock(3, LOCK_EX)` | **identical**: `openat(…, O_WRONLY\|O_CREAT\|O_TRUNC\|O_CLOEXEC, 0666)`, then `flock(3, LOCK_EX)` |
+| Held until | the process exits (the file object stays in `_locks`) | the process exits (the `File` stays in `Disk::locks`) |
+| Kind | **advisory**: it only excludes other `flock` users. A process that writes `job.json` without locking is not stopped. | advisory, the same |
+
+The syscalls come from tracing a real `job sync` of each language on one job,
+using `strace -f -e trace=openat,flock,fcntl factory/bin/job sync 001-a` (and
+`python3 factory/bin/job.py sync 001-a`) in a scratch factory.
+
+**Where the lock tests ran.** The 300 races and the hold-and-wait tests ran on
+Linux Mint 22.3, kernel `Linux 7.0.0-38-generic x86_64` (`uname -srmo`), on a
+local filesystem.
+
+**Does compatibility depend on the OS? Yes, in principle.** Both sides
+exclude each other only because both end up calling `flock(2)`. That was
+observed on Linux only.
+- Python's `fcntl.flock` calls `flock(2)` wherever it exists.
+- Rust's `File::lock` is documented as `flock` with `LOCK_EX` "on Unix". The
+  Rust standard library may implement it differently on some platforms, so
+  check the syscall rather than assume it.
+- On network filesystems (NFS, SMB) `flock` behaves differently than on a
+  local disk.
+
+To repeat the check on another OS or filesystem, from the factory-rs root
+after `cargo build --release` (needs `python3`, `bc`, `mkfifo`):
+
+```sh
+sh tests/parity/e2e/concurrency.sh 300                 # hold-and-wait both ways, lock-free control, 300 races
+strace -f -e trace=openat,flock,fcntl target/release/job --help 2>&1 | grep -E 'flock|F_SETLK|F_OFD'   # Linux
+sudo dtruss -f target/release/job sync <id> 2>&1 | grep -E 'flock|fcntl'                                 # macOS
+```
+
+The first command must print `PASS` for all four hold-and-wait lines and
+`failures: 0`. If the second shows `fcntl(F_SETLK…)` or `F_OFD_SETLK` on one
+side and `flock` on the other, the languages do not exclude each other on
+that system.
+
 ### Hybrid-only differences
 
 | ID | Case | What differs | Why |
