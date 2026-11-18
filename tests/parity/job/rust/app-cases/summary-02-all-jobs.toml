@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["summary"]
+status.code = 0
+fs.sandbox = true
+fs.base = "summary-02-all-jobs.in"

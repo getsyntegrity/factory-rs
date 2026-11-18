@@ -8,6 +8,9 @@ Each line follows the `rust-anything app record --inputs` schema (v1.5.1):
 Transcript fixtures live under claude-config/projects/REPO/; launch.sh moves
 them to the path job derives from the sandbox and replaces @REPO@ in them.
 
+`reject` cases go to tests/parity/job-reject/inputs.jsonl: they are recorded
+with the `timestamps` normalizer because reject writes `ended = now()`.
+
 Usage: python3 migration/rust-anything/job/make_inputs.py
 """
 
@@ -17,6 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 CONFIG = (ROOT / ".oracle/v2/factory/config.json").read_text()
 OUT = ROOT / "tests/parity/job/inputs.jsonl"
+REJECT_OUT = ROOT / "tests/parity/job-reject/inputs.jsonl"
 
 ID = "001-add-a-thing"
 
@@ -167,11 +171,97 @@ CASES = [
 ]
 
 
+# ---- summary, feedback, reject --------------------------------------------
+
+OPERATOR = {"doubles/gh/api_user.stdout": "factory-operator\n"}
+
+
+def ended_job(job_id, issue, stage, round_, pr, started, ended, **extra):
+    return job(job_id, issue=issue, stage=stage, round_=round_, pr=pr, started=started, ended=ended, **extra)
+
+
+SUMMARY_JOBS = {
+    **base(ended_job(ID, 1, "merged", 2, 7, "2026-11-18T00:00:00Z", "2026-11-18T01:05:00Z")),
+    **base(ended_job("002-second", 12, "rejected", 0, None, "2026-11-18T00:00:00Z", "2026-11-18T00:59:59Z"),
+           job_id="002-second"),
+    **base(ended_job("003-a-much-longer-job-id", 3, "merged", 1, 1234, "2026-11-17T00:00:00Z",
+                     "2026-11-18T01:00:00Z"), job_id="003-a-much-longer-job-id"),
+    **base(ended_job("004-instant", 4, "rejected", 0, 0, "2026-11-18T00:00:00Z", "2026-11-18T00:00:30Z"),
+           job_id="004-instant"),
+}
+SUMMARY_COST = {tpath("s1", "a1"): transcript(
+    "002-second", usage("m1", "claude-sonnet-5-5", input_tokens=10000, output_tokens=6000,
+                        cache_creation_input_tokens=20000, cache_read_input_tokens=100000,
+                        cache_creation={"ephemeral_1h_input_tokens": 5000}))}
+
+DECISION = "ESCALATE\n\n## Why\nThe builder is blocked.\n"
+
+
+def waiting_job(stage="needs-human", round_=2, pr=None, worktree=".worktrees/001-add-a-thing", **extra):
+    return job(stage=stage, round_=round_, pr=pr, worktree=worktree, intake=ACCEPTED, agents=REVIEWERS,
+               ended="2026-11-18T02:00:00Z", **extra)
+
+
+def feedback_case(job_json=None, decision=True, **more):
+    fs = {**base(job_json or waiting_job()), **OPERATOR}
+    if decision:
+        fs[f"factory/jobs/{ID}/decision.md"] = DECISION
+    fs.update(more)
+    return fs
+
+
+CASES += [
+    ("summary-01-no-jobs", ["summary"], {"factory/config.json": CONFIG}),
+    ("summary-02-all-jobs", ["summary"], {**SUMMARY_JOBS, **SUMMARY_COST}),
+    ("summary-03-selected-jobs", ["summary", "12", ID], SUMMARY_JOBS),
+    ("summary-04-unknown-job", ["summary", ID, "999-nope"], SUMMARY_JOBS),
+]
+
+FEEDBACK_CASES = [
+    ("feedback-01-sends-back", ["feedback", ID], "  Please split the PR.\n\nThanks.  \n", feedback_case()),
+    ("feedback-02-second-feedback", ["feedback", ID], "Again.\n",
+     feedback_case(**{f"factory/jobs/{ID}/feedback-1.md": "# Feedback 1\n\nold\n"})),
+    ("feedback-03-wrong-stage", ["feedback", ID], "x\n", feedback_case(waiting_job(stage="build"))),
+    ("feedback-04-empty-stdin", ["feedback", ID], " \n\t\n", feedback_case()),
+    ("feedback-05-operator-fails", ["feedback", ID], "x\n",
+     {**feedback_case(), "doubles/gh/api_user.code": "1\n", "doubles/gh/api_user.stderr": "HTTP 401: Bad credentials\n"}),
+    ("feedback-06-label-fails", ["feedback", ID], "x\n",
+     {**feedback_case(), "doubles/gh/issue_edit.code": "1\n", "doubles/gh/issue_edit.stderr": "label not found\n"}),
+    ("feedback-07-no-decision", ["feedback", ID], "x\n", feedback_case(decision=False)),
+    ("feedback-08-by-issue", ["feedback", "1"], "By issue.\n", feedback_case()),
+]
+
+REJECT_CASES = [
+    ("reject-01-needs-info", ["reject", ID], "Out of scope.\n",
+     {**base(waiting_job(stage="needs-info", round_=0)), **OPERATOR}),
+    ("reject-02-needs-human-with-pr", ["reject", ID], "  Too risky.\n\nSee thread. \n",
+     {**base(waiting_job(pr=7, worktree="wt")), **OPERATOR, "wt/README.md": "worktree\n",
+      f"factory/jobs/{ID}/decision.md": DECISION,
+      "doubles/git/push_origin.code": "1\n", "doubles/git/push_origin.stderr": "error: unable to delete\n"}),
+    ("reject-03-wrong-stage", ["reject", ID], "x\n", {**base(waiting_job(stage="build")), **OPERATOR}),
+    ("reject-04-empty-stdin", ["reject", ID], "\n", {**base(waiting_job()), **OPERATOR}),
+    ("reject-05-comment-fails", ["reject", ID], "x\n",
+     {**base(waiting_job()), **OPERATOR, "doubles/gh/issue_comment.code": "1\n",
+      "doubles/gh/issue_comment.stderr": "comment refused\n"}),
+    ("reject-06-worktree-remove-fails", ["reject", ID], "x\n",
+     {**base(waiting_job(worktree="wt")), **OPERATOR, "wt/README.md": "worktree\n",
+      "doubles/git/worktree_remove.code": "1\n", "doubles/git/worktree_remove.stderr": "fatal: locked\n"}),
+    ("reject-07-pr-close-fails", ["reject", ID], "x\n",
+     {**base(waiting_job(pr=7)), **OPERATOR, "doubles/gh/pr_close.code": "1\n", "doubles/gh/pr_close.stderr": "no PR\n"}),
+]
+
+
+def write(out, cases):
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with out.open("w") as f:
+        for name, args, stdin, fs in cases:
+            f.write(json.dumps({"name": name, "args": args, "stdin": stdin, "env": {}, "files": fs}) + "\n")
+    print(f"wrote {len(cases)} cases to {out.relative_to(ROOT)}")
+
+
 def main():
-    with OUT.open("w") as f:
-        for name, args, fs in CASES:
-            f.write(json.dumps({"name": name, "args": args, "stdin": "", "env": {}, "files": fs}) + "\n")
-    print(f"wrote {len(CASES)} cases to {OUT.relative_to(ROOT)}")
+    write(OUT, [(n, a, "", fs) for n, a, fs in CASES] + FEEDBACK_CASES)
+    write(REJECT_OUT, REJECT_CASES)
 
 
 if __name__ == "__main__":

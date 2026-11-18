@@ -1,0 +1,11 @@
+$ gh (cwd .)
+  [api]
+  [user]
+  [--jq]
+  [.login]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [1]
+  [--remove-label]
+  [factory:needs-human]

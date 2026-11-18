@@ -12,6 +12,13 @@
 # $CLAUDE_CONFIG_DIR/projects/<repo path with non-alphanumerics as "-">, and
 # their prompts name the job folder by absolute path, so the fixtures are copied
 # outside the sandbox with REPO and @REPO@ replaced by the sandbox path.
+# `gh` and `git` are doubles put first on PATH. Every call appends its working
+# directory (relative to the sandbox) and argv to ./doubles.log, so replay
+# compares the calls themselves. A call answers from
+# doubles/<tool>/<key>.{stdout,stderr,code}, where <key> is its first two
+# arguments joined by "_" with anything outside [A-Za-z0-9-] as "_"; without
+# those files it prints nothing and exits 0.
+#
 # Everything this script installs is removed afterwards.
 set -u
 here=$(cd "$(dirname "$0")" && pwd)
@@ -46,10 +53,35 @@ fi
 CLAUDE_CONFIG_DIR="$config"
 export CLAUDE_CONFIG_DIR
 
+doubles=$(mktemp -d)
+for tool in gh git; do
+  cat > "$doubles/$tool" <<DOUBLE
+#!/bin/sh
+tool=$tool
+DOUBLE
+  cat >> "$doubles/$tool" <<'DOUBLE'
+here=$(pwd -P)
+rel=${here#"$DOUBLES_SANDBOX"}
+{
+  printf '$ %s (cwd .%s)\n' "$tool" "$rel"
+  for a in "$@"; do printf '  [%s]\n' "$a"; done
+} >> "$DOUBLES_SANDBOX/doubles.log"
+key=$(printf '%s_%s' "${1:-}" "${2:-}" | sed 's/[^A-Za-z0-9-]/_/g')
+answers="$DOUBLES_SANDBOX/doubles/$tool/$key"
+[ -f "$answers.stdout" ] && cat "$answers.stdout"
+[ -f "$answers.stderr" ] && cat "$answers.stderr" >&2
+exit "$(cat "$answers.code" 2>/dev/null || echo 0)"
+DOUBLE
+  chmod +x "$doubles/$tool"
+done
+DOUBLES_SANDBOX="$repo"
+PATH="$doubles:$PATH"
+export DOUBLES_SANDBOX PATH
+
 factory/bin/job "$@"
 rc=$?
 
-rm -rf "$config"
+rm -rf "$config" "$doubles"
 rm -f factory/bin/job factory/bin/job.py
 [ "$made_bin" = 1 ] && rmdir factory/bin 2>/dev/null
 [ "$made_factory" = 1 ] && rmdir factory 2>/dev/null

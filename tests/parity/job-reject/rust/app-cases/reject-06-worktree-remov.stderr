@@ -1,0 +1,1 @@
+job: `git worktree remove --force wt` failed: fatal: locked

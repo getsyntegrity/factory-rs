@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["summary", "001-add-a-thing", "999-nope"]
+status.code = 1
+fs.sandbox = true
+fs.base = "summary-04-unknown-job.in"

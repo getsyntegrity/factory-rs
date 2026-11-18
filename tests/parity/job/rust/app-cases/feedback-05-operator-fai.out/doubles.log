@@ -1,0 +1,5 @@
+$ gh (cwd .)
+  [api]
+  [user]
+  [--jq]
+  [.login]

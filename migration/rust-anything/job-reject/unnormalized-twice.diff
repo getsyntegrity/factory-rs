@@ -1,0 +1,10 @@
+diff --color -r -x rust-anything.json tests/parity/jr-probe-1/rust/app-cases/reject-01-needs-info.out/factory/jobs/001-add-a-thing/job.json tests/parity/jr-probe-2/rust/app-cases/reject-01-needs-info.out/factory/jobs/001-add-a-thing/job.json
+32c32
+<   "ended": "2026-11-18T15:40:19Z"
+---
+>   "ended": "2026-11-18T15:40:[..]"
+diff --color -r -x rust-anything.json tests/parity/jr-probe-1/rust/app-cases/reject-02-needs-human-wi.out/factory/jobs/001-add-a-thing/job.json tests/parity/jr-probe-2/rust/app-cases/reject-02-needs-human-wi.out/factory/jobs/001-add-a-thing/job.json
+37c37
+<   "ended": "2026-11-18T15:40:19Z"
+---
+>   "ended": "2026-11-18T15:40:20Z"

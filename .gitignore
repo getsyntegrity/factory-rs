@@ -5,3 +5,4 @@ tests/parity/route/rust/app-cases/replay-report.md
 .atl/
 tests/parity/job/rust/app-cases/replay-report.md
 tests/parity/gate/rust/app-cases/replay-report.md
+tests/parity/job-reject/rust/app-cases/replay-report.md

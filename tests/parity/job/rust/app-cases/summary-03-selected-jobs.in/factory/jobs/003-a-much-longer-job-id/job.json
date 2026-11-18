@@ -1,0 +1,20 @@
+{
+  "id": "003-a-much-longer-job-id",
+  "issue": 3,
+  "title": "Add a thing",
+  "issue_url": null,
+  "pr": 1234,
+  "pr_url": null,
+  "branch": "factory/003-a-much-longer-job-id",
+  "worktree": null,
+  "stage": "merged",
+  "round": 1,
+  "round_limit": 3,
+  "intake": null,
+  "agents": null,
+  "gate": null,
+  "reviews": {},
+  "cost_usd": 0.0,
+  "started": "2026-11-17T00:00:00Z",
+  "ended": "2026-11-18T01:00:00Z"
+}

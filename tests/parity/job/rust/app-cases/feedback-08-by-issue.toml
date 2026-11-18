@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["feedback", "1"]
+status.code = 0
+fs.sandbox = true
+fs.base = "feedback-08-by-issue.in"

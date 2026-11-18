@@ -1,0 +1,27 @@
+$ gh (cwd .)
+  [api]
+  [user]
+  [--jq]
+  [.login]
+$ gh (cwd .)
+  [issue]
+  [comment]
+  [1]
+  [--body]
+  [<!-- factory -->
+### Factory: rejected
+
+By @factory-operator while the job was needs-human.
+
+x]
+$ gh (cwd .)
+  [issue]
+  [edit]
+  [1]
+  [--remove-label]
+  [factory,factory:needs-human]
+$ git (cwd .)
+  [worktree]
+  [remove]
+  [--force]
+  [wt]

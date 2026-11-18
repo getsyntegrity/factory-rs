@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["reject", "001-add-a-thing"]
+status.code = 1
+fs.sandbox = true
+fs.base = "reject-06-worktree-remov.in"

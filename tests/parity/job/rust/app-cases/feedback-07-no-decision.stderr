@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "[CWD]/factory/bin/job", line 718, in <module>
+    main(sys.argv[1:])
+  File "[CWD]/factory/bin/job", line 699, in main
+    cmd_feedback(resolve(args[0]), sys.stdin.read())
+  File "[CWD]/factory/bin/job", line 641, in cmd_feedback
+    save(advance(sync(job), "build"))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "[CWD]/factory/bin/job", line 484, in advance
+    require(feedback and feedback[-1].stat().st_mtime > (d / "decision.md").stat().st_mtime,
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 842, in stat
+    return os.stat(self, follow_symlinks=follow_symlinks)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '[CWD]/factory/jobs/001-add-a-thing/decision.md'
