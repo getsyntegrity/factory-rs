@@ -17,6 +17,15 @@ pub struct Outcome {
     pub stderr: String,
 }
 
+/// A finished process, as v2's `subprocess.run(..., text=True)` sees it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Proc {
+    /// Negative for a signal, like Python's `returncode`.
+    pub code: i32,
+    pub stdout: String,
+    pub stderr: String,
+}
+
 impl Outcome {
     /// v2's `die(msg)`: `<prog>: <msg>` on stderr, exit 1.
     pub fn die(prog: &str, msg: &str) -> Self {

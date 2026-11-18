@@ -1,15 +1,24 @@
 //! In-memory [`Workspace`] for unit tests, plus `case!` to load a v2 case
-//! recorded by `rust-anything app record` under tests/parity/job.
+//! recorded by `rust-anything app record` under tests/parity/job (or
+//! tests/parity/job-reject).
+//!
+//! `run` behaves like the `gh`/`git` doubles of tests/parity/job/launch.sh:
+//! every call is appended to `doubles.log`, and answers come from the case's
+//! `doubles/<tool>/<key>.{stdout,stderr,code}` files.
 
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::collections::BTreeMap;
 use std::io;
+use std::time::{Duration, SystemTime};
 
 use super::Workspace;
-use crate::Outcome;
+use crate::{Outcome, Proc};
 
 /// The absolute repository path the fake pretends to live at.
 pub const REPO: &str = "/repo";
+
+/// The fake's clock: 2026-11-18T03:04:05Z.
+pub const NOW: i64 = 1_794_971_045_000_000;
 
 #[derive(Default)]
 pub struct Fake {
@@ -21,6 +30,13 @@ pub struct Fake {
     fail: Vec<&'static str>,
     locks: RefCell<Vec<String>>,
     writes: RefCell<BTreeMap<String, String>>,
+    /// Every input file of the case, by sandbox-relative path.
+    sandbox: BTreeMap<String, String>,
+    stdin: String,
+    dirs: RefCell<Vec<String>>,
+    /// Write order, as modification times later than every input file.
+    clock: Cell<u64>,
+    mtimes: RefCell<BTreeMap<String, u64>>,
 }
 
 /// What a recorded case expects.
@@ -79,15 +95,44 @@ impl Fake {
         self
     }
 
+    pub fn fail_run(mut self) -> Self {
+        self.fail.push("run");
+        self
+    }
+
     pub fn fail_reads(mut self) -> Self {
         self.fail.push("read");
         self
+    }
+
+    pub fn stdin(mut self, text: &str) -> Self {
+        self.stdin = text.into();
+        self
+    }
+
+    pub fn file(mut self, path: &str, text: &str) -> Self {
+        self.files.insert(path.into(), text.into());
+        self
+    }
+
+    pub fn sandbox_file(mut self, path: &str, text: &str) -> Self {
+        self.sandbox.insert(path.into(), text.into());
+        self
+    }
+
+    pub fn dirs(&self) -> Vec<String> {
+        self.dirs.borrow().clone()
+    }
+
+    pub fn written(&self, path: &str) -> Option<String> {
+        self.writes.borrow().get(path).cloned()
     }
 
     /// Builds a fake from a recorded case's input files (`<case>.in/`).
     pub fn from_inputs(inputs: &[(&str, &str)]) -> Self {
         let mut fake = Fake::default();
         for (path, text) in inputs {
+            fake.sandbox.insert(path.to_string(), text.to_string());
             if *path == "factory/config.json" {
                 fake.config = Some(text.to_string());
             } else if let Some(rel) = path.strip_prefix("factory/jobs/") {
@@ -103,12 +148,22 @@ impl Fake {
         self.locks.borrow().clone()
     }
 
-    /// The job.json writes and `.lock` files match the recorded case.
+    /// The written files and `.lock` files match the recorded case. A `[..]`
+    /// in a recorded line (rust-anything's normalizer) matches any text there.
     pub fn assert_files(&self, want: &Expected) {
         let mut writes = self.writes.borrow().clone();
-        // A job.json written back byte-identical is not a change on disk.
+        // A file written back byte-identical is not a change on disk.
         writes.retain(|path, text| self.files.get(path) != Some(text));
-        assert_eq!(writes, want.job_files, "job.json files");
+        let paths: Vec<&String> = writes.keys().collect();
+        let want_paths: Vec<&String> = want.job_files.keys().collect();
+        assert_eq!(paths, want_paths, "written files");
+        for (path, text) in &writes {
+            assert!(
+                matches_recorded(text, &want.job_files[path]),
+                "{path}:\n{text}\n---\n{}",
+                want.job_files[path]
+            );
+        }
         let mut locks = self.locks();
         locks.sort();
         assert_eq!(locks, want.lock_ids, ".lock files");
@@ -121,6 +176,22 @@ impl Fake {
             Ok(())
         }
     }
+}
+
+/// trycmd semantics for one file: line by line, `[..]` matches any text.
+pub fn matches_recorded(actual: &str, recorded: &str) -> bool {
+    let actual: Vec<&str> = actual.split('\n').collect();
+    let recorded: Vec<&str> = recorded.split('\n').collect();
+    actual.len() == recorded.len()
+        && actual
+            .iter()
+            .zip(&recorded)
+            .all(|(a, r)| match r.split_once("[..]") {
+                None => a == r,
+                Some((head, tail)) => {
+                    a.len() >= head.len() + tail.len() && a.starts_with(head) && a.ends_with(tail)
+                }
+            })
 }
 
 /// What rust-anything's sandbox glob `*/subagents/agent-*.jsonl` matches
@@ -145,7 +216,8 @@ impl Workspace for Fake {
 
     fn read(&self, path: &str) -> io::Result<Option<String>> {
         self.check("read")?;
-        Ok(self.files.get(path).cloned())
+        let written = self.writes.borrow().get(path).cloned();
+        Ok(written.or_else(|| self.files.get(path).cloned()))
     }
 
     fn has_job(&self, id: &str) -> bool {
@@ -187,6 +259,104 @@ impl Workspace for Fake {
         self.check("transcripts")?;
         Ok(self.transcripts.clone())
     }
+
+    fn stdin(&self) -> io::Result<String> {
+        Ok(self.stdin.clone())
+    }
+
+    fn write(&self, path: &str, text: &str) -> io::Result<()> {
+        self.check("write")?;
+        self.clock.set(self.clock.get() + 1);
+        self.mtimes
+            .borrow_mut()
+            .insert(path.into(), self.clock.get());
+        self.writes.borrow_mut().insert(path.into(), text.into());
+        Ok(())
+    }
+
+    fn list(&self, dir: &str) -> io::Result<Vec<String>> {
+        let prefix = format!("{dir}/");
+        let writes = self.writes.borrow();
+        let mut names: Vec<String> = self
+            .files
+            .keys()
+            .chain(writes.keys())
+            .filter_map(|p| p.strip_prefix(&prefix))
+            .filter(|rest| !rest.contains('/'))
+            .map(str::to_string)
+            .collect();
+        names.sort();
+        names.dedup();
+        Ok(names)
+    }
+
+    fn mtime(&self, path: &str) -> io::Result<SystemTime> {
+        let tick = match self.mtimes.borrow().get(path) {
+            Some(tick) => *tick,
+            None if self.files.contains_key(path) => 0,
+            None => return Err(io::Error::new(io::ErrorKind::NotFound, "missing")),
+        };
+        Ok(SystemTime::UNIX_EPOCH + Duration::from_nanos(tick))
+    }
+
+    fn mkdir(&self, path: &str) -> io::Result<()> {
+        self.dirs.borrow_mut().push(path.into());
+        Ok(())
+    }
+
+    fn exists(&self, path: &str) -> bool {
+        let prefix = format!("{path}/");
+        self.sandbox
+            .keys()
+            .any(|p| p == path || p.starts_with(&prefix))
+    }
+
+    fn run(&self, program: &str, args: &[&str]) -> io::Result<Proc> {
+        if self.fail.contains(&"run") {
+            return Err(io::Error::new(io::ErrorKind::NotFound, "no such program"));
+        }
+        let mut log = self
+            .writes
+            .borrow()
+            .get("doubles.log")
+            .cloned()
+            .unwrap_or_default();
+        log.push_str(&format!("$ {program} (cwd .)\n"));
+        for a in args {
+            log.push_str(&format!("  [{a}]\n"));
+        }
+        self.writes.borrow_mut().insert("doubles.log".into(), log);
+        let key: String = format!(
+            "{}_{}",
+            args.first().unwrap_or(&""),
+            args.get(1).unwrap_or(&"")
+        )
+        .chars()
+        .map(|c| {
+            if c.is_ascii_alphanumeric() || c == '-' {
+                c
+            } else {
+                '_'
+            }
+        })
+        .collect();
+        let answer = |suffix: &str| {
+            self.sandbox
+                .get(&format!("doubles/{program}/{key}.{suffix}"))
+                .cloned()
+        };
+        Ok(Proc {
+            code: answer("code")
+                .and_then(|c| c.trim().parse().ok())
+                .unwrap_or(0),
+            stdout: answer("stdout").unwrap_or_default(),
+            stderr: answer("stderr").unwrap_or_default(),
+        })
+    }
+
+    fn now(&self) -> i64 {
+        NOW
+    }
 }
 
 /// Reads the recorded files of one case into `Expected`.
@@ -219,12 +389,18 @@ pub fn expected(
 }
 
 /// `case!("sync-01-fresh-job")` → `(Fake, Expected)` from
-/// tests/parity/job/rust/app-cases, read at test time.
+/// tests/parity/job/rust/app-cases; `case!("job-reject", "reject-01-...")`
+/// from another harness. Read at test time.
 macro_rules! case {
-    ($name:literal) => {{
+    ($name:literal) => {
+        $crate::job::fake::case!("job", $name)
+    };
+    ($harness:literal, $name:literal) => {{
         let dir = concat!(
             env!("CARGO_MANIFEST_DIR"),
-            "/tests/parity/job/rust/app-cases/",
+            "/tests/parity/",
+            $harness,
+            "/rust/app-cases/",
             $name
         );
         let files = |suffix: &str| $crate::testing::read_tree(&format!("{dir}{suffix}"));
@@ -241,7 +417,8 @@ macro_rules! case {
                 .iter()
                 .map(|(p, t)| (p.as_str(), t.as_str()))
                 .collect::<Vec<_>>(),
-        );
+        )
+        .stdin(&std::fs::read_to_string(format!("{dir}.stdin")).unwrap_or_default());
         let want = $crate::job::fake::expected(
             code.as_deref(),
             &read(".stdout"),

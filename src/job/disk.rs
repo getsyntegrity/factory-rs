@@ -8,7 +8,11 @@ use std::io;
 use std::path::{Path, PathBuf};
 
 use super::{Command, Workspace, load_config, run};
-use crate::Outcome;
+use crate::{Outcome, Proc};
+use std::io::Read;
+use std::os::unix::process::ExitStatusExt;
+use std::process::Command as Process;
+use std::time::SystemTime;
 
 /// What the `job` executable does with its argv.
 #[derive(Debug, PartialEq, Eq)]
@@ -160,6 +164,59 @@ impl Workspace for Disk {
             }
         }
         Ok(texts)
+    }
+
+    fn stdin(&self) -> io::Result<String> {
+        let mut text = String::new();
+        io::stdin().read_to_string(&mut text)?;
+        Ok(text)
+    }
+
+    fn write(&self, path: &str, text: &str) -> io::Result<()> {
+        fs::write(self.jobs().join(path), text)
+    }
+
+    fn list(&self, dir: &str) -> io::Result<Vec<String>> {
+        fs::read_dir(self.jobs().join(dir))?
+            .map(|e| e.map(|e| e.file_name().to_string_lossy().into_owned()))
+            .collect()
+    }
+
+    fn mtime(&self, path: &str) -> io::Result<SystemTime> {
+        fs::metadata(self.jobs().join(path))?.modified()
+    }
+
+    fn mkdir(&self, path: &str) -> io::Result<()> {
+        match fs::create_dir(self.jobs().join(path)) {
+            Err(e) if e.kind() == io::ErrorKind::AlreadyExists => Ok(()),
+            other => other,
+        }
+    }
+
+    fn exists(&self, path: &str) -> bool {
+        Path::new(path).exists()
+    }
+
+    fn run(&self, program: &str, args: &[&str]) -> io::Result<Proc> {
+        let out = Process::new(program)
+            .args(args)
+            .current_dir(&self.repo)
+            .output()?;
+        Ok(Proc {
+            code: out
+                .status
+                .code()
+                .or_else(|| out.status.signal().map(|s| -s))
+                .unwrap_or(-1),
+            stdout: String::from_utf8_lossy(&out.stdout).into_owned(),
+            stderr: String::from_utf8_lossy(&out.stderr).into_owned(),
+        })
+    }
+
+    fn now(&self) -> i64 {
+        SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .map_or(0, |d| d.as_micros() as i64)
     }
 }
 
@@ -344,7 +401,10 @@ mod tests {
             r#"{"labels": {}, "base_branch": "main", "concurrency": 3}"#,
         );
         assert_eq!(
-            dispatch(&["summary".into()], &repo.disk()),
+            dispatch(
+                &["advance".into(), "x".into(), "build".into()],
+                &repo.disk()
+            ),
             Dispatch::Fallback
         );
     }
@@ -360,5 +420,76 @@ mod tests {
             dispatch(&["sync".into(), "x".into()], &repo.disk()),
             Dispatch::Done(Outcome::die("job", "no job x"))
         );
+    }
+
+    #[test]
+    fn writes_lists_and_dates_files_below_jobs() {
+        let repo = Repo::new();
+        repo.write("factory/jobs/a/job.json", "{}");
+        let disk = repo.disk();
+        disk.write("a/feedback-1.md", "hi\n").unwrap();
+        assert_eq!(
+            fs::read_to_string(repo.path().join("factory/jobs/a/feedback-1.md")).unwrap(),
+            "hi\n"
+        );
+        let mut names = disk.list("a").unwrap();
+        names.sort();
+        assert_eq!(names, ["feedback-1.md", "job.json"]);
+        assert!(disk.list("missing").is_err());
+        assert!(disk.mtime("a/feedback-1.md").unwrap() >= disk.mtime("a/job.json").unwrap());
+        assert!(disk.mtime("a/nope.md").is_err());
+    }
+
+    #[test]
+    fn mkdir_tolerates_an_existing_folder() {
+        let repo = Repo::new();
+        repo.write("factory/jobs/a/job.json", "{}");
+        let disk = repo.disk();
+        disk.mkdir("a/round-2").unwrap();
+        disk.mkdir("a/round-2").unwrap();
+        assert!(repo.path().join("factory/jobs/a/round-2").is_dir());
+        assert!(
+            disk.mkdir("missing/round-1").is_err(),
+            "parents are not created"
+        );
+    }
+
+    #[test]
+    fn exists_is_relative_to_the_process_directory() {
+        let repo = Repo::new();
+        let disk = repo.disk();
+        assert!(disk.exists(repo.path().to_str().unwrap()));
+        assert!(!disk.exists(repo.path().join("nope").to_str().unwrap()));
+        assert!(disk.exists("."));
+    }
+
+    #[test]
+    fn run_executes_in_the_repository_root() {
+        let _serial = crate::testing::process_lock();
+        let repo = Repo::new();
+        let out = repo
+            .disk()
+            .run("sh", &["-c", "pwd -P; echo e >&2; exit 3"])
+            .unwrap();
+        let root = fs::canonicalize(repo.path()).unwrap();
+        assert_eq!(
+            out,
+            Proc {
+                code: 3,
+                stdout: format!("{}\n", root.display()),
+                stderr: "e\n".into()
+            }
+        );
+        assert!(repo.disk().run("no-such-program-xyz", &[]).is_err());
+    }
+
+    #[test]
+    fn now_is_the_system_clock_in_microseconds() {
+        let before = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_micros() as i64;
+        let now = Repo::new().disk().now();
+        assert!(now >= before && now - before < 5_000_000);
     }
 }

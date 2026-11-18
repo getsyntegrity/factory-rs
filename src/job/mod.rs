@@ -1,19 +1,25 @@
-//! `job sync <job>` and `job agents <job> <json>`: port of those two v2
-//! `factory/bin/job` subcommands. Every other argv goes to the v2 original
-//! (see [`Command::parse`] and `src/job/disk.rs`).
+//! Port of the v2 `factory/bin/job` subcommands `sync`, `agents`,
+//! `summary`, `feedback` and `reject`. Every other argv goes to the v2
+//! original (see [`Command::parse`] and `src/job/disk.rs`).
 
+mod advance;
+mod clock;
 mod cost;
 pub mod disk;
+mod shell;
+mod summary;
 mod sync;
+mod waiting;
 
 #[cfg(test)]
 mod fake;
 
 use std::io;
+use std::time::SystemTime;
 
 use serde_json::{Map, Value};
 
-use crate::{Outcome, py};
+use crate::{Outcome, Proc, py};
 
 /// A job's `job.json`, as loaded.
 pub type Job = Map<String, Value>;
@@ -38,6 +44,22 @@ pub trait Workspace {
     fn job_folder(&self, id: &str) -> String;
     /// The text of every Claude Code subagent transcript of this repository.
     fn transcripts(&self) -> io::Result<Vec<String>>;
+    /// All of stdin.
+    fn stdin(&self) -> io::Result<String>;
+    /// Writes `factory/jobs/<path>`.
+    fn write(&self, path: &str, text: &str) -> io::Result<()>;
+    /// Names of the entries of `factory/jobs/<dir>`, in no particular order.
+    fn list(&self, dir: &str) -> io::Result<Vec<String>>;
+    /// Modification time of `factory/jobs/<path>`.
+    fn mtime(&self, path: &str) -> io::Result<SystemTime>;
+    /// Creates `factory/jobs/<path>` unless it exists (parents must exist).
+    fn mkdir(&self, path: &str) -> io::Result<()>;
+    /// `Path(path).exists()`: relative paths against the process directory.
+    fn exists(&self, path: &str) -> bool;
+    /// Runs `program args` in the repository root.
+    fn run(&self, program: &str, args: &[&str]) -> io::Result<Proc>;
+    /// The current time, in microseconds since the Unix epoch.
+    fn now(&self) -> i64;
 }
 
 /// The argv shapes the Rust `job` answers itself.
@@ -45,6 +67,9 @@ pub trait Workspace {
 pub enum Command {
     Sync { job: String },
     Agents { job: String, spec: String },
+    Summary { jobs: Vec<String> },
+    Feedback { job: String },
+    Reject { job: String },
 }
 
 impl Command {
@@ -56,6 +81,11 @@ impl Command {
                 job: job.clone(),
                 spec: spec.clone(),
             }),
+            [cmd, jobs @ ..] if cmd == "summary" => Some(Command::Summary {
+                jobs: jobs.to_vec(),
+            }),
+            [cmd, job] if cmd == "feedback" => Some(Command::Feedback { job: job.clone() }),
+            [cmd, job] if cmd == "reject" => Some(Command::Reject { job: job.clone() }),
             _ => None,
         }
     }
@@ -83,6 +113,9 @@ pub fn run(command: &Command, config: &Value, ws: &dyn Workspace) -> Outcome {
     let result = match command {
         Command::Sync { job } => cmd_sync(job, config, ws),
         Command::Agents { job, spec } => cmd_agents(job, spec, config, ws),
+        Command::Summary { jobs } => summary::cmd_summary(jobs, config, ws),
+        Command::Feedback { job } => waiting::cmd_feedback(job, config, ws),
+        Command::Reject { job } => waiting::cmd_reject(job, config, ws),
     };
     match result {
         Ok(stdout) => Outcome {
@@ -154,7 +187,7 @@ fn cmd_agents(arg: &str, spec: &str, config: &Value, ws: &dyn Workspace) -> Resu
 
 /// v2 `resolve()`: an issue number (all digits) or a job id. Returns the job
 /// and the path of its job.json, for diagnostics.
-fn resolve(arg: &str, ws: &dyn Workspace) -> Result<(Job, String), String> {
+pub(crate) fn resolve(arg: &str, ws: &dyn Workspace) -> Result<(Job, String), String> {
     if arg.is_empty() || !arg.bytes().all(|b| b.is_ascii_digit()) {
         return load(arg, ws);
     }
@@ -175,7 +208,7 @@ fn resolve(arg: &str, ws: &dyn Workspace) -> Result<(Job, String), String> {
 }
 
 /// v2 `load()`: check, lock, then read.
-fn load(id: &str, ws: &dyn Workspace) -> Result<(Job, String), String> {
+pub(crate) fn load(id: &str, ws: &dyn Workspace) -> Result<(Job, String), String> {
     let file = format!("factory/jobs/{id}/job.json");
     if !ws.has_job(id) {
         return Err(format!("no job {id}"));
@@ -194,14 +227,14 @@ fn load(id: &str, ws: &dyn Workspace) -> Result<(Job, String), String> {
 
 /// v2 `save()`: `json.dumps(job, indent=2)` plus a newline, to the job's own
 /// folder (by its `id` field).
-fn save(job: &Job, file: &str, ws: &dyn Workspace) -> Result<(), String> {
+pub(crate) fn save(job: &Job, file: &str, ws: &dyn Workspace) -> Result<(), String> {
     let id = sync::job_id(job, file)?;
     let text = format!("{}\n", py::dumps_indent(&Value::Object(job.clone())));
     ws.write_job(&id, &text)
         .map_err(|_| format!("cannot write factory/jobs/{id}/job.json"))
 }
 
-fn parse_json(text: &str, file: &str) -> Result<Value, String> {
+pub(crate) fn parse_json(text: &str, file: &str) -> Result<Value, String> {
     serde_json::from_str(text).map_err(|e| {
         format!(
             "{file} is not valid JSON (line {}, column {})",
@@ -247,6 +280,28 @@ mod tests {
     }
 
     #[test]
+    fn owns_summary_feedback_and_reject() {
+        assert_eq!(
+            Command::parse(&args(&["summary"])),
+            Some(Command::Summary { jobs: vec![] })
+        );
+        assert_eq!(
+            Command::parse(&args(&["summary", "1", "x"])),
+            Some(Command::Summary {
+                jobs: args(&["1", "x"])
+            })
+        );
+        assert_eq!(
+            Command::parse(&args(&["feedback", "x"])),
+            Some(Command::Feedback { job: "x".into() })
+        );
+        assert_eq!(
+            Command::parse(&args(&["reject", "x"])),
+            Some(Command::Reject { job: "x".into() })
+        );
+    }
+
+    #[test]
     fn leaves_every_other_argv_to_the_fallback() {
         for argv in [
             &[][..],
@@ -256,7 +311,10 @@ mod tests {
             &["sync", "a", "b"],
             &["agents", "a"],
             &["agents", "a", "b", "c"],
-            &["summary"],
+            &["feedback"],
+            &["feedback", "a", "b"],
+            &["reject"],
+            &["reject", "a", "b"],
             &["advance", "a", "build"],
             &["$@"],
         ] {

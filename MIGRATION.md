@@ -33,7 +33,8 @@ copy `src/software-factory-claude-code-v2` to `.oracle/v2`, then
 
 In scope: the v2 executables `factory/bin/route`, `factory/bin/job`,
 `factory/bin/gate`, one slice at a time. Slice 1 ported `route`; slice 2
-ported `job sync` and `job agents`; slice 3 ported `gate`.
+ported `job sync` and `job agents`; slice 3 ported `gate`; slice 4 ported
+`job summary`, `job feedback` and `job reject`.
 
 Out of scope: aifactory Go, Gentle/MCP, the new ODD, living documentation, a
 new front end, extra scanners, any product change. No push, PR, release or
@@ -44,7 +45,7 @@ real GitHub call; tests use fixtures, `gh`/`job` doubles and sandboxes.
 | Component | Language | Size | Lines | Entry point | Status |
 | --- | --- | ---: | ---: | --- | --- |
 | `factory/bin/route` | Python 3 (no extension) | 1 798 B | 51 | `if __name__ == "__main__"` → `main(sys.argv[1:])` | **ported** (slice 1) |
-| `factory/bin/job` | Python 3 (no extension) | 28 866 B | 718 | `if __name__ == "__main__"`, subcommands `queue create advance merge feedback reject agents sync summary` | `sync`, `agents` **ported** (slice 2); every other argv runs the v2 original as `factory/bin/job.py` (fallback) |
+| `factory/bin/job` | Python 3 (no extension) | 28 866 B | 718 | `if __name__ == "__main__"`, subcommands `queue create advance merge feedback reject agents sync summary` | `sync`, `agents` (slice 2), `summary`, `feedback`, `reject` (slice 4) **ported**; `queue`, `create`, `advance`, `merge`, help and bad argv run the v2 original as `factory/bin/job.py` (fallback) |
 | `factory/bin/gate` | Python 3 (no extension) | 4 842 B | 121 | `if __name__ == "__main__"` | **ported** (slice 3) |
 | `factory/checks.sh` | Bash | 621 B | 18 | script | not started |
 | `factory/config.json` | JSON data | 1 122 B | 31 | read by all three binaries | data, kept as is |
@@ -493,12 +494,131 @@ inherit the descriptor and keep the `flock` held. That test now takes
 
 `route` (18/22) and `job` (28/33) replays are unchanged.
 
+## Slice 4: `job summary`, `job feedback`, `job reject`
+
+`feedback` and `reject` are not small. Both go through v2's `advance()`.
+Two of its transitions are now in Rust: needs-human → build and
+needs-info / needs-human → rejected. Every other legal transition is refused
+with "not ported to Rust yet; use the v2 job" instead of being guessed. It is
+unreachable from the commands the Rust job owns.
+
+| File | Role |
+| --- | --- |
+| `src/job/summary.rs` | the summary table: widths, `$x.xx`, `elapsed()`, total |
+| `src/job/waiting.rs` | `feedback` (feedback-<k>.md, → build) and `reject` (rejection.md, → rejected) |
+| `src/job/advance.rs` | v2 `TRANSITIONS`, the two ported branches, terminal worktree removal, `ended` |
+| `src/job/shell.rs` | v2 `run` / `gh` / `operator` / `comment` / `label` and the `Refused` message format |
+| `src/job/clock.rs` | ISO 8601 parse, `%Y-%m-%dT%H:%M:%SZ`, floored minutes for `elapsed()` (no date crate) |
+
+### Recording
+
+`gh` and `git` are PATH doubles, set up in `tests/parity/job/launch.sh`.
+Every call appends its working directory and argv to `doubles.log` **inside
+the sandbox**. So replay compares the GitHub and git side effects call by
+call: comment bodies, labels, `pr close`, `push --delete`, `worktree remove`,
+`branch -D`. Each answer comes from the case's
+`doubles/<tool>/<first two args>.{stdout,stderr,code}`.
+
+Adding the doubles left all 33 earlier job cases byte-identical.
+
+- **`summary` and `feedback`:** 12 new cases in `tests/parity/job`, now 45 in
+  total.
+- **`reject`:** 7 cases in `tests/parity/job-reject`, recorded with
+  `--normalize timestamps`, because reject writes `ended = now()`.
+
+The variance was proven first: two recordings without a normalizer differed
+(`15:40:19` vs `15:40:20`). rust-anything also inserts `[..]` on its own where
+its two internal runs differ (`15:39:[..]`), so an unnormalized case would
+break once the minute changes. With the normalizer, two recordings were
+identical.
+
+The normalizer also turns the fixture `started` into `[..]`. A unit test pins
+both exact values (`started` kept, `ended` = the injected clock,
+`2026-11-18T03:04:05Z`).
+
+`summary` of an unfinished job uses the current time. It is unit-tested with
+an injected clock and is not recorded.
+
+v2 behavior these cases pinned, which Rust reproduces:
+- **`summary`**
+  - syncs for display and never saves, but locks every job it loads;
+  - prints `-` for a PR `0` (falsy);
+  - pads columns by characters and right-strips each row;
+  - floors `elapsed()` (`59m`, `1h05m`, `25h00m`).
+- **`feedback`**
+  - asks for the operator (`gh api user --jq .login`) before writing
+    feedback-<k>.md;
+  - if `gh issue edit` fails, keeps feedback-<k>.md and leaves job.json
+    unsaved;
+  - sets `round_limit = round + max_rounds` and opens `round-<n+1>/`;
+  - prints the new round.
+- **`reject`**
+  - the issue comment repeats the "By @operator …" line, because the reason
+    is rejection.md from its second line on;
+  - `git push --delete` failures are ignored, `git worktree remove` failures
+    are not.
+- **Order and naming**
+  - `CONFIG["max_rounds"]` is read before `LABELS["needs_human"]`.
+  - The "last" feedback is chosen by name, so feedback-10 sorts before
+    feedback-9.
+- **Fixtures**
+  - Jobs need a worktree path: `Path(None)` crashes on reject, and real jobs
+    always have one from `job create`.
+
+### Result: PASS WITH 6 ACCEPTED DIAGNOSTIC DIVERGENCES (job)
+
+| Harness | Rust replay |
+| --- | --- |
+| `job` | **39/45** (the 5 earlier DIV-JOB plus DIV-JOB-06; stderr only) |
+| `job-reject` | **7/7**, including every `gh`/`git` call |
+| `route` | 18/22 (unchanged; tripwire also 18/22, no Python call) |
+| `gate` | 22/29 (unchanged) |
+
+| ID | Case | Cause | v2 (last traceback line) | Rust stderr | Files |
+| --- | --- | --- | --- | --- | --- |
+| DIV-JOB-06 | feedback-07-no-decision | decision.md missing | `FileNotFoundError: … decision.md` | `job: factory/jobs/001-add-a-thing/decision.md is missing` | feedback-1.md and the `gh api user` call happen first, as in v2 |
+
+### Known unrecorded gaps
+
+These inputs are not recorded, so there is no evidence either way:
+- **Dates:** `fromisoformat` accepts more forms than Rust's parser (dates
+  only, other separators). Rust names those as "not ISO 8601".
+- **Feedback numbering:** many feedback files (`feedback-10` beside
+  `feedback-9`) are not recorded. Their mtimes would come from case setup
+  order, which is not controlled. Unit-tested only.
+- **Undecodable output:** `gh` or `git` output that is not UTF-8 is decoded
+  lossily in Rust; v2 crashes on it.
+
+### Evidence (`migration/rust-anything/job-reject/`, `migration/rust-anything/job/`)
+
+| File | What |
+| --- | --- |
+| `job/make_inputs.py` | all job cases, including summary, feedback and reject |
+| `job/record-slice4.*` | the job re-recording with the doubles |
+| `job-reject/unnormalized-twice.diff` | proof that `ended` varies between runs |
+| `job-reject/record-*.txt`, `record.*`, `record-twice.*` | normalized recording, twice, identical |
+| `job-reject/replay-original.txt` | the four originals: 100% |
+| `job-reject/red-cargo-test.txt` | RED: 45 new tests failing on `todo!()` |
+| `job-reject/replay-{job,job-reject,route,gate}.txt` | Rust replays |
+| `job-reject/gates.txt` | fmt, clippy, tests, build, coverage, flakiness |
+
+### Gates (slice 4)
+
+`cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test`
+(208 unit tests) and `cargo build --release` pass. Line coverage is 97.43%.
+300 repeated `cargo test --lib` runs had no failure.
+
 ## Next slice
 
-`job summary`, `feedback`, `reject`: short, and they bring in stdin and the
-smallest `gh` double (`gh api user` for the operator). `summary` shows
-`elapsed()`, which uses the current time for unfinished jobs, so its cases
-must use finished jobs or a time normalizer proven by two runs. Then
-`create`/`queue` (gh issues and comments), `advance` (the state machine, gh
-and git), and `merge` (calls `gate --merge`). After that, `job.py` can go and
-`app lift` applies.
+What is left in v2 is the GitHub- and git-heavy core:
+
+- `create` and `queue`: issues, comments, labels, `write_issue_md`,
+  `replied_since_question`.
+- `advance`: the remaining transitions: intake, needs-info → intake, spec,
+  build → gate / needs-human, gate, review, approve, needs-human comments, PR
+  ready.
+- `merge`: calls `gate --merge`.
+
+`advance` alone is about 140 lines with seven branches, so it needs its own
+chain of slices, split by transition group. Once all of it is ported,
+`job.py` can go and `app lift` applies.

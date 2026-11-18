@@ -17,14 +17,7 @@ use serde_json::Value;
 
 use crate::{Outcome, py};
 
-/// A finished process, as v2's `subprocess.run(..., text=True)` sees it.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Proc {
-    /// Negative for a signal, like Python's `returncode`.
-    pub code: i32,
-    pub stdout: String,
-    pub stderr: String,
-}
+pub use crate::Proc;
 
 /// Everything gate touches outside its own logic.
 pub trait Host {

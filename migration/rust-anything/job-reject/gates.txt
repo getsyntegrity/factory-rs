@@ -1,0 +1,16 @@
+cargo fmt --check: OK
+clippy:     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.85s
+cargo test: test result: ok. 208 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+build:     Finished `release` profile [optimized] target(s) in 0.02s
+coverage: job/advance.rs lines 93.27%
+coverage: job/clock.rs lines 98.31%
+coverage: job/cost.rs lines 99.13%
+coverage: job/disk.rs lines 97.71%
+coverage: job/fake.rs lines 100.00%
+coverage: job/mod.rs lines 99.19%
+coverage: job/shell.rs lines 100.00%
+coverage: job/summary.rs lines 98.25%
+coverage: job/sync.rs lines 98.41%
+coverage: job/waiting.rs lines 95.65%
+coverage: TOTAL lines 97.43%
+flaky runs: 0/300
