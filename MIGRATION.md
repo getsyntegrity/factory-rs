@@ -855,6 +855,94 @@ These are not accepted divergences: they only exist while `job.py` is the
 fallback, and they disappear once those transitions are ported. The Owner
 rule on tracebacks will apply to them then.
 
+### `gate --hook`: event, matcher and fail-open (Owner decision pending)
+
+**Where it is registered.** It is registered in one place only: the YAML
+frontmatter of `.claude/agents/builder.md` (oracle, lines 6–10), as a `Stop`
+hook with no matcher:
+
+```yaml
+hooks:
+  Stop:
+    - hooks:
+        - type: command
+          command: '"$CLAUDE_PROJECT_DIR"/factory/bin/gate --hook'
+```
+
+No `settings.json` exists under `.claude/`. SKILL.md and the other agents do
+not register hooks; `grep -rn hook .claude` finds only builder.md.
+
+**What Claude Code does with it.** These statements come from the official
+docs, read in this session through a docs-lookup subagent, at
+https://code.claude.com/docs/en/hooks and
+https://code.claude.com/docs/en/sub-agents. Quotes are paraphrased where the
+tool returned excerpts; check the pages before relying on the details.
+- **Event.** A `Stop` hook in a subagent's frontmatter runs as
+  **`SubagentStop`** when that subagent finishes.
+- **Matcher.** None is given. For `SubagentStop`, an omitted matcher matches
+  every agent type. `Stop` itself has no matcher support.
+- **Exit codes:**
+  - **0:** the subagent stops. stderr is never shown to Claude.
+  - **2:** blocks. The subagent does not stop, and stderr reaches the
+    subagent as its next instruction.
+  - **Any other code (for example 1): a non-blocking error, "the action goes
+    ahead"**, so the subagent stops. Where stderr goes is not documented for
+    `Stop` or `SubagentStop`.
+- **A hook that cannot start** (missing or non-executable `gate`) is a
+  non-blocking error. `onFailure: "block"` has no effect on `SubagentStop`.
+- **Untrusted folder.** If the project folder is not trusted, Claude Code
+  skips frontmatter hooks; the builder still runs, without the gate.
+- **`stop_hook_active`** is true when the subagent is already continuing
+  because of a stop hook. The gate exits 0 then: "one nudge per stop".
+
+**Per case.** The v2 exit codes come from the recordings. The Rust exit codes
+come from running each recorded case's input through
+`tests/parity/gate/launch.sh rust --hook`, rerun for this table.
+
+| Case | Cause | v2 exit | Rust exit | Effect on `SubagentStop` | Fail-open? |
+| --- | --- | ---: | ---: | --- | --- |
+| hook-01-stop-hook-active | already continuing because of this hook | 0 | 0 | does not block; the builder stops | by design ("one nudge per stop") |
+| hook-02-checks-pass | checks pass | 0 | 0 | does not block; the builder stops | no |
+| hook-03-checks-fail | checks fail (exit 5) | 2 | 2 | **blocks**; stderr (message + last 40 log lines) goes to the builder as its next instruction | no |
+| hook-04-invalid-stdin (**DIV-GATE-04**) | the hook event on stdin is not JSON | 1 (traceback) | 1 (one line) | does not block; the builder stops; stderr destination not documented | **YES: the gate could not evaluate and the stop goes ahead** |
+| hook-05-no-job-in-prompt (**DIV-GATE-05**) | the subagent prompt has no `Job: <id>.` | 1 (traceback) | 1 (one line) | does not block; the builder stops | **YES** |
+| argv-05-hook-with-extra | `gate --hook x` | 2 (usage) | 2 (usage) | would block with the usage text. Not reachable from the registered command, which passes no extra argument. | no |
+| *(unrecorded)* config.json missing or invalid | | 1 (crash at import) | 1 | does not block | **YES** |
+| *(unrecorded)* the prompt's job has no job.json | | 1 (crash) | 1 | does not block | **YES** |
+| *(unrecorded)* transcript unreadable or not JSON | | 1 (crash) | 1 | does not block | **YES** |
+| *(unrecorded)* `factory/checks.sh` missing | `bash` exits 127, so the checks "fail" | 2 | 2 | blocks | no (fail-closed) |
+| *(unrecorded)* `factory/bin/gate` missing or not executable | the hook cannot start | (no exit) | (no exit) | non-blocking; the builder stops | **YES** |
+| *(unrecorded)* project folder not trusted | the hook is skipped | — | — | the builder stops | **YES** |
+
+DIV-GATE-01, 02, 03, 06 and 07 are not hook runs. They are `gate <job>` and
+`gate <job> --merge`, which the orchestrator runs directly and `job merge`
+runs as a subprocess. No hook event is involved:
+
+| Case | Invoked by | v2 / Rust exit | Effect |
+| --- | --- | --- | --- |
+| DIV-GATE-01 job missing; DIV-GATE-03 and DIV-GATE-07 config missing; DIV-GATE-06 job missing (with `--merge`) | orchestrator (Bash), or `job merge` | 1 / 1 | **Orchestrator:** no `GATE:` line and exit 1. SKILL.md defines only PASS and FAIL, and its general rule is "When a script refuses… Fix the cause or stop and tell the user". **`job merge`:** any non-zero gate exit means `fail()`, so the job goes to needs-human (fail-closed). |
+| DIV-GATE-02 round folder missing (checks already ran) | the same | 1 / 1 | the same; no checks.md is written |
+
+**The fail-open risk.** Whenever `gate --hook` cannot evaluate (unreadable
+input, no job, no config, the gate missing, an untrusted folder), the builder
+is allowed to stop without the checks being run. This was true in v2 and is
+**unchanged in Rust**, where exit codes match case by case. It is only a
+nudge: the real gate still runs (`job advance <id> gate` and then `gate <id>`)
+and fails the round. But the builder loses the early feedback, and the gate
+round is spent.
+
+**Owner decision pending:** "fail-closed (exit 2) cuando el gate no puede
+evaluar".
+- **What it would change:** the error cases above, in the `--hook` path only,
+  would exit 2 with their one-line cause. The builder would then keep working
+  with that message instead of stopping.
+- **Trade-off:** if `stop_hook_active` cannot be read (stdin is not JSON), the
+  hook cannot tell a first stop from a retry. It would block every time, until
+  Claude Code's limit on consecutive stop-hook continuations ends the turn.
+  The docs state that limit (eight) for `Stop`; for `SubagentStop` it is not
+  stated.
+- **Not done.** Parity with v2 holds until the Owner decides.
+
 ### Who reads stderr of `factory/bin/*` (audit, nothing changed)
 
 I searched every file under `.claude/` of the oracle (`skills/factory/SKILL.md`

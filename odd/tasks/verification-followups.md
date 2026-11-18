@@ -17,7 +17,7 @@ Branch: `feat/verification-gaps` (local commits after the step-1 push). Follow-u
 | ID | Specs | Task | Route | Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
 | T1 | S2 | Push feat/verification-gaps; PR 4 and the final stack order in migration/prs/ | inline | done | pushed (`git branch -vv`); `git merge-base --is-ancestor feat/job-create-queue feat/verification-gaps` exits 0 |
-| T2 | S1 S3 | gate --hook event/matcher and per-case effect table, fail-open marked, Owner decision recorded | inline | pending | |
+| T2 | S1 S3 | gate --hook event/matcher and per-case effect table, fail-open marked, Owner decision recorded | inline | done | MIGRATION.md "gate --hook: event, matcher and fail-open"; exit codes re-run with launch.sh rust --hook; docs read via a claude-code-guide subagent |
 | T3 | S1 S4 | Merge procedure: two runs, gh capture to doubles-format fixtures, sanitising list | inline | pending | |
 | T4 | S1 S5 | Lock primitives (verified with strace), OS, repeat command | inline | done | MIGRATION.md "Lock primitives": identical openat+flock(LOCK_EX) observed on both; Linux Mint 22.3 / 7.0.0-38 |
 | T5 | S6 | AUDIT.md split lines, hook table + fail-open risk, re-run run_audit.sh | inline | pending | |
@@ -27,3 +27,4 @@ Branch: `feat/verification-gaps` (local commits after the step-1 push). Follow-u
 - L1 (2026-11-18, user): steps 1–6 brief quoted in S1–S6; step 6 tracked in odd/tasks/advance-intake.md.
 - L2: "los 4 slices pendientes" read as the four future slices (advance intake, build, gate/review/approve, merge); PR 4 goes after PRs 0–3, which it depends on, and before those slices.
 - L3: after the step-1 push, later commits on feat/verification-gaps stay local (the brief allows no other remote operation).
+- L4 (T2): Claude Code docs (via subagent): frontmatter Stop → SubagentStop, no matcher = all, exit 2 blocks, other non-zero = non-blocking, a hook that cannot start is non-blocking, untrusted folder skips frontmatter hooks. Fail-open cases: DIV-GATE-04/05 and unrecorded error paths; not changed (S1).
