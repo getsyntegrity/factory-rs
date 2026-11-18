@@ -16,10 +16,10 @@ Branch: `feat/job-create-queue` (stacked on `feat/job-waiting-commands`). Delive
 | ID | Specs | Task | Route | Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
 | T1 | S1 S2 S5 | Record create/queue cases (tests/parity/job-queue), double key extension, variance proof, twice, original replay 100% | inline | done | 16 cases; two unnormalized recordings differ only in started/ended; normalized recordings identical; all five originals 100% |
-| T2 | S1 S3 | Issue rendering: `fetch_issue`, `write_issue_md`, `quote`, `replied_since_question`, `slugify`, RED→GREEN | inline | pending | |
-| T3 | S1 S3 S4 | `create`: existing-job and slot checks, issue checks, id numbering, job.json, RED→GREEN | inline | pending | |
-| T4 | S1 S3 S4 | `queue`: auto-merge (`pr_state`, advance → merged), rows, slots, RED→GREEN | inline | pending | |
-| T5 | S2 S4 | Replay every harness vs Rust, gates, coverage, MIGRATION.md | inline | pending | |
+| T2 | S1 S3 | Issue rendering: `fetch_issue`, `write_issue_md`, `quote`, `replied_since_question`, `slugify`, RED→GREEN | inline | done | issue rendering green; found operator() must be asked even when the author matches |
+| T3 | S1 S3 S4 | `create`: existing-job and slot checks, issue checks, id numbering, job.json, RED→GREEN | inline | done | create: all recorded cases green |
+| T4 | S1 S3 S4 | `queue`: auto-merge (`pr_state`, advance → merged), rows, slots, RED→GREEN | inline | done | queue + advance → merged + pr_state green; DIV-JOB-07 |
+| T5 | S2 S4 | Replay every harness vs Rust, gates, coverage, MIGRATION.md | inline | done | job-queue 15/16, job 39/45, job-reject 7/7, route 18/22, gate 22/29; 236 tests; coverage 97.46%; flaky 0/300 |
 
 Route evidence: one sequential behavior, no parallel units; no writer delegated.
 
@@ -28,3 +28,4 @@ Route evidence: one sequential behavior, no parallel units; no writer delegated.
 - L1 (2026-11-18, user): "si"
 - L2: scope finding before T1: `queue` runs `advance(sync(j), "merged")` for jobs whose PR merged, so this slice also ports the → merged branch and `pr_state`.
 - L3 (T1): fixture fixes found by recording (not v2 bugs): `queue` asks `pr view` for every non-terminal job with a PR (needed an answer for PR 9); `create 005` asks `gh issue view 005` first (argument as given) and then `gh issue view 5` (the number GitHub returned) inside write_issue_md. The double now answers by the first three arguments when such files exist. The normalizer also hides fixture comment `createdAt` values in issue.md; unit tests pin them.
+- L4 (T2–T5): RED 27 failing (`migration/rust-anything/job-queue/red-cargo-test.txt`), GREEN 236. A test pinned that v2 always asks for the operator when a comment follows a factory question (set literal `{author, operator()}`), a gh call my first version skipped.

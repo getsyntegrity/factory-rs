@@ -1,0 +1,9 @@
+22/29 cases passed
+- example-001: stderr
+- gate-11-job-missing: stderr
+- gate-12-round-dir-missin: stderr
+- gate-13-config-missing: stderr
+- hook-04-invalid-stdin: stderr
+- hook-05-no-job-in-prompt: stderr
+- merge-03-dash-job: stderr
+Report: /home/pablog/factory-rs/tests/parity/gate/rust/app-cases/replay-report.md

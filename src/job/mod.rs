@@ -5,7 +5,10 @@
 mod advance;
 mod clock;
 mod cost;
+mod create;
 pub mod disk;
+mod issue;
+mod queue;
 mod shell;
 mod summary;
 mod sync;
@@ -52,8 +55,11 @@ pub trait Workspace {
     fn list(&self, dir: &str) -> io::Result<Vec<String>>;
     /// Modification time of `factory/jobs/<path>`.
     fn mtime(&self, path: &str) -> io::Result<SystemTime>;
-    /// Creates `factory/jobs/<path>` unless it exists (parents must exist).
-    fn mkdir(&self, path: &str) -> io::Result<()>;
+    /// Creates `factory/jobs/<path>` (parents must exist); with `exist_ok`,
+    /// an existing folder is fine.
+    fn mkdir(&self, path: &str, exist_ok: bool) -> io::Result<()>;
+    /// Absolute path of the repository root.
+    fn repo_root(&self) -> String;
     /// `Path(path).exists()`: relative paths against the process directory.
     fn exists(&self, path: &str) -> bool;
     /// Runs `program args` in the repository root.
@@ -70,6 +76,8 @@ pub enum Command {
     Summary { jobs: Vec<String> },
     Feedback { job: String },
     Reject { job: String },
+    Create { issue: String },
+    Queue,
 }
 
 impl Command {
@@ -86,6 +94,18 @@ impl Command {
             }),
             [cmd, job] if cmd == "feedback" => Some(Command::Feedback { job: job.clone() }),
             [cmd, job] if cmd == "reject" => Some(Command::Reject { job: job.clone() }),
+            // v2 takes any `str.isdigit()` issue; non-ASCII digits stay with
+            // the fallback, which then behaves exactly like v2.
+            [cmd, issue]
+                if cmd == "create"
+                    && !issue.is_empty()
+                    && issue.bytes().all(|b| b.is_ascii_digit()) =>
+            {
+                Some(Command::Create {
+                    issue: issue.clone(),
+                })
+            }
+            [cmd] if cmd == "queue" => Some(Command::Queue),
             _ => None,
         }
     }
@@ -116,6 +136,8 @@ pub fn run(command: &Command, config: &Value, ws: &dyn Workspace) -> Outcome {
         Command::Summary { jobs } => summary::cmd_summary(jobs, config, ws),
         Command::Feedback { job } => waiting::cmd_feedback(job, config, ws),
         Command::Reject { job } => waiting::cmd_reject(job, config, ws),
+        Command::Create { issue } => create::cmd_create(issue, config, ws),
+        Command::Queue => queue::cmd_queue(config, ws),
     };
     match result {
         Ok(stdout) => Outcome {
@@ -205,6 +227,14 @@ pub(crate) fn resolve(arg: &str, ws: &dyn Workspace) -> Result<(Job, String), St
         }
     }
     found.ok_or_else(|| format!("no job for issue #{arg}"))
+}
+
+/// v2 `all_jobs()`: every job, loaded (and locked) in id order.
+pub(crate) fn all_jobs(ws: &dyn Workspace) -> Result<Vec<(Job, String)>, String> {
+    let ids = ws
+        .job_ids()
+        .map_err(|_| "cannot list factory/jobs".to_string())?;
+    ids.iter().map(|id| load(id, ws)).collect()
 }
 
 /// v2 `load()`: check, lock, then read.
@@ -302,6 +332,17 @@ mod tests {
     }
 
     #[test]
+    fn owns_create_with_ascii_digits_and_bare_queue() {
+        assert_eq!(
+            Command::parse(&args(&["create", "005"])),
+            Some(Command::Create {
+                issue: "005".into()
+            })
+        );
+        assert_eq!(Command::parse(&args(&["queue"])), Some(Command::Queue));
+    }
+
+    #[test]
     fn leaves_every_other_argv_to_the_fallback() {
         for argv in [
             &[][..],
@@ -316,6 +357,11 @@ mod tests {
             &["reject"],
             &["reject", "a", "b"],
             &["advance", "a", "build"],
+            &["create"],
+            &["create", "abc"],
+            &["create", "5", "6"],
+            &["create", "\u{0665}"],
+            &["queue", "x"],
             &["$@"],
         ] {
             assert_eq!(Command::parse(&args(argv)), None, "{argv:?}");

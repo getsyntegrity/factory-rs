@@ -23,8 +23,14 @@ const TRANSITIONS: [(&str, &[&str]); 9] = [
     ("merging", &["needs-human"]),
     ("needs-human", &["build", "rejected"]),
 ];
-const TERMINAL: [&str; 2] = ["merged", "rejected"];
-const WAITING: [&str; 2] = ["needs-info", "needs-human"];
+pub const TERMINAL: [&str; 2] = ["merged", "rejected"];
+pub const WAITING: [&str; 2] = ["needs-info", "needs-human"];
+
+/// v2 `running(jobs)`: jobs holding a concurrency slot (not finished, not
+/// waiting).
+pub fn is_running(stage: &str) -> bool {
+    !TERMINAL.contains(&stage) && !WAITING.contains(&stage)
+}
 
 /// Moves `job` to `stage`, or refuses with v2's message.
 pub fn advance(
@@ -54,7 +60,17 @@ pub fn advance(
             .ok_or_else(|| format!("factory/config.json labels has no {key}"))
     };
 
-    if stage == "rejected" && WAITING.contains(&old.as_str()) {
+    if stage == "merged" {
+        // `job["pr"] and pr_state(job) == "MERGED"`: GitHub is asked again.
+        let pr = field(job, file, "pr")?;
+        if !py::truthy(pr) || pr_state(shell, pr)? != "MERGED" {
+            return Err("the PR isn't merged".into());
+        }
+        if old == "needs-human" {
+            let issue = py::str_of(field(job, file, "issue")?);
+            shell.label("issue", &issue, None, Some(&labels("needs_human")?))?;
+        }
+    } else if stage == "rejected" && WAITING.contains(&old.as_str()) {
         let Some(rejection) = ws
             .read(&format!("{id}/rejection.md"))
             .map_err(|_| format!("cannot read factory/jobs/{id}/rejection.md"))?
@@ -117,6 +133,12 @@ pub fn advance(
     Ok(())
 }
 
+/// v2 `pr_state(job)`: the PR's state on GitHub (`OPEN`, `MERGED`, ...).
+pub fn pr_state(shell: &Shell, pr: &Value) -> Result<String, String> {
+    let view = shell.gh_json(&["pr", "view", &py::str_of(pr), "--json", "state"])?;
+    Ok(view.get("state").map(py::str_of).unwrap_or_default())
+}
+
 /// needs-human → build: only after `job feedback` wrote a feedback file
 /// newer than decision.md; starts a round with `max_rounds` more to go. The
 /// caller then drops the needs-human label.
@@ -160,7 +182,7 @@ fn to_build(
 fn next_round(job: &mut Job, id: &str, round: i64, ws: &dyn Workspace) -> Result<(), String> {
     let round = round + 1;
     job.insert("round".into(), json!(round));
-    ws.mkdir(&format!("{id}/round-{round}"))
+    ws.mkdir(&format!("{id}/round-{round}"), true)
         .map_err(|_| format!("cannot create factory/jobs/{id}/round-{round}"))?;
     job.insert("gate".into(), Value::Null);
     job.insert("reviews".into(), json!({}));
@@ -222,8 +244,8 @@ mod tests {
         );
         let mut j = job(json!({"id": "a", "stage": "build"}));
         assert_eq!(
-            go(&fake, &mut j, "merged"),
-            Err("a: build → merged is not ported to Rust yet; use the v2 job".into())
+            go(&fake, &mut j, "gate"),
+            Err("a: build → gate is not ported to Rust yet; use the v2 job".into())
         );
         assert!(fake.written("doubles.log").is_none(), "nothing ran");
     }
@@ -296,6 +318,40 @@ mod tests {
         assert_eq!(
             advance(&mut j, "f", "build", &json!({"labels": {}}), &fake, &shell),
             Err("factory/config.json has no max_rounds".into())
+        );
+    }
+
+    #[test]
+    fn merged_needs_a_merged_pr_and_asks_github_again() {
+        let fake =
+            Fake::new().sandbox_file("doubles/gh/pr_view_7.stdout", "{\"state\": \"OPEN\"}\n");
+        let mut j = job(json!({"id": "a", "issue": 5, "stage": "review", "pr": 7}));
+        assert_eq!(
+            go(&fake, &mut j, "merged"),
+            Err("the PR isn't merged".into())
+        );
+        let mut j = job(json!({"id": "a", "issue": 5, "stage": "review", "pr": null}));
+        assert_eq!(
+            go(&fake, &mut j, "merged"),
+            Err("the PR isn't merged".into())
+        );
+    }
+
+    #[test]
+    fn merged_from_needs_human_drops_the_label() {
+        let fake =
+            Fake::new().sandbox_file("doubles/gh/pr_view_7.stdout", "{\"state\": \"MERGED\"}\n");
+        let mut j = job(
+            json!({"id": "a", "issue": 5, "stage": "needs-human", "pr": 7,
+                               "worktree": "gone", "branch": "factory/a"}),
+        );
+        go(&fake, &mut j, "merged").unwrap();
+        assert_eq!(j["stage"], json!("merged"));
+        assert_eq!(j["ended"], json!("2026-11-18T03:04:05Z"));
+        assert!(
+            fake.written("doubles.log")
+                .unwrap()
+                .ends_with("  [--remove-label]\n  [factory:needs-human]\n")
         );
     }
 }

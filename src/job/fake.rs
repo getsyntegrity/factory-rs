@@ -180,6 +180,8 @@ impl Fake {
 
 /// trycmd semantics for one file: line by line, `[..]` matches any text.
 pub fn matches_recorded(actual: &str, recorded: &str) -> bool {
+    // rust-anything shows the sandbox path as [CWD]; the fake lives at REPO.
+    let recorded = recorded.replace("[CWD]", REPO);
     let actual: Vec<&str> = actual.split('\n').collect();
     let recorded: Vec<&str> = recorded.split('\n').collect();
     actual.len() == recorded.len()
@@ -275,15 +277,21 @@ impl Workspace for Fake {
     }
 
     fn list(&self, dir: &str) -> io::Result<Vec<String>> {
-        let prefix = format!("{dir}/");
+        let prefix = if dir.is_empty() {
+            String::new()
+        } else {
+            format!("{dir}/")
+        };
         let writes = self.writes.borrow();
+        let dirs = self.dirs.borrow();
         let mut names: Vec<String> = self
             .files
             .keys()
             .chain(writes.keys())
+            .chain(dirs.iter())
             .filter_map(|p| p.strip_prefix(&prefix))
-            .filter(|rest| !rest.contains('/'))
-            .map(str::to_string)
+            .filter(|rest| !rest.is_empty() && *rest != "doubles.log")
+            .map(|rest| rest.split('/').next().unwrap_or(rest).to_string())
             .collect();
         names.sort();
         names.dedup();
@@ -299,9 +307,23 @@ impl Workspace for Fake {
         Ok(SystemTime::UNIX_EPOCH + Duration::from_nanos(tick))
     }
 
-    fn mkdir(&self, path: &str) -> io::Result<()> {
+    fn mkdir(&self, path: &str, exist_ok: bool) -> io::Result<()> {
+        let prefix = format!("{path}/");
+        let exists = self.dirs.borrow().iter().any(|d| d == path)
+            || self
+                .files
+                .keys()
+                .chain(self.writes.borrow().keys())
+                .any(|k| k.starts_with(&prefix));
+        if exists && !exist_ok {
+            return Err(io::Error::new(io::ErrorKind::AlreadyExists, "exists"));
+        }
         self.dirs.borrow_mut().push(path.into());
         Ok(())
+    }
+
+    fn repo_root(&self) -> String {
+        REPO.into()
     }
 
     fn exists(&self, path: &str) -> bool {
@@ -331,10 +353,20 @@ impl Workspace for Fake {
             parts
                 .join("_")
                 .chars()
-                .map(|c| if c.is_ascii_alphanumeric() || c == '-' { c } else { '_' })
+                .map(|c| {
+                    if c.is_ascii_alphanumeric() || c == '-' {
+                        c
+                    } else {
+                        '_'
+                    }
+                })
                 .collect()
         };
-        let has = |k: &str| self.sandbox.keys().any(|p| p.starts_with(&format!("doubles/{program}/{k}.")));
+        let has = |k: &str| {
+            self.sandbox
+                .keys()
+                .any(|p| p.starts_with(&format!("doubles/{program}/{k}.")))
+        };
         let key = if has(&key(3)) { key(3) } else { key(2) };
         let answer = |suffix: &str| {
             self.sandbox

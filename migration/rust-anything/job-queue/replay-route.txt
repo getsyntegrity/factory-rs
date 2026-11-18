@@ -1,0 +1,6 @@
+18/22 cases passed
+- 15b-issue-number-id: stderr
+- 16a-config-missing: stderr
+- 16b-config-invalid: stderr
+- example-001: stderr
+Report: /home/pablog/factory-rs/tests/parity/route/rust/app-cases/replay-report.md

@@ -186,11 +186,15 @@ impl Workspace for Disk {
         fs::metadata(self.jobs().join(path))?.modified()
     }
 
-    fn mkdir(&self, path: &str) -> io::Result<()> {
+    fn mkdir(&self, path: &str, exist_ok: bool) -> io::Result<()> {
         match fs::create_dir(self.jobs().join(path)) {
-            Err(e) if e.kind() == io::ErrorKind::AlreadyExists => Ok(()),
+            Err(e) if exist_ok && e.kind() == io::ErrorKind::AlreadyExists => Ok(()),
             other => other,
         }
+    }
+
+    fn repo_root(&self) -> String {
+        self.repo.to_string_lossy().into_owned()
     }
 
     fn exists(&self, path: &str) -> bool {
@@ -445,13 +449,23 @@ mod tests {
         let repo = Repo::new();
         repo.write("factory/jobs/a/job.json", "{}");
         let disk = repo.disk();
-        disk.mkdir("a/round-2").unwrap();
-        disk.mkdir("a/round-2").unwrap();
+        disk.mkdir("a/round-2", true).unwrap();
+        disk.mkdir("a/round-2", true).unwrap();
         assert!(repo.path().join("factory/jobs/a/round-2").is_dir());
         assert!(
-            disk.mkdir("missing/round-1").is_err(),
+            disk.mkdir("a/round-2", false).is_err(),
+            "strict mkdir refuses an existing folder"
+        );
+        assert!(
+            disk.mkdir("missing/round-1", true).is_err(),
             "parents are not created"
         );
+    }
+
+    #[test]
+    fn repo_root_is_the_absolute_repository_path() {
+        let disk = Disk::new(Path::new("/srv/app/factory/bin/job"), None, None);
+        assert_eq!(disk.repo_root(), "/srv/app");
     }
 
     #[test]

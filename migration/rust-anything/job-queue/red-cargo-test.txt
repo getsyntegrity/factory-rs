@@ -1,0 +1,431 @@
+   Compiling factory-rs v0.1.0 (/home/pablog/factory-rs)
+warning: unused variable: `path`
+   --> src/job/disk.rs:189:21
+    |
+189 |     fn mkdir(&self, path: &str, exist_ok: bool) -> io::Result<()> {
+    |                     ^^^^ help: if this is intentional, prefix it with an underscore: `_path`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `fetch_issue` is never used
+  --> src/job/issue.rs:25:8
+   |
+25 | pub fn fetch_issue(shell: &Shell, number: &str) -> Result<Value, String> {
+   |        ^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `factory-rs` (lib test) generated 2 warnings (run `cargo fix --lib -p factory-rs --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.47s
+     Running unittests src/lib.rs (target/debug/build/factory-rs/edc422fd7432d024/out/factory_rs-edc422fd7432d024)
+
+running 235 tests
+test gate::disk::tests::factory_is_the_parent_of_the_executables_bin ... ok
+test gate::disk::tests::reads_and_writes_below_factory ... ok
+test gate::disk::tests::user_files_expand_the_home_directory ... ok
+test gate::tests::argv_01_no_args_prints_usage ... ok
+test gate::tests::argv_03_three_args_print_usage ... ok
+test gate::tests::argv_04_second_arg_must_be_merge ... ok
+test gate::tests::div_gate_07_config_is_read_before_the_arguments ... ok
+test gate::tests::argv_05_hook_takes_no_args ... ok
+test gate::tests::argv_02_dash_arg_prints_usage ... ok
+test gate::tests::diff_lines_without_a_tab_are_named ... ok
+test gate::tests::div_gate_03_missing_config_is_named ... ok
+test gate::tests::div_gate_01_missing_job_is_named ... ok
+test gate::tests::div_gate_05_prompt_without_job_is_named ... ok
+test gate::tests::div_gate_02_missing_round_folder_is_named ... ok
+test gate::tests::checks_output_keeps_quotes_and_backslashes ... ok
+test gate::tests::div_gate_04_invalid_hook_event_is_named ... ok
+test gate::tests::div_gate_06_merge_of_missing_job_is_named ... ok
+test gate::tests::gate_01_pass_writes_checks_files ... ok
+test gate::tests::gate_02_failing_checks_log_stdout_then_stderr ... ok
+test gate::tests::gate_08_rev_parse_failure_is_reported ... ok
+test gate::tests::gate_07_round_zero_is_refused ... ok
+test gate::tests::gate_04_protected_and_failing ... ok
+test gate::tests::gate_06_no_output ... ok
+test gate::tests::gate_03_protected_paths_follow_fnmatch ... ok
+test gate::tests::gate_05_tail_is_80_lines_with_universal_newlines ... ok
+test gate::tests::gate_09_diff_failure_is_reported ... ok
+test gate::tests::gate_14_missing_checks_sh_fails ... ok
+test gate::tests::gate_10_diff_uses_the_base_branch ... ok
+test gate::tests::gate_15_unicode_output ... ok
+test gate::tests::hook_job_id_runs_to_the_first_dot_or_the_end ... ok
+test gate::tests::hook_02_passing_checks_are_silent ... ok
+test gate::tests::hook_01_stop_hook_active_is_silent ... ok
+test job::advance::tests::illegal_transitions_are_refused_like_v2 ... ok
+test gate::tests::unreadable_config_is_named ... ok
+test job::advance::tests::legal_transitions_not_ported_yet_are_refused_not_guessed ... ok
+test gate::tests::protected_paths_must_be_a_list ... ok
+test gate::tests::merge_01_pass_writes_merge_checks ... ok
+test gate::tests::hook_03_failing_checks_nudge_with_40_lines ... ok
+test gate::tests::merge_02_fail ... ok
+test gate::tests::null_worktree_runs_in_the_current_directory ... ok
+test job::advance::tests::merged_from_needs_human_drops_the_label ... FAILED
+test gate::disk::tests::checks_run_with_bash_in_the_worktree ... ok
+test job::advance::tests::merged_needs_a_merged_pr_and_asks_github_again ... FAILED
+test job::advance::tests::missing_config_entries_are_named ... ok
+test job::advance::tests::rejecting_needs_the_rejection_file ... ok
+test job::advance::tests::needs_human_to_build_uses_the_last_feedback_by_name ... ok
+test gate::tests::processes_that_cannot_start_are_named ... ok
+test gate::tests::git_double_refusals_surface_as_git_failures ... ok
+test job::advance::tests::rejecting_stamps_ended_with_now_in_v2_format ... ok
+test job::advance::tests::needs_human_to_build_starts_a_new_round_with_a_new_limit ... ok
+test gate::tests::job_json_shape_problems_are_named ... ok
+test job::clock::tests::elapsed_matches_v2 ... ok
+test job::clock::tests::formats_utc_seconds ... ok
+test job::clock::tests::parses_the_epoch_and_offsets ... ok
+test gate::tests::hook_transcript_problems_are_named ... ok
+test job::clock::tests::rejects_other_shapes ... ok
+test job::cost::tests::broken_transcript_lines_are_named ... ok
+test job::cost::tests::no_transcripts_cost_nothing ... ok
+test job::cost::tests::incomplete_prices_are_named ... ok
+test job::cost::tests::crlf_transcripts_read_like_python_text_mode ... ok
+test job::cost::tests::non_assistant_or_usage_less_entries_are_ignored ... ok
+test job::cost::tests::needle_may_span_two_text_blocks_joined_by_a_space ... ok
+test job::cost::tests::prompt_blocks_are_joined_and_non_dict_blocks_ignored ... ok
+test job::cost::tests::transcripts_of_other_jobs_and_empty_files_are_skipped ... ok
+test job::cost::tests::unknown_model_with_tokens_is_refused_like_v2 ... ok
+test job::cost::tests::zero_token_messages_need_no_price ... ok
+test job::cost::tests::prices_every_token_kind_last_usage_per_message_wins_and_rounds_like_python ... ok
+test job::create::tests::create_01_writes_job_and_quoted_issue ... FAILED
+test job::create::tests::create_06_only_labeled_issues ... FAILED
+test job::create::tests::create_08_issue_view_failure ... FAILED
+test job::create::tests::create_02_numbers_after_the_highest_folder ... FAILED
+test job::create::tests::create_05_only_open_issues ... FAILED
+test job::create::tests::create_03_one_job_per_issue ... FAILED
+test job::create::tests::create_04_respects_concurrency ... FAILED
+test job::create::tests::create_10_number_as_given_then_as_returned ... FAILED
+test job::disk::tests::claude_config_dir_wins_over_home ... ok
+test job::create::tests::folder_names_with_digits_but_no_number_are_named ... FAILED
+test job::disk::tests::dispatch_checks_config_before_the_arguments ... ok
+test job::create::tests::create_07_wordless_title_and_null_body ... FAILED
+test job::create::tests::started_is_now_in_v2_format ... FAILED
+test job::disk::tests::dispatch_hands_unowned_argv_to_the_fallback ... ok
+test job::disk::tests::exists_is_relative_to_the_process_directory ... ok
+test job::disk::tests::repo_is_two_levels_above_the_executables_bin ... ok
+test job::disk::tests::repo_root_is_the_absolute_repository_path ... FAILED
+test job::disk::tests::dispatch_runs_owned_commands ... ok
+test job::disk::tests::no_transcripts_without_a_project_folder_or_config_dir ... ok
+test job::issue::tests::issue_shape_problems_are_named ... FAILED
+test job::disk::tests::now_is_the_system_clock_in_microseconds ... ok
+test job::issue::tests::quote_matches_v2 ... FAILED
+test job::issue::tests::operator_is_asked_only_when_a_reply_needs_checking ... FAILED
+test job::disk::tests::mkdir_tolerates_an_existing_folder ... FAILED
+test job::issue::tests::issue_md_keeps_trusted_comments_with_their_exact_times ... FAILED
+test job::issue::tests::slugify_matches_v2 ... FAILED
+test job::issue::tests::replies_count_only_after_the_last_factory_comment ... FAILED
+test gate::disk::tests::git_runs_in_the_worktree_and_reports_signals_as_negative_codes ... ok
+test job::shell::tests::a_program_that_cannot_start_is_named ... ok
+test job::disk::tests::write_job_replaces_job_json_through_job_tmp ... ok
+test job::disk::tests::writes_lists_and_dates_files_below_jobs ... ok
+test job::queue::tests::div_job_07_issue_list_that_is_not_json_is_named ... FAILED
+test job::disk::tests::reads_config_and_job_files ... ok
+test job::disk::tests::job_ids_are_sorted_folders_with_a_job_json ... ok
+test job::queue::tests::queue_04_issue_list_failure ... FAILED
+test gate::disk::tests::git_that_cannot_start_is_an_error ... ok
+test job::queue::tests::queue_01_new_issues_fill_the_slots_then_hold ... FAILED
+test job::queue::tests::queue_03_merged_prs_finish_their_jobs ... FAILED
+test job::shell::tests::comment_prefixes_the_marker ... ok
+test job::shell::tests::gh_json_parses_stdout_and_names_bad_json ... FAILED
+test job::disk::tests::transcripts_follow_v2_glob_including_hidden_sessions ... ok
+test job::shell::tests::label_adds_and_removes ... ok
+test job::shell::tests::operator_is_asked_once_and_stripped ... ok
+test job::disk::tests::lock_creates_the_lock_file_once_and_holds_it ... ok
+test job::shell::tests::run_reads_universal_newlines_and_refuses_failures_with_stderr_then_stdout ... ok
+test job::summary::tests::bad_start_times_are_named ... ok
+test job::queue::tests::queue_02_every_row_kind_in_order ... FAILED
+test job::sync::tests::header_keys_are_stripped_and_upper_cased_and_values_stripped ... ok
+test job::sync::tests::header_stops_at_the_first_blank_line ... ok
+test job::summary::tests::unfinished_jobs_run_until_now ... ok
+test job::summary::tests::summary_01_no_jobs_prints_header_and_zero_total ... ok
+test job::sync::tests::verdict_accepts_only_exact_pass_or_changes ... ok
+test job::sync::tests::header_treats_whitespace_only_lines_as_blank_and_splits_like_python ... ok
+test job::summary::tests::fallback_06_summary_of_one_ended_job ... ok
+test job::tests::agents_outside_intake_stage_never_reads_intake ... ok
+test job::summary::tests::summary_04_unknown_job_is_refused ... ok
+test job::tests::agents_02_only_intake_stage ... ok
+test job::tests::config_problems_are_named ... ok
+test job::tests::div_job_05_missing_config_is_checked_before_the_arguments ... ok
+test job::tests::agents_03_only_accepted_intake ... ok
+test job::tests::agents_08_unknown_job ... ok
+test job::tests::div_job_03_missing_config_is_named ... ok
+test job::tests::agents_04_no_intake ... ok
+test job::tests::agents_01_accepted_intake_records_the_agent_set ... ok
+test job::summary::tests::summary_03_selected_jobs_in_argument_order ... ok
+test job::tests::div_job_02_invalid_job_json_is_named ... ok
+test job::tests::agents_06_spec_is_stored_with_python_formatting ... ok
+test job::tests::huge_issue_numbers_match_no_job ... ok
+test job::tests::div_job_01_missing_reviews_fails_after_saving_like_v2 ... ok
+test job::tests::issue_lookup_needs_every_job_to_have_an_issue ... ok
+test job::tests::div_job_04_invalid_agent_set_is_named_without_saving ... ok
+test job::tests::agents_07_by_issue_number ... ok
+test job::tests::leaves_every_other_argv_to_the_fallback ... ok
+test job::summary::tests::summary_02_every_job_in_id_order_with_cost_and_time ... ok
+test job::tests::job_json_shape_problems_are_named ... ok
+test job::tests::owns_create_with_ascii_digits_and_bare_queue ... ok
+test job::tests::owns_summary_feedback_and_reject ... ok
+test job::tests::io_failures_are_named ... ok
+test job::disk::tests::run_executes_in_the_repository_root ... ok
+test job::tests::owns_sync_with_one_job_and_agents_with_job_and_spec ... ok
+test job::tests::missing_prices_are_named ... ok
+test job::tests::sync_01_fresh_job_rewrites_job_json_unchanged ... ok
+test job::tests::sync_11_unknown_job ... ok
+test job::tests::sync_03_header_keys_are_case_and_space_insensitive_and_stop_at_blank ... ok
+test job::tests::sync_04_crlf_intake_and_blank_surfaces ... ok
+test job::tests::sync_02_intake_header_is_recorded ... ok
+test job::tests::sync_10_unknown_issue_number ... ok
+test job::tests::sync_05_review_round_reads_gate_and_verdicts ... ok
+test job::tests::sync_09_issue_number_loads_and_locks_every_job ... ok
+test job::tests::sync_07_round_without_checks_has_no_gate ... ok
+test job::tests::sync_06_reviews_are_kept_outside_review_stages ... ok
+test job::tests::sync_14_json_is_written_like_python ... ok
+test job::tests::sync_18_id_with_path_characters ... ok
+test job::tests::sync_08_lone_cr_ends_the_first_line ... ok
+test job::waiting::tests::div_job_06_feedback_without_decision_md_is_named ... ok
+test job::tests::sync_13_unknown_model_is_refused_without_saving ... ok
+test job::waiting::tests::feedback_01_sends_the_job_back_to_build ... ok
+test job::tests::sync_12_cost_from_transcripts ... ok
+test py::tests::dumps_escapes_like_ensure_ascii ... ok
+test job::waiting::tests::feedback_03_only_needs_human ... ok
+test job::waiting::tests::feedback_04_needs_text ... ok
+test job::waiting::tests::feedback_05_operator_failure ... ok
+test job::waiting::tests::feedback_02_numbers_the_next_file ... ok
+test job::waiting::tests::reject_03_only_waiting_jobs ... ok
+test job::waiting::tests::reject_04_needs_a_reason ... ok
+test job::waiting::tests::feedback_06_label_failure_keeps_the_file_not_the_job ... ok
+test py::tests::dumps_indent_matches_python ... ok
+test job::waiting::tests::feedback_08_by_issue_number ... ok
+test py::tests::dumps_uses_float_repr ... ok
+test job::waiting::tests::reject_05_comment_failure ... ok
+test job::waiting::tests::reject_01_needs_info ... ok
+test job::waiting::tests::reject_07_pr_close_failure ... ok
+test job::waiting::tests::reject_02_closes_pr_and_removes_worktree ... ok
+test py::tests::dumps_scalars_and_arrays ... ok
+test py::tests::dumps_uses_python_separators_and_keeps_key_order ... ok
+test py::tests::repr_of_none_is_none ... ok
+test py::tests::repr_switches_to_double_quotes_when_only_single_quotes_appear ... ok
+test py::tests::float_repr_matches_python ... ok
+test py::tests::repr_uses_single_quotes_by_default ... ok
+test py::tests::splitlines_splits_on_every_python_line_boundary ... ok
+test py::tests::fnmatch_matches_like_python ... ok
+test py::tests::repr_escapes_backslash_and_control_characters ... ok
+test py::tests::repr_escapes_single_quote_when_both_quotes_appear ... ok
+test py::tests::repr_keeps_printable_non_ascii ... ok
+test job::waiting::tests::reject_06_worktree_removal_failure ... ok
+test py::tests::strip_removes_python_whitespace_only ... ok
+test py::tests::str_of_matches_python_str ... ok
+test py::tests::truthy_matches_python_bool ... ok
+test py::tests::universal_newlines_reads_cr_and_crlf_as_lf ... ok
+test job::waiting::tests::reject_writes_the_exact_times_the_recording_normalized ... ok
+test route::tests::case_02_two_args_prints_usage ... ok
+test route::tests::case_01_no_args_prints_usage ... ok
+test route::tests::case_04_null_intake_is_refused ... ok
+test route::tests::case_05_low_risk_routes_code_haiku ... ok
+test route::tests::case_03_sync_error_is_reported_stripped ... ok
+test route::tests::case_06_medium_risk_routes_code_sonnet ... ok
+test route::tests::case_07_high_risk_routes_code_sonnet ... ok
+test route::tests::case_08_ui_surface_adds_ux_and_ui ... ok
+test route::tests::case_09_security_surface_adds_security ... ok
+test route::tests::case_11_unknown_risk_lists_routing_keys ... ok
+test route::tests::case_13_sync_failure_stops_before_reading_job ... ok
+test route::tests::case_10_surfaces_add_in_order ... ok
+test route::tests::case_12_unknown_surface_lists_surface_keys ... ok
+test route::tests::case_15a_unresolvable_id_reports_job_error ... ok
+test route::tests::div_route_01_missing_config_is_named ... ok
+test route::tests::config_without_tables_is_named ... ok
+test route::tests::case_14_agents_failure_is_reported_with_python_json_argument ... ok
+test route::tests::case_18_missing_risk_is_shown_as_none ... ok
+test route::tests::div_route_02_invalid_config_is_named_with_its_position ... ok
+test route::tests::case_19_risk_is_shown_with_python_repr ... ok
+test route::tests::case_17_agents_refusal_from_job_is_reported ... ok
+test route::tests::div_route_04_missing_config_wins_over_bad_arguments ... ok
+test route::tests::div_route_03_id_without_job_folder_is_named ... ok
+test route::tests::invalid_job_json_is_named_with_its_position ... ok
+test route::tests::empty_routing_entry_counts_as_unknown_risk ... ok
+test system::tests::factory_is_the_parent_of_the_executables_bin_directory ... ok
+test route::tests::job_that_cannot_start_is_named ... ok
+test route::tests::unreadable_config_is_named ... ok
+test route::tests::surface_overrides_keep_first_position_and_take_new_model ... ok
+test route::tests::empty_intake_object_counts_as_no_intake ... ok
+test system::tests::route_main_reports_an_unknown_executable_path ... ok
+test system::tests::job_nonzero_exit_is_a_failure ... ok
+test system::tests::job_passes_args_and_captures_stderr_but_not_stdout ... ok
+test system::tests::read_reports_missing_files ... ok
+test system::tests::route_main_passes_non_utf8_args_lossily ... ok
+test system::tests::job_that_cannot_start_is_an_error ... ok
+test system::tests::route_main_runs_route_against_the_executables_installation ... ok
+test system::tests::read_resolves_paths_inside_factory ... ok
+
+failures:
+
+---- job::advance::tests::merged_from_needs_human_drops_the_label stdout ----
+
+thread 'job::advance::tests::merged_from_needs_human_drops_the_label' (223219) panicked at src/job/advance.rs:316:37:
+called `Result::unwrap()` on an `Err` value: "use `job feedback` to send a job back to the builder"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- job::advance::tests::merged_needs_a_merged_pr_and_asks_github_again stdout ----
+
+thread 'job::advance::tests::merged_needs_a_merged_pr_and_asks_github_again' (223220) panicked at src/job/advance.rs:306:9:
+assertion `left == right` failed
+  left: Err("a: review → merged is not ported to Rust yet; use the v2 job")
+ right: Err("the PR isn't merged")
+
+---- job::create::tests::create_01_writes_job_and_quoted_issue stdout ----
+
+thread 'job::create::tests::create_01_writes_job_and_quoted_issue' (223242) panicked at src/job/create.rs:10:5:
+not yet implemented
+
+---- job::create::tests::create_06_only_labeled_issues stdout ----
+
+thread 'job::create::tests::create_06_only_labeled_issues' (223247) panicked at src/job/create.rs:10:5:
+not yet implemented
+
+---- job::create::tests::create_08_issue_view_failure stdout ----
+
+thread 'job::create::tests::create_08_issue_view_failure' (223249) panicked at src/job/create.rs:10:5:
+not yet implemented
+
+---- job::create::tests::create_02_numbers_after_the_highest_folder stdout ----
+
+thread 'job::create::tests::create_02_numbers_after_the_highest_folder' (223243) panicked at src/job/create.rs:10:5:
+not yet implemented
+
+---- job::create::tests::create_05_only_open_issues stdout ----
+
+thread 'job::create::tests::create_05_only_open_issues' (223246) panicked at src/job/create.rs:10:5:
+not yet implemented
+
+---- job::create::tests::create_03_one_job_per_issue stdout ----
+
+thread 'job::create::tests::create_03_one_job_per_issue' (223244) panicked at src/job/create.rs:10:5:
+not yet implemented
+
+---- job::create::tests::create_04_respects_concurrency stdout ----
+
+thread 'job::create::tests::create_04_respects_concurrency' (223245) panicked at src/job/create.rs:10:5:
+not yet implemented
+
+---- job::create::tests::create_10_number_as_given_then_as_returned stdout ----
+
+thread 'job::create::tests::create_10_number_as_given_then_as_returned' (223250) panicked at src/job/create.rs:10:5:
+not yet implemented
+
+---- job::create::tests::folder_names_with_digits_but_no_number_are_named stdout ----
+
+thread 'job::create::tests::folder_names_with_digits_but_no_number_are_named' (223251) panicked at src/job/create.rs:10:5:
+not yet implemented
+
+---- job::create::tests::create_07_wordless_title_and_null_body stdout ----
+
+thread 'job::create::tests::create_07_wordless_title_and_null_body' (223248) panicked at src/job/create.rs:10:5:
+not yet implemented
+
+---- job::create::tests::started_is_now_in_v2_format stdout ----
+
+thread 'job::create::tests::started_is_now_in_v2_format' (223252) panicked at src/job/create.rs:10:5:
+not yet implemented
+
+---- job::disk::tests::repo_root_is_the_absolute_repository_path stdout ----
+
+thread 'job::disk::tests::repo_root_is_the_absolute_repository_path' (223266) panicked at src/job/disk.rs:195:9:
+not yet implemented
+
+---- job::issue::tests::issue_shape_problems_are_named stdout ----
+
+thread 'job::issue::tests::issue_shape_problems_are_named' (223272) panicked at src/job/issue.rs:35:5:
+not yet implemented
+
+---- job::issue::tests::quote_matches_v2 stdout ----
+
+thread 'job::issue::tests::quote_matches_v2' (223274) panicked at src/job/issue.rs:14:5:
+not yet implemented
+
+---- job::issue::tests::operator_is_asked_only_when_a_reply_needs_checking stdout ----
+
+thread 'job::issue::tests::operator_is_asked_only_when_a_reply_needs_checking' (223273) panicked at src/job/issue.rs:42:5:
+not yet implemented
+
+---- job::disk::tests::mkdir_tolerates_an_existing_folder stdout ----
+
+thread 'job::disk::tests::mkdir_tolerates_an_existing_folder' (223261) panicked at src/job/disk.rs:191:9:
+not yet implemented
+
+---- job::issue::tests::issue_md_keeps_trusted_comments_with_their_exact_times stdout ----
+
+thread 'job::issue::tests::issue_md_keeps_trusted_comments_with_their_exact_times' (223271) panicked at src/job/issue.rs:35:5:
+not yet implemented
+
+---- job::issue::tests::slugify_matches_v2 stdout ----
+
+thread 'job::issue::tests::slugify_matches_v2' (223276) panicked at src/job/issue.rs:21:5:
+not yet implemented
+
+---- job::issue::tests::replies_count_only_after_the_last_factory_comment stdout ----
+
+thread 'job::issue::tests::replies_count_only_after_the_last_factory_comment' (223275) panicked at src/job/issue.rs:42:5:
+not yet implemented
+
+---- job::queue::tests::div_job_07_issue_list_that_is_not_json_is_named stdout ----
+
+thread 'job::queue::tests::div_job_07_issue_list_that_is_not_json_is_named' (223277) panicked at src/job/queue.rs:11:5:
+not yet implemented
+
+---- job::queue::tests::queue_04_issue_list_failure stdout ----
+
+thread 'job::queue::tests::queue_04_issue_list_failure' (223281) panicked at src/job/queue.rs:11:5:
+not yet implemented
+
+---- job::queue::tests::queue_01_new_issues_fill_the_slots_then_hold stdout ----
+
+thread 'job::queue::tests::queue_01_new_issues_fill_the_slots_then_hold' (223278) panicked at src/job/queue.rs:11:5:
+not yet implemented
+
+---- job::queue::tests::queue_03_merged_prs_finish_their_jobs stdout ----
+
+thread 'job::queue::tests::queue_03_merged_prs_finish_their_jobs' (223280) panicked at src/job/queue.rs:11:5:
+not yet implemented
+
+---- job::shell::tests::gh_json_parses_stdout_and_names_bad_json stdout ----
+
+thread 'job::shell::tests::gh_json_parses_stdout_and_names_bad_json' (223285) panicked at src/job/shell.rs:63:9:
+not yet implemented
+
+---- job::queue::tests::queue_02_every_row_kind_in_order stdout ----
+
+thread 'job::queue::tests::queue_02_every_row_kind_in_order' (223279) panicked at src/job/queue.rs:11:5:
+not yet implemented
+
+
+failures:
+    job::advance::tests::merged_from_needs_human_drops_the_label
+    job::advance::tests::merged_needs_a_merged_pr_and_asks_github_again
+    job::create::tests::create_01_writes_job_and_quoted_issue
+    job::create::tests::create_02_numbers_after_the_highest_folder
+    job::create::tests::create_03_one_job_per_issue
+    job::create::tests::create_04_respects_concurrency
+    job::create::tests::create_05_only_open_issues
+    job::create::tests::create_06_only_labeled_issues
+    job::create::tests::create_07_wordless_title_and_null_body
+    job::create::tests::create_08_issue_view_failure
+    job::create::tests::create_10_number_as_given_then_as_returned
+    job::create::tests::folder_names_with_digits_but_no_number_are_named
+    job::create::tests::started_is_now_in_v2_format
+    job::disk::tests::mkdir_tolerates_an_existing_folder
+    job::disk::tests::repo_root_is_the_absolute_repository_path
+    job::issue::tests::issue_md_keeps_trusted_comments_with_their_exact_times
+    job::issue::tests::issue_shape_problems_are_named
+    job::issue::tests::operator_is_asked_only_when_a_reply_needs_checking
+    job::issue::tests::quote_matches_v2
+    job::issue::tests::replies_count_only_after_the_last_factory_comment
+    job::issue::tests::slugify_matches_v2
+    job::queue::tests::div_job_07_issue_list_that_is_not_json_is_named
+    job::queue::tests::queue_01_new_issues_fill_the_slots_then_hold
+    job::queue::tests::queue_02_every_row_kind_in_order
+    job::queue::tests::queue_03_merged_prs_finish_their_jobs
+    job::queue::tests::queue_04_issue_list_failure
+    job::shell::tests::gh_json_parses_stdout_and_names_bad_json
+
+test result: FAILED. 208 passed; 27 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+error: test failed, to rerun pass `--lib`

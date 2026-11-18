@@ -4,26 +4,20 @@
 use serde_json::Value;
 
 use super::sync::{field, sync};
-use super::{Job, Workspace, clock, load, resolve};
+use super::{Job, Workspace, all_jobs, clock, resolve};
 use crate::py;
 
 const HEADER: [&str; 7] = ["job", "issue", "stage", "round", "pr", "cost", "time"];
 
 pub fn cmd_summary(args: &[String], config: &Value, ws: &dyn Workspace) -> Result<String, String> {
     // v2 loads (and locks) every job before syncing any.
-    let mut jobs = Vec::new();
-    if args.is_empty() {
-        let ids = ws
-            .job_ids()
-            .map_err(|_| "cannot list factory/jobs".to_string())?;
-        for id in ids {
-            jobs.push(load(&id, ws)?);
-        }
+    let mut jobs = if args.is_empty() {
+        all_jobs(ws)?
     } else {
-        for arg in args {
-            jobs.push(resolve(arg, ws)?);
-        }
-    }
+        args.iter()
+            .map(|a| resolve(a, ws))
+            .collect::<Result<_, _>>()?
+    };
 
     let mut rows: Vec<Vec<String>> = vec![HEADER.iter().map(|h| h.to_string()).collect()];
     let mut total = 0.0;

@@ -4,6 +4,8 @@
 
 use std::cell::OnceCell;
 
+use serde_json::Value;
+
 use super::Workspace;
 use crate::{Proc, py};
 
@@ -53,6 +55,19 @@ impl<'a> Shell<'a> {
     /// v2 `gh(*args)`: checked, returns stdout.
     pub fn gh(&self, args: &[&str]) -> Result<String, String> {
         Ok(self.run("gh", args, true)?.stdout)
+    }
+
+    /// v2 `gh_json(*args)`: stdout parsed as JSON.
+    pub fn gh_json(&self, args: &[&str]) -> Result<Value, String> {
+        let stdout = self.gh(args)?;
+        serde_json::from_str(&stdout).map_err(|e| {
+            format!(
+                "`gh {}` did not print JSON (line {}, column {})",
+                args.join(" "),
+                e.line(),
+                e.column()
+            )
+        })
     }
 
     /// v2 `operator()`: the GitHub login running the factory, asked once.
@@ -128,6 +143,22 @@ mod tests {
         let mut fake = Fake::new();
         fake = fake.fail_run();
         assert_eq!(Shell::new(&fake).gh(&["api"]), Err("cannot run gh".into()));
+    }
+
+    #[test]
+    fn gh_json_parses_stdout_and_names_bad_json() {
+        let fake = Fake::new()
+            .sandbox_file("doubles/gh/pr_view.stdout", "{\"state\": \"MERGED\"}\n")
+            .sandbox_file("doubles/gh/issue_list.stdout", "nope\n");
+        let shell = Shell::new(&fake);
+        assert_eq!(
+            shell.gh_json(&["pr", "view", "7"]).unwrap()["state"],
+            "MERGED"
+        );
+        assert_eq!(
+            shell.gh_json(&["issue", "list"]),
+            Err("`gh issue list` did not print JSON (line 1, column 2)".into())
+        );
     }
 
     #[test]

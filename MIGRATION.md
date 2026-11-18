@@ -34,7 +34,8 @@ copy `src/software-factory-claude-code-v2` to `.oracle/v2`, then
 In scope: the v2 executables `factory/bin/route`, `factory/bin/job`,
 `factory/bin/gate`, one slice at a time. Slice 1 ported `route`; slice 2
 ported `job sync` and `job agents`; slice 3 ported `gate`; slice 4 ported
-`job summary`, `job feedback` and `job reject`.
+`job summary`, `job feedback` and `job reject`; slice 5 ported `job create`
+and `job queue`.
 
 Out of scope: aifactory Go, Gentle/MCP, the new ODD, living documentation, a
 new front end, extra scanners, any product change. No push, PR, release or
@@ -45,7 +46,7 @@ real GitHub call; tests use fixtures, `gh`/`job` doubles and sandboxes.
 | Component | Language | Size | Lines | Entry point | Status |
 | --- | --- | ---: | ---: | --- | --- |
 | `factory/bin/route` | Python 3 (no extension) | 1 798 B | 51 | `if __name__ == "__main__"` → `main(sys.argv[1:])` | **ported** (slice 1) |
-| `factory/bin/job` | Python 3 (no extension) | 28 866 B | 718 | `if __name__ == "__main__"`, subcommands `queue create advance merge feedback reject agents sync summary` | `sync`, `agents` (slice 2), `summary`, `feedback`, `reject` (slice 4) **ported**; `queue`, `create`, `advance`, `merge`, help and bad argv run the v2 original as `factory/bin/job.py` (fallback) |
+| `factory/bin/job` | Python 3 (no extension) | 28 866 B | 718 | `if __name__ == "__main__"`, subcommands `queue create advance merge feedback reject agents sync summary` | `sync`, `agents` (slice 2), `summary`, `feedback`, `reject` (slice 4), `create`, `queue` (slice 5) **ported**; `advance`, `merge`, help and bad argv run the v2 original as `factory/bin/job.py` (fallback) |
 | `factory/bin/gate` | Python 3 (no extension) | 4 842 B | 121 | `if __name__ == "__main__"` | **ported** (slice 3) |
 | `factory/checks.sh` | Bash | 621 B | 18 | script | not started |
 | `factory/config.json` | JSON data | 1 122 B | 31 | read by all three binaries | data, kept as is |
@@ -608,17 +609,118 @@ These inputs are not recorded, so there is no evidence either way:
 (208 unit tests) and `cargo build --release` pass. Line coverage is 97.43%.
 300 repeated `cargo test --lib` runs had no failure.
 
+## Slice 5: `job create`, `job queue`
+
+`queue` moves a job whose PR merged on GitHub to `merged` before it builds
+the rows, so this slice also ports `advance`'s → merged branch and
+`pr_state`. That leaves four transition branches in Rust: → merged,
+→ rejected (from waiting), needs-human → build, and the legal-transition
+table. The rest are still refused, unported.
+
+| File | Role |
+| --- | --- |
+| `src/job/create.rs` | existing-job and slot checks, issue checks, folder numbering, the new job.json, issue.md |
+| `src/job/queue.rs` | auto-merge, then `new` / `resume` / `wait` / `skip` / `hold` rows and concurrency slots |
+| `src/job/issue.rs` | `fetch_issue`, `write_issue_md` (issue quoted as data), `quote`, `replied_since_question`, `slugify` |
+| `src/job/advance.rs` | adds → merged and `pr_state` |
+| `src/job/shell.rs` | adds `gh_json` |
+
+`create <issue>` is owned only when the argument is ASCII digits. v2 also
+accepts any `str.isdigit()` string (and then crashes in `int()` for some).
+Those strings, and every wrong argv shape, still go to the fallback, which
+then behaves exactly like v2.
+
+### Recording
+
+The cases are in `tests/parity/job-queue`, with the `timestamps` normalizer.
+`create` writes `started = now()` and the auto-merge writes `ended = now()`.
+Two unnormalized recordings differed only in those two fields; two
+normalized recordings were identical.
+
+The doubles now answer by the **first three arguments** when such files exist
+(`doubles/gh/issue_view_5.*`), else by the first two. Every earlier case still
+replays unchanged.
+
+The recordings also caught fixture mistakes, not v2 bugs: an unanswered
+`gh pr view 9`, and an issue that had to be answered under two numbers.
+
+v2 behavior these cases pinned, which Rust reproduces:
+- **`create`**
+  - asks GitHub for the issue **twice**: with the argument as given
+    (`gh issue view 005`), then with the number GitHub returned
+    (`gh issue view 5`) inside `write_issue_md`;
+  - numbers the new folder after the highest one whose first three
+    characters are digits (`010-no-job-json` counts, `12x-…` and `abc-…` do
+    not);
+  - slugs the title with the first four `[a-z0-9]+` words of the lowercased
+    title (the Kelvin sign lowercases to `k`) or `issue`;
+  - writes the worktree as an absolute path below the repository (`[CWD]` in
+    the recording).
+- **issue.md** quotes the body and the comments of the author and the
+  operator only (`mallory` is dropped), credits marker comments to
+  "factory", and shows an empty body as `(empty)`.
+- **`queue`**
+  - asks `gh pr view` for every non-terminal job with a PR, and **again**
+    inside `advance` for a merged one;
+  - drops the needs-human label when a needs-human job merges;
+  - removes the worktree and the branch of a merged job;
+  - a reply counts after the factory's last question, and building
+    `{author, operator()}` always asks for the operator;
+  - replied and new issues take the free slots in that order, and the rest
+    are `hold`.
+
+### Result: PASS WITH 1 ACCEPTED DIAGNOSTIC DIVERGENCE (job-queue)
+
+| Harness | Rust replay |
+| --- | --- |
+| `job-queue` | **15/16** (DIV-JOB-07; stderr only) |
+| `job` | 39/45 (unchanged) |
+| `job-reject` | 7/7 (unchanged) |
+| `route` | 18/22 (unchanged; tripwire 18/22) |
+| `gate` | 22/29 (unchanged) |
+
+| ID | Case | Cause | v2 (last traceback line) | Rust stderr |
+| --- | --- | --- | --- | --- |
+| DIV-JOB-07 | queue-06-invalid-json | `gh issue list` printed something that is not JSON | `JSONDecodeError: Expecting value: line 1 column 1 (char 0)` | `` job: `gh issue list --label factory --state open --limit 200 --json number,title` did not print JSON (line 1, column 2) `` |
+
+### Known unrecorded gaps
+
+These inputs are not recorded, so there is no evidence either way:
+- **Issue numbers:** Python's `==` treats `5`, `5.0` and `True` as the same
+  issue. Rust compares JSON values, so only identical numbers match.
+- **Slugs:** `str.lower()` and Rust's `to_lowercase()` agree on everything
+  tested, but not on every Unicode special case.
+
+### Evidence (`migration/rust-anything/job-queue/`)
+
+| File | What |
+| --- | --- |
+| `unnormalized-twice.diff` | only `started`/`ended` vary |
+| `record-*.txt`, `record.*`, `record-twice.*` | normalized recording, twice, identical |
+| `replay-original.txt` | all five originals: 100% |
+| `red-cargo-test.txt` | RED: 27 new tests failing on `todo!()` |
+| `replay-*.txt`, `replay-job-queue-report.md` | Rust replays |
+| `gates.txt` | fmt, clippy, tests, build, coverage, flakiness |
+
+### Gates (slice 5)
+
+`cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test`
+(236 unit tests) and `cargo build --release` pass. Line coverage is 97.46%.
+300 repeated runs had no failure.
+
 ## Next slice
 
-What is left in v2 is the GitHub- and git-heavy core:
+Only `advance` (most of its transitions) and `merge` remain in Python:
 
-- `create` and `queue`: issues, comments, labels, `write_issue_md`,
-  `replied_since_question`.
-- `advance`: the remaining transitions: intake, needs-info → intake, spec,
-  build → gate / needs-human, gate, review, approve, needs-human comments, PR
-  ready.
-- `merge`: calls `gate --merge`.
+- **Intake:** intake → needs-info / rejected / spec, and needs-info → intake.
+  This needs comments, labels, `require_slot`, the intake.md rename, and
+  `git fetch` + `git worktree add` for spec.
+- **Build:** spec → build, build → gate (`STATUS: READY`, clean and pushed
+  branch, PR lookup), build → needs-human (`escalate`).
+- **Gate, review and approve:** gate → review / build / needs-human; review →
+  approve / build / needs-human (`check_reviews_done`); approve → merging /
+  needs-human; the needs-human comment and PR ready.
+- **`merge`:** merging → merged with `gate --merge`.
 
-`advance` alone is about 140 lines with seven branches, so it needs its own
-chain of slices, split by transition group. Once all of it is ported,
-`job.py` can go and `app lift` applies.
+These are four slices. After them, `job.py` can be removed and `app lift`
+applies.
