@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["agents", "001-add-a-thing", '{"reviewers": {"code": "haiku"}}']
+status.code = 0
+fs.sandbox = true
+fs.base = "agents-01-accepted.in"

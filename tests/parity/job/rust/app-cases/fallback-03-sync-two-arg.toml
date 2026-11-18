@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["sync", "001-add-a-thing", "extra"]
+status.code = 1
+fs.sandbox = true
+fs.base = "fallback-03-sync-two-arg.in"

@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "[CWD]/factory/bin/job", line 718, in <module>
+    main(sys.argv[1:])
+  File "[CWD]/factory/bin/job", line 703, in main
+    cmd_agents(sync(resolve(args[0])), args[1])
+  File "[CWD]/factory/bin/job", line 658, in cmd_agents
+    job["agents"] = json.loads(spec)
+                    ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)

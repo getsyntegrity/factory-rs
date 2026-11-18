@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "[CWD]/factory/bin/job", line 718, in <module>
+    main(sys.argv[1:])
+  File "[CWD]/factory/bin/job", line 707, in main
+    reviews = " ".join(f"{k}:{v}" for k, v in job["reviews"].items())
+                                              ~~~^^^^^^^^^^^
+KeyError: 'reviews'

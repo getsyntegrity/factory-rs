@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["sync", "2"]
+status.code = 0
+fs.sandbox = true
+fs.base = "sync-09-by-issue-number.in"

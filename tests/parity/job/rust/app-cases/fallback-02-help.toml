@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["--help"]
+status.code = 0
+fs.sandbox = true
+fs.base = "fallback-02-help.in"

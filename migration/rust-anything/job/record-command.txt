@@ -1,0 +1,1 @@
+rust-anything app record tests/parity/job --inputs tests/parity/job/inputs.jsonl --no-traps --name job -- sh launch.sh original

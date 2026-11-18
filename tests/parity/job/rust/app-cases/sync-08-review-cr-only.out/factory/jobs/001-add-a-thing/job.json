@@ -1,0 +1,38 @@
+{
+  "id": "001-add-a-thing",
+  "issue": 1,
+  "title": "Add a thing",
+  "issue_url": null,
+  "pr": null,
+  "pr_url": null,
+  "branch": "factory/001-add-a-thing",
+  "worktree": null,
+  "stage": "review",
+  "round": 1,
+  "round_limit": 3,
+  "intake": {
+    "decision": "ACCEPT",
+    "rescoped": false,
+    "risk": "low",
+    "surfaces": []
+  },
+  "agents": {
+    "builder": "sonnet",
+    "reviewers": {
+      "code": "sonnet",
+      "ux": "sonnet",
+      "ui": "haiku",
+      "security": "opus"
+    }
+  },
+  "gate": "FAIL",
+  "reviews": {
+    "code": "CHANGES",
+    "ux": "pending",
+    "ui": "pending",
+    "security": "pending"
+  },
+  "cost_usd": 0.0,
+  "started": "2026-11-18T00:00:00Z",
+  "ended": null
+}

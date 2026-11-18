@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["agents", "001-add-a-thing", '{"reviewers":{"code":"sonnet","ux":"sonnet"},"note":"ñ","n":[1,2.50,1e3]}']
+status.code = 0
+fs.sandbox = true
+fs.base = "agents-06-spec-formattin.in"

@@ -1,0 +1,3 @@
+job              issue  stage   round  pr  cost   time
+001-add-a-thing  #1     merged  1      -   $0.00  1h05m
+total $0.00 (API-equivalent, factory agents only)

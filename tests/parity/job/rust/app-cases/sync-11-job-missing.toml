@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["sync", "999-nope"]
+status.code = 1
+fs.sandbox = true
+fs.base = "sync-11-job-missing.in"

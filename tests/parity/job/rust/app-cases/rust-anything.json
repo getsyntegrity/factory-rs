@@ -1,0 +1,10 @@
+{
+  "schema": "rust-anything/app-cases@1",
+  "name": "job",
+  "run": [
+    "sh",
+    "launch.sh",
+    "original"
+  ],
+  "timeout_secs": 30
+}

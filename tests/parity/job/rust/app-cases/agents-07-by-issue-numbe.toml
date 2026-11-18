@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["agents", "1", '{"reviewers": {"code": "opus"}}']
+status.code = 0
+fs.sandbox = true
+fs.base = "agents-07-by-issue-numbe.in"

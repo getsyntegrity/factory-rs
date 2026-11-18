@@ -1,0 +1,2 @@
+{"type": "user", "message": {"role": "user", "content": "Job folder: @REPO@/factory/jobs/001-add-a-thing/\nBuild it."}}
+{"type": "assistant", "message": {"id": "m1", "model": "claude-mystery-1", "usage": {"output_tokens": 5}}}

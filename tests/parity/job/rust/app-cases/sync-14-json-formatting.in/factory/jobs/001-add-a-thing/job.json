@@ -1,0 +1,32 @@
+{
+  "id": "001-add-a-thing",
+  "issue": 1,
+  "title": "A\u00f1adir \"cosa\" \u2713 \ud83d\ude00",
+  "issue_url": null,
+  "pr": null,
+  "pr_url": null,
+  "branch": "factory/001-add-a-thing",
+  "worktree": null,
+  "stage": "intake",
+  "round": 0,
+  "round_limit": 3,
+  "intake": null,
+  "agents": null,
+  "gate": null,
+  "reviews": {},
+  "cost_usd": 0.0,
+  "started": "2026-11-18T00:00:00Z",
+  "ended": null,
+  "extra": [
+    1e+16,
+    100.0,
+    1e-05,
+    0.5,
+    -0.0,
+    123456789012,
+    true,
+    null,
+    {},
+    []
+  ]
+}

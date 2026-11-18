@@ -1,0 +1,20 @@
+{
+  "id": "001-add-a-thing",
+  "issue": 1,
+  "title": "Add a thing",
+  "issue_url": null,
+  "pr": null,
+  "pr_url": null,
+  "branch": "factory/001-add-a-thing",
+  "worktree": null,
+  "stage": "merged",
+  "round": 1,
+  "round_limit": 3,
+  "intake": null,
+  "agents": null,
+  "gate": null,
+  "reviews": {},
+  "cost_usd": 0.0,
+  "started": "2026-11-18T00:00:00Z",
+  "ended": "2026-11-18T01:05:00Z"
+}
