@@ -1,0 +1,5 @@
+bin.name = "gate"
+args = ["--hook", "x"]
+status.code = 2
+fs.sandbox = true
+fs.base = "argv-05-hook-with-extra.in"

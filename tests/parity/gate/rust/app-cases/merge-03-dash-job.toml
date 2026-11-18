@@ -1,0 +1,5 @@
+bin.name = "gate"
+args = ["-weird", "--merge"]
+status.code = 1
+fs.sandbox = true
+fs.base = "merge-03-dash-job.in"

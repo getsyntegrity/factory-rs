@@ -1,0 +1,1 @@
+rust-anything app record tests/parity/gate --inputs tests/parity/gate/inputs.jsonl --no-traps --name gate -- sh launch.sh original

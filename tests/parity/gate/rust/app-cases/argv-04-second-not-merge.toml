@@ -1,0 +1,5 @@
+bin.name = "gate"
+args = ["001-add-a-thing", "--fast"]
+status.code = 2
+fs.sandbox = true
+fs.base = "argv-04-second-not-merge.in"

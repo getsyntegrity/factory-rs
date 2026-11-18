@@ -1,0 +1,5 @@
+bin.name = "gate"
+args = ["001-add-a-thing", "--merge", "x"]
+status.code = 2
+fs.sandbox = true
+fs.base = "argv-03-three-args.in"

@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "[CWD]/factory/bin/gate", line 121, in <module>
+    main(sys.argv[1:])
+  File "[CWD]/factory/bin/gate", line 113, in main
+    gate(argv[0], merge=False)
+  File "[CWD]/factory/bin/gate", line 62, in gate
+    job = json.loads((FACTORY / "jobs" / job_id / "job.json").read_text())
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '[CWD]/factory/jobs/999-nope/job.json'

@@ -1,0 +1,1 @@
+GATE: FAIL (001-add-a-thing round 1, checks.sh exit 0 in 0s, protected paths changed: M factory/checks.sh, D factory/config.json, M docs/deep/nested/guide.md, R src/a.rs, C lib/alpha.py, T data/y1)

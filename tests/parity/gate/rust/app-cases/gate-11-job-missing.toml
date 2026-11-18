@@ -1,0 +1,5 @@
+bin.name = "gate"
+args = ["999-nope"]
+status.code = 1
+fs.sandbox = true
+fs.base = "gate-11-job-missing.in"

@@ -1,0 +1,12 @@
+M	factory/checks.sh
+D	factory/config.json
+A	factory/new-protected.json
+A	docs/new.md
+M	docs/deep/nested/guide.md
+R100	src/a.rs	src/b.rs
+C075	lib/alpha.py	lib/copy.py
+M	lib/cat.py
+M	data/x1
+T	data/y1
+M	src/ab.rs
+M	README.md

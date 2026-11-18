@@ -1,0 +1,5 @@
+bin.name = "gate"
+args = ["001-add-a-thing"]
+status.code = 1
+fs.sandbox = true
+fs.base = "gate-12-round-dir-missin.in"

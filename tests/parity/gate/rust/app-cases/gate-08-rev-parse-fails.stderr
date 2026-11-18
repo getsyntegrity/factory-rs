@@ -1,0 +1,1 @@
+gate: `git rev-parse HEAD` failed: fatal: not a git repository

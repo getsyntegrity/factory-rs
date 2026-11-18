@@ -1,0 +1,11 @@
+gate: The deterministic gate: does the job's branch pass the repo's checks?
+
+Usage:
+  gate <job-id>            write round-N/checks.md; exit 0 on PASS, 1 on FAIL
+  gate <job-id> --merge    same, as round-N/merge-checks.md (job merge runs it)
+  gate --hook              builder SubagentStop hook: run the checks once, exit 2 on failure
+
+The gate runs the main checkout's factory/checks.sh inside the job's worktree,
+so a branch can't change the checks it is judged by. It also fails when the
+branch modifies or deletes a file matching config.json `protected_paths`
+(fnmatch patterns, where `*` also matches `/`). Adding new files is fine.

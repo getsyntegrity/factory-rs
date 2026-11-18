@@ -1,0 +1,5 @@
+bin.name = "gate"
+args = []
+status.code = 2
+fs.sandbox = true
+fs.base = "argv-01-no-args.in"

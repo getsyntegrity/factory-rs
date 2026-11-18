@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "[CWD]/factory/bin/gate", line 121, in <module>
+    main(sys.argv[1:])
+  File "[CWD]/factory/bin/gate", line 113, in main
+    gate(argv[0], merge=False)
+  File "[CWD]/factory/bin/gate", line 72, in gate
+    (round_dir / f"{name}.log").write_text(log)
+  File "/usr/lib/python3.12/pathlib.py", line 1049, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '[CWD]/factory/jobs/001-add-a-thing/round-1/checks.log'
