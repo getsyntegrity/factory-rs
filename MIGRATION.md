@@ -980,12 +980,22 @@ lines (`GATE:`, queue rows, job ids), and those are identical.
 
 ## Merge validation against real GitHub (manual, run by the Owner)
 
-**Purpose:** before `job.py` is deleted, confirm on a real GitHub repository
-that `job merge` (and the transitions around it) behave as the doubles
-claim. The doubles reproduce the calls; they cannot prove GitHub's answers.
-The agent must not run any of this.
+**Purpose:** confirm on a real GitHub repository that `job merge` and the
+transitions around it behave as the doubles claim, and turn the real answers
+into fixtures for the doubles. The doubles reproduce the calls; only real
+GitHub can prove its answers. **The agent must not run any of this.**
 
-### Setup (once)
+The procedure runs **twice**:
+
+| Run | When | Compares | merge runs in |
+| --- | --- | --- | --- |
+| **A (baseline)** | now, before the remaining slices | v2 against today's hybrid | Python (`job.py`) in both |
+| **B** | after slice 4 (merge ported) | v2 against the Rust job, with no `job.py` | Python vs Rust |
+
+Run A shows that the hybrid install is safe on real GitHub and produces the
+fixtures. Run B is the gate for deleting `job.py`.
+
+### Setup (once per run)
 
 1. **Create a throwaway private repository** under an account you control,
    for example `<you>/factory-merge-check`, with `gh repo create --private`.
@@ -996,26 +1006,41 @@ The agent must not run any of this.
 3. **Create the labels** with `gh label create`: `factory`,
    `factory:needs-info`, `factory:needs-human`.
 4. **Install the build under test** in `factory/bin/` of the clone:
-   - **hybrid run (today):** `cargo build --release` in factory-rs, copy
-     `target/release/{route,job,gate}` there, and copy v2's job to
+   - **v2 reference:** v2's own `factory/bin/{route,job,gate}`.
+   - **Run A, hybrid:** `cargo build --release` in factory-rs, copy
+     `target/release/{route,job,gate}`, and copy v2's job as
      `factory/bin/job.py`.
-   - **reference run:** v2's own `factory/bin/{route,job,gate}`.
+   - **Run B, Rust:** the same binaries built from the branch with merge
+     ported, and **no** `job.py`.
+5. **Capture the real gh answers.** Put the capturing gh first on PATH:
 
-### Run (for each of: reference, hybrid)
+   ```sh
+   mkdir -p ~/factory-capture/bin
+   cp <factory-rs>/tests/parity/capture-gh.sh ~/factory-capture/bin/gh
+   export REAL_GH=$(command -v gh)                         # before changing PATH
+   export PATH=~/factory-capture/bin:$PATH
+   export CAPTURE_DIR=~/factory-capture/<run>-<install>    # e.g. A-v2, A-hybrid
+   ```
+
+   Every gh call still reaches GitHub unchanged, and also leaves
+   `$CAPTURE_DIR/gh/<key>.<n>.{stdout,stderr,code}` (the doubles' format) and
+   `$CAPTURE_DIR/calls.log` (doubles.log format, with absolute paths).
+
+### Run (for each install of the run)
 
 1. **Open an issue** labeled `factory`, with a body that names a tiny change.
    `factory/bin/job queue` must print one `new` row. Then run
    `factory/bin/job create <n>` and note the id.
 2. **Play the agents by hand**, between the commands, the way
    `tests/parity/e2e/scenarios/full-cycle.sh` does:
-   - write `intake.md` (`DECISION: ACCEPT`), then
+   - write `factory/jobs/<id>/intake.md` (`DECISION: ACCEPT`), then
      `route <id>` → `job advance <id> spec`;
    - write `spec.md` → `job advance <id> build`;
    - in `.worktrees/<id>`: commit the change, `git push -u origin factory/<id>`,
      then `gh pr create --draft --body "Closes #<n>"`;
-   - write `build.md` (`STATUS: READY`) → `job advance <id> gate`
-     → `gate <id>` → `job advance <id> review`;
-   - write one `round-1/review-<r>.md` per reviewer (`VERDICT: PASS`)
+   - write `factory/jobs/<id>/build.md` (`STATUS: READY`; it lives in the job
+     folder) → `job advance <id> gate` → `gate <id>` → `job advance <id> review`;
+   - write `round-1/review-<r>.md` per reviewer (`VERDICT: PASS`)
      → `job advance <id> approve`;
    - write `decision.md` (`APPROVE`).
 3. **Merge:** `factory/bin/job merge <id>`. Expected:
@@ -1036,22 +1061,72 @@ The agent must not run any of this.
      main`, and `round-N/merge-checks.md` says `GATE: FAIL`.
    - **already merged on GitHub:** merge the PR in the web UI, then
      `job merge`. Expected: `merged PR #<pr>` without any push.
-5. **Record and compare.** Save from each run: `job.json`, `round-*/`,
-   `decision.md`, the PR (`gh pr view <pr> --json state,isDraft,comments,mergeCommit`)
-   and the issue (`gh issue view <n> --json state,labels,comments`). The
-   hybrid run must match the reference run, except for numbers, URLs,
-   timestamps and SHAs.
+5. **Record and compare.** Save from each install: `job.json`, `round-*/`,
+   `decision.md`, the PR (`gh pr view <pr> --json state,isDraft,comments,mergeCommit`),
+   the issue (`gh issue view <n> --json state,labels,comments`) and
+   `$CAPTURE_DIR`. The two installs of a run must match, except for numbers,
+   URLs, timestamps and SHAs. `calls.log` must list the same gh calls in the
+   same order.
+
+### Sanitise the captures before committing
+
+Raw captures hold real account data. Before anything enters the repository:
+
+| What | Where it shows up | Replace with |
+| --- | --- | --- |
+| Account and organisation names, logins | `owner/repo` in URLs, `author.login`, `gh api user` output, `--head` values | `acme/app`, `alice` (issue author), `factory-operator` (operator) |
+| Repository URLs, private or not | `url`, `html_url`, `pull/N`, `issues/N` | `https://github.com/acme/app/...` |
+| Email addresses | commit and author fields from `gh api`, git output | `alice@example.invalid` |
+| Tokens and auth details | should never appear; check for `gh[pousr]_…`, `github_pat_…`, `Authorization`, `x-oauth` | delete the file and re-capture; never edit a token out |
+| Node and database ids, avatar or user-content URLs, request ids | `id`, `node_id`, `avatarUrl`, `x-github-request-id` | drop the field if the factory does not read it, else a fixed fake |
+| Issue and comment text you typed | `body`, `comments[].body` | keep it if it is test text; rewrite anything personal |
+| Absolute local paths | `calls.log` `(cwd …)` | `(cwd .)`, as in doubles.log |
+| Timestamps and SHAs | `createdAt`, `mergeCommit` | keep them; replay already normalises timestamps, and fixed fakes are fine |
+| Counter files | `gh/.count-*` | delete them (capture bookkeeping only) |
+
+Then check that nothing is left:
+
+```sh
+grep -rEn 'gh[pousr]_[A-Za-z0-9]{20,}|github_pat_|Authorization|x-oauth|@[a-z0-9.-]+\.(com|io|org)' <fixtures>   # must print nothing
+grep -rln '<your-login>\|<your-org>\|<private-repo>' <fixtures>                                                # must print nothing
+```
+
+### Turn the captures into replay fixtures
+
+1. **Create the case directory:**
+   `migration/rust-anything/github-merge/<run>/doubles/gh/`, holding the
+   sanitised `<key>.<n>.{stdout,stderr,code}`. The names already match the
+   gh double's lookup: three-argument key, n-th call.
+2. **Write a case generator** like
+   `migration/rust-anything/job-advance/make_inputs.py`. Each case carries
+   those files as `doubles/gh/...`, a job.json in the stage the real run had
+   before the command (copied from the saved job.json, sanitised), and the
+   git answers the run needed.
+3. **Record against v2 into `tests/parity/github-merge`** (same launcher as
+   `job-advance`, `--normalize timestamps`), twice. The two recordings must be
+   identical, and the replay of v2 against them must be 100%.
+4. **Check the double against reality.** The recorded `doubles.log` must list
+   the same gh calls as the sanitised `calls.log` of the real run.
+5. **Replay the build under test:**
+   `rust-anything app replay tests/parity/github-merge --build "sh launch.sh rust"`
+   (run A: hybrid; run B: merge in Rust). It must pass, or differ only by
+   catalogued divergences.
 
 ### Cleanup
 
-Run `gh repo delete <you>/factory-merge-check --yes`, and remove the local
-clone.
+Run `gh repo delete <you>/factory-merge-check --yes`, remove the local clone,
+and remove the raw `~/factory-capture`; only the sanitised fixtures are kept.
 
-### When it passes
+### When a run passes
 
-Record the date, the factory-rs commit, the `gh --version` and the
-comparison in this file. Rerun the procedure once `merge` itself is ported to
-Rust, with the Rust job and no `job.py`, before deleting `job.py`.
+Record the date, the factory-rs commit, the `gh --version`, the comparison
+and the fixture directory in this file. **Run B passing is the condition for
+deleting `job.py`.**
+
+`tests/parity/capture-gh.sh` was checked locally against a fake gh, never a
+real one: the captured files replayed through `tests/parity/doubles.sh` gave
+the same stdout, stderr and exit codes, call by call, including a state that
+changed between calls.
 
 ## Next slice
 
