@@ -833,12 +833,13 @@ after `cargo build --release` (needs `python3`, `bc`, `mkfifo`):
 
 ```sh
 sh tests/parity/e2e/concurrency.sh 300                 # hold-and-wait both ways, lock-free control, 300 races
-strace -f -e trace=openat,flock,fcntl target/release/job --help 2>&1 | grep -E 'flock|F_SETLK|F_OFD'   # Linux
-sudo dtruss -f target/release/job sync <id> 2>&1 | grep -E 'flock|fcntl'                                 # macOS
+strace -f -e trace=openat,flock,fcntl factory/bin/job sync <id> 2>&1 | grep -E 'flock|F_SETLK|F_OFD'   # Linux, in an installed factory
+sudo dtruss -f factory/bin/job sync <id> 2>&1 | grep -E 'flock|fcntl'                                # macOS, same
 ```
 
-The first command must print `PASS` for all four hold-and-wait lines and
-`failures: 0`. If the second shows `fcntl(F_SETLK…)` or `F_OFD_SETLK` on one
+Run the trace commands once with the Rust `factory/bin/job` and once with
+`python3 factory/bin/job.py`. The first command must print `PASS` for all four
+hold-and-wait lines and `failures: 0`. If the second shows `fcntl(F_SETLK…)` or `F_OFD_SETLK` on one
 side and `flock` on the other, the languages do not exclude each other on
 that system.
 
