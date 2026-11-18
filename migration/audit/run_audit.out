@@ -1,0 +1,93 @@
+
+== A1 oracle frozen and untouched
+c467603d6d62392cfaae0c07d2f701e99e111443
+oracle == source at c467603d
+uncommitted changes in .oracle/v2: 0
+
+== A2 gates
+fmt OK
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.07s
+test result: ok. 236 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+    Finished `release` profile [optimized] target(s) in 0.02s
+line coverage 97.46%
+
+== A3 skill usage
+ 15  job advance   Python job.py
+  5  job queue     Rust
+  3  gate           Rust
+  3  job merge     Python job.py
+  2  route           Rust
+  2  job create    Rust
+  2  job summary   Rust
+  1  job           (bare mention)
+  1  job sync      Rust
+  1  job feedback  Rust
+  1  job reject    Rust
+answered by Rust: 17/35 (48.6%)
+
+== A4 originals replay against their recordings (v2 vs v2)
+route       22/22 cases passed
+job         45/45 cases passed
+job-reject  7/7 cases passed
+job-queue   16/16 cases passed
+gate        29/29 cases passed
+job-advance 70/70 cases passed
+e2e         3/3 cases passed
+
+== A5 Rust (ported harnesses) and hybrid (still-Python harnesses)
+route       18/22 cases passed | differing: 15b-issue-number-id: stderr 16a-config-missing: stderr 16b-config-invalid: stderr example-001: stderr 
+job         39/45 cases passed | differing: agents-05-invalid-json: stderr example-001: stderr feedback-07-no-decision: stderr sync-15-keys-appended-in: stderr sync-16-job-json-invalid: stderr sync-17-config-missing: stderr 
+job-reject  7/7 cases passed | differing: 
+job-queue   15/16 cases passed | differing: queue-06-invalid-json: stderr 
+gate        22/29 cases passed | differing: example-001: stderr gate-11-job-missing: stderr gate-12-round-dir-missin: stderr gate-13-config-missing: stderr hook-04-invalid-stdin: stderr hook-05-no-job-in-prompt: stderr merge-03-dash-job: stderr 
+job-advance 67/70 cases passed | differing: approve-05-needs-human-o: stderr build-11-rev-list-not-a: stderr info-04-no-intake-md: stderr 
+e2e         3/3 cases passed
+tripwire    18/22 cases passed
+
+== A6 differing cases differ in stderr only, and only by the diagnostic line or a job.py traceback path
+route       differing fields:  4 stderr;     added lines other than a diagnostic or job.py traceback: 0
+job         differing fields:  6 stderr;     added lines other than a diagnostic or job.py traceback: 0
+job-reject  differing fields: none           added lines other than a diagnostic or job.py traceback: 0
+job-queue   differing fields:  1 stderr;     added lines other than a diagnostic or job.py traceback: 0
+gate        differing fields:  7 stderr;     added lines other than a diagnostic or job.py traceback: 0
+job-advance differing fields:  3 stderr;     added lines other than a diagnostic or job.py traceback: 0
+
+== A7 locks across languages
+== hold and wait
+python holds, rust waits: waited 2.01s (hold 2s), exit 0 -> PASS
+rust holds, python waits: waited 2.02s (hold 2s), exit 0 -> PASS
+python holds, control waits: waited 0.00s (hold 2s), exit 0 -> PASS
+rust holds, control waits: waited 0.00s (hold 2s), exit 0 -> PASS
+== race: Rust sync and Python sync together, 100 runs
+race runs: 100, failures: 0
+
+== A8 lines of v2 with a Rust counterpart
+job advance: 31/126 (25%)
+job: 371/520 (71.3%); not ported: section, escalate, git, check_reviews_done, cmd_merge
+gate: 77/77 (100%)
+route: 26/26 (100%)
+ALL: 474/623 (76.1%)
+
+== A9 git
+  develop                   55f24d6 [origin/develop] feat(route): port software factory v2 route to rust with recorded parity
+  feat/gate                 d6a8979 [origin/feat/gate] feat(gate): port gate to rust with replay parity
+  feat/job-create-queue     917be03 [origin/feat/job-create-queue] feat(job): port create and queue
+  feat/job-sync-agents      49c9476 [origin/feat/job-sync-agents] feat(job): add job binary with python fallback and replay parity
+  feat/job-waiting-commands c2d1223 [origin/feat/job-waiting-commands] feat(job): port summary, feedback and reject
+* feat/verification-gaps    203a154 docs(migration): stderr consumer audit and manual GitHub merge plan
+uncommitted: 2
+
+== A10 who answers each e2e step (hybrid)
+full-cycle: 12 steps, 6 answered by Rust, 6 by Python (job.py)
+waiting-loop: 12 steps, 6 answered by Rust, 6 by Python (job.py)
+rework-rounds: 16 steps, 6 answered by Rust, 10 by Python (job.py)
+by Python:
+      1 advance <id> approve
+      5 advance <id> build
+      4 advance <id> gate
+      1 advance <id> intake
+      3 advance <id> needs-human
+      1 advance <id> needs-info
+      3 advance <id> review
+      3 advance <id> spec
+      1 merge <id>
