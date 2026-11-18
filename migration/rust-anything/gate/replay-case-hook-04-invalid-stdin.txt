@@ -1,0 +1,3 @@
+0/1 cases passed
+- hook-04-invalid-stdin: stderr
+Report: /home/pablog/factory-rs/tests/parity/gate/rust/app-cases/replay-report.md

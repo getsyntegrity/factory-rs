@@ -227,7 +227,7 @@ macro_rules! case {
             "/tests/parity/job/rust/app-cases/",
             $name
         );
-        let files = |suffix: &str| $crate::job::fake::read_tree(&format!("{dir}{suffix}"));
+        let files = |suffix: &str| $crate::testing::read_tree(&format!("{dir}{suffix}"));
         let inputs = files(".in");
         let outputs = files(".out");
         let toml = std::fs::read_to_string(format!("{dir}.toml")).unwrap();
@@ -255,30 +255,3 @@ macro_rules! case {
     }};
 }
 pub(crate) use case;
-
-/// Every file below `dir` as (relative path, text); empty when `dir` is absent.
-pub fn read_tree(dir: &str) -> Vec<(String, String)> {
-    fn walk(base: &std::path::Path, dir: &std::path::Path, out: &mut Vec<(String, String)>) {
-        let Ok(entries) = std::fs::read_dir(dir) else {
-            return;
-        };
-        for entry in entries.flatten() {
-            let path = entry.path();
-            if path.is_dir() {
-                walk(base, &path, out);
-            } else {
-                let rel = path
-                    .strip_prefix(base)
-                    .unwrap()
-                    .to_string_lossy()
-                    .into_owned();
-                out.push((rel, std::fs::read_to_string(&path).unwrap()));
-            }
-        }
-    }
-    let base = std::path::Path::new(dir);
-    let mut out = Vec::new();
-    walk(base, base, &mut out);
-    out.sort();
-    out
-}

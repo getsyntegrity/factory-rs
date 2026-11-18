@@ -1,0 +1,336 @@
+   Compiling factory-rs v0.1.0 (/home/pablog/factory-rs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.13s
+     Running unittests src/lib.rs (target/debug/build/factory-rs/edc422fd7432d024/out/factory_rs-edc422fd7432d024)
+
+running 147 tests
+test gate::tests::argv_03_three_args_print_usage ... FAILED
+test gate::tests::argv_04_second_arg_must_be_merge ... FAILED
+test gate::tests::argv_02_dash_arg_prints_usage ... FAILED
+test gate::tests::argv_01_no_args_prints_usage ... FAILED
+test gate::tests::div_gate_01_missing_job_is_named ... FAILED
+test gate::tests::argv_05_hook_takes_no_args ... FAILED
+test gate::tests::div_gate_05_prompt_without_job_is_named ... FAILED
+test gate::tests::div_gate_03_missing_config_is_named ... FAILED
+test gate::tests::div_gate_02_missing_round_folder_is_named ... FAILED
+test gate::tests::div_gate_07_config_is_read_before_the_arguments ... FAILED
+test gate::tests::div_gate_06_merge_of_missing_job_is_named ... FAILED
+test gate::tests::div_gate_04_invalid_hook_event_is_named ... FAILED
+test gate::tests::gate_01_pass_writes_checks_files ... FAILED
+test gate::tests::gate_02_failing_checks_log_stdout_then_stderr ... FAILED
+test gate::tests::gate_04_protected_and_failing ... FAILED
+test gate::tests::gate_03_protected_paths_follow_fnmatch ... FAILED
+test gate::tests::gate_05_tail_is_80_lines_with_universal_newlines ... FAILED
+test gate::tests::gate_07_round_zero_is_refused ... FAILED
+test gate::tests::gate_06_no_output ... FAILED
+test gate::tests::gate_08_rev_parse_failure_is_reported ... FAILED
+test gate::tests::gate_14_missing_checks_sh_fails ... FAILED
+test gate::tests::gate_10_diff_uses_the_base_branch ... FAILED
+test gate::tests::hook_01_stop_hook_active_is_silent ... FAILED
+test gate::tests::hook_02_passing_checks_are_silent ... FAILED
+test gate::tests::gate_15_unicode_output ... FAILED
+test gate::tests::gate_09_diff_failure_is_reported ... FAILED
+test gate::tests::hook_03_failing_checks_nudge_with_40_lines ... FAILED
+test job::cost::tests::broken_transcript_lines_are_named ... ok
+test job::cost::tests::crlf_transcripts_read_like_python_text_mode ... ok
+test job::cost::tests::incomplete_prices_are_named ... ok
+test job::cost::tests::needle_may_span_two_text_blocks_joined_by_a_space ... ok
+test job::cost::tests::no_transcripts_cost_nothing ... ok
+test job::cost::tests::non_assistant_or_usage_less_entries_are_ignored ... ok
+test job::disk::tests::claude_config_dir_wins_over_home ... ok
+test gate::tests::merge_02_fail ... FAILED
+test gate::tests::merge_01_pass_writes_merge_checks ... FAILED
+test job::cost::tests::transcripts_of_other_jobs_and_empty_files_are_skipped ... ok
+test job::cost::tests::unknown_model_with_tokens_is_refused_like_v2 ... ok
+test job::cost::tests::zero_token_messages_need_no_price ... ok
+test job::disk::tests::repo_is_two_levels_above_the_executables_bin ... ok
+test job::cost::tests::prompt_blocks_are_joined_and_non_dict_blocks_ignored ... ok
+test job::cost::tests::prices_every_token_kind_last_usage_per_message_wins_and_rounds_like_python ... ok
+test job::sync::tests::header_keys_are_stripped_and_upper_cased_and_values_stripped ... ok
+test job::sync::tests::header_treats_whitespace_only_lines_as_blank_and_splits_like_python ... ok
+test job::disk::tests::dispatch_checks_config_before_the_arguments ... ok
+test job::disk::tests::dispatch_runs_owned_commands ... ok
+test job::disk::tests::no_transcripts_without_a_project_folder_or_config_dir ... ok
+test job::disk::tests::dispatch_hands_unowned_argv_to_the_fallback ... ok
+test job::disk::tests::lock_creates_the_lock_file_once_and_holds_it ... ok
+test job::disk::tests::job_ids_are_sorted_folders_with_a_job_json ... ok
+test job::sync::tests::header_stops_at_the_first_blank_line ... ok
+test job::sync::tests::verdict_accepts_only_exact_pass_or_changes ... ok
+test job::disk::tests::write_job_replaces_job_json_through_job_tmp ... ok
+test job::tests::agents_outside_intake_stage_never_reads_intake ... ok
+test job::disk::tests::reads_config_and_job_files ... ok
+test job::tests::config_problems_are_named ... ok
+test job::tests::huge_issue_numbers_match_no_job ... ok
+test job::tests::div_job_05_missing_config_is_checked_before_the_arguments ... ok
+test job::tests::agents_08_unknown_job ... ok
+test job::tests::agents_02_only_intake_stage ... ok
+test job::tests::agents_03_only_accepted_intake ... ok
+test job::tests::agents_04_no_intake ... ok
+test job::tests::agents_06_spec_is_stored_with_python_formatting ... ok
+test job::tests::div_job_03_missing_config_is_named ... ok
+test job::tests::agents_01_accepted_intake_records_the_agent_set ... ok
+test job::tests::agents_07_by_issue_number ... ok
+test job::tests::div_job_04_invalid_agent_set_is_named_without_saving ... ok
+test job::tests::div_job_02_invalid_job_json_is_named ... ok
+test job::tests::leaves_every_other_argv_to_the_fallback ... ok
+test job::disk::tests::transcripts_follow_v2_glob_including_hidden_sessions ... ok
+test job::tests::owns_sync_with_one_job_and_agents_with_job_and_spec ... ok
+test job::tests::missing_prices_are_named ... ok
+test job::tests::div_job_01_missing_reviews_fails_after_saving_like_v2 ... ok
+test job::tests::issue_lookup_needs_every_job_to_have_an_issue ... ok
+test job::tests::job_json_shape_problems_are_named ... ok
+test job::tests::io_failures_are_named ... ok
+test py::tests::dumps_escapes_like_ensure_ascii ... ok
+test py::tests::dumps_indent_matches_python ... ok
+test job::tests::sync_01_fresh_job_rewrites_job_json_unchanged ... ok
+test py::tests::dumps_scalars_and_arrays ... ok
+test job::tests::sync_11_unknown_job ... ok
+test py::tests::dumps_uses_float_repr ... ok
+test job::tests::sync_02_intake_header_is_recorded ... ok
+test job::tests::sync_10_unknown_issue_number ... ok
+test py::tests::float_repr_matches_python ... ok
+test py::tests::repr_escapes_backslash_and_control_characters ... ok
+test py::tests::fnmatch_matches_like_python ... ok
+test job::tests::sync_14_json_is_written_like_python ... ok
+test job::tests::sync_04_crlf_intake_and_blank_surfaces ... ok
+test py::tests::repr_keeps_printable_non_ascii ... ok
+test job::tests::sync_08_lone_cr_ends_the_first_line ... ok
+test py::tests::dumps_uses_python_separators_and_keeps_key_order ... ok
+test py::tests::repr_of_none_is_none ... ok
+test py::tests::repr_escapes_single_quote_when_both_quotes_appear ... ok
+test job::tests::sync_09_issue_number_loads_and_locks_every_job ... ok
+test job::tests::sync_13_unknown_model_is_refused_without_saving ... ok
+test py::tests::repr_switches_to_double_quotes_when_only_single_quotes_appear ... ok
+test job::tests::sync_05_review_round_reads_gate_and_verdicts ... ok
+test py::tests::repr_uses_single_quotes_by_default ... ok
+test py::tests::splitlines_splits_on_every_python_line_boundary ... ok
+test job::tests::sync_07_round_without_checks_has_no_gate ... ok
+test py::tests::strip_removes_python_whitespace_only ... ok
+test py::tests::universal_newlines_reads_cr_and_crlf_as_lf ... ok
+test py::tests::str_of_matches_python_str ... ok
+test py::tests::truthy_matches_python_bool ... ok
+test route::tests::case_02_two_args_prints_usage ... ok
+test route::tests::case_01_no_args_prints_usage ... ok
+test route::tests::case_03_sync_error_is_reported_stripped ... ok
+test route::tests::case_04_null_intake_is_refused ... ok
+test route::tests::case_05_low_risk_routes_code_haiku ... ok
+test route::tests::case_07_high_risk_routes_code_sonnet ... ok
+test route::tests::case_06_medium_risk_routes_code_sonnet ... ok
+test route::tests::case_13_sync_failure_stops_before_reading_job ... ok
+test route::tests::case_11_unknown_risk_lists_routing_keys ... ok
+test route::tests::case_10_surfaces_add_in_order ... ok
+test route::tests::case_08_ui_surface_adds_ux_and_ui ... ok
+test route::tests::case_09_security_surface_adds_security ... ok
+test route::tests::case_14_agents_failure_is_reported_with_python_json_argument ... ok
+test route::tests::case_12_unknown_surface_lists_surface_keys ... ok
+test route::tests::case_17_agents_refusal_from_job_is_reported ... ok
+test route::tests::div_route_01_missing_config_is_named ... ok
+test route::tests::config_without_tables_is_named ... ok
+test route::tests::div_route_02_invalid_config_is_named_with_its_position ... ok
+test route::tests::case_15a_unresolvable_id_reports_job_error ... ok
+test route::tests::case_19_risk_is_shown_with_python_repr ... ok
+test route::tests::case_18_missing_risk_is_shown_as_none ... ok
+test route::tests::div_route_03_id_without_job_folder_is_named ... ok
+test route::tests::div_route_04_missing_config_wins_over_bad_arguments ... ok
+test route::tests::empty_routing_entry_counts_as_unknown_risk ... ok
+test route::tests::unreadable_config_is_named ... ok
+test route::tests::empty_intake_object_counts_as_no_intake ... ok
+test system::tests::factory_is_the_parent_of_the_executables_bin_directory ... ok
+test route::tests::invalid_job_json_is_named_with_its_position ... ok
+test system::tests::route_main_reports_an_unknown_executable_path ... ok
+test route::tests::job_that_cannot_start_is_named ... ok
+test route::tests::surface_overrides_keep_first_position_and_take_new_model ... ok
+test system::tests::job_nonzero_exit_is_a_failure ... ok
+test job::tests::sync_18_id_with_path_characters ... ok
+test job::tests::sync_03_header_keys_are_case_and_space_insensitive_and_stop_at_blank ... ok
+test job::tests::sync_06_reviews_are_kept_outside_review_stages ... ok
+test system::tests::job_passes_args_and_captures_stderr_but_not_stdout ... ok
+test system::tests::job_that_cannot_start_is_an_error ... ok
+test job::tests::sync_12_cost_from_transcripts ... ok
+test system::tests::read_resolves_paths_inside_factory ... ok
+test system::tests::route_main_passes_non_utf8_args_lossily ... ok
+test system::tests::read_reports_missing_files ... ok
+test system::tests::route_main_runs_route_against_the_executables_installation ... ok
+
+failures:
+
+---- gate::tests::argv_03_three_args_print_usage stdout ----
+
+thread 'gate::tests::argv_03_three_args_print_usage' (4104794) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- gate::tests::argv_04_second_arg_must_be_merge stdout ----
+
+thread 'gate::tests::argv_04_second_arg_must_be_merge' (4104795) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::argv_02_dash_arg_prints_usage stdout ----
+
+thread 'gate::tests::argv_02_dash_arg_prints_usage' (4104793) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::argv_01_no_args_prints_usage stdout ----
+
+thread 'gate::tests::argv_01_no_args_prints_usage' (4104792) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::div_gate_01_missing_job_is_named stdout ----
+
+thread 'gate::tests::div_gate_01_missing_job_is_named' (4104797) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::argv_05_hook_takes_no_args stdout ----
+
+thread 'gate::tests::argv_05_hook_takes_no_args' (4104796) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::div_gate_05_prompt_without_job_is_named stdout ----
+
+thread 'gate::tests::div_gate_05_prompt_without_job_is_named' (4104801) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::div_gate_03_missing_config_is_named stdout ----
+
+thread 'gate::tests::div_gate_03_missing_config_is_named' (4104799) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::div_gate_02_missing_round_folder_is_named stdout ----
+
+thread 'gate::tests::div_gate_02_missing_round_folder_is_named' (4104798) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::div_gate_07_config_is_read_before_the_arguments stdout ----
+
+thread 'gate::tests::div_gate_07_config_is_read_before_the_arguments' (4104803) panicked at src/gate/mod.rs:165:5:
+called `Result::unwrap()` on an `Err` value: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+
+---- gate::tests::div_gate_06_merge_of_missing_job_is_named stdout ----
+
+thread 'gate::tests::div_gate_06_merge_of_missing_job_is_named' (4104802) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::div_gate_04_invalid_hook_event_is_named stdout ----
+
+thread 'gate::tests::div_gate_04_invalid_hook_event_is_named' (4104800) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::gate_01_pass_writes_checks_files stdout ----
+
+thread 'gate::tests::gate_01_pass_writes_checks_files' (4104804) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::gate_02_failing_checks_log_stdout_then_stderr stdout ----
+
+thread 'gate::tests::gate_02_failing_checks_log_stdout_then_stderr' (4104805) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::gate_04_protected_and_failing stdout ----
+
+thread 'gate::tests::gate_04_protected_and_failing' (4104807) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::gate_03_protected_paths_follow_fnmatch stdout ----
+
+thread 'gate::tests::gate_03_protected_paths_follow_fnmatch' (4104806) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::gate_05_tail_is_80_lines_with_universal_newlines stdout ----
+
+thread 'gate::tests::gate_05_tail_is_80_lines_with_universal_newlines' (4104808) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::gate_07_round_zero_is_refused stdout ----
+
+thread 'gate::tests::gate_07_round_zero_is_refused' (4104810) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::gate_06_no_output stdout ----
+
+thread 'gate::tests::gate_06_no_output' (4104809) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::gate_08_rev_parse_failure_is_reported stdout ----
+
+thread 'gate::tests::gate_08_rev_parse_failure_is_reported' (4104811) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::gate_14_missing_checks_sh_fails stdout ----
+
+thread 'gate::tests::gate_14_missing_checks_sh_fails' (4104814) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::gate_10_diff_uses_the_base_branch stdout ----
+
+thread 'gate::tests::gate_10_diff_uses_the_base_branch' (4104813) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::hook_01_stop_hook_active_is_silent stdout ----
+
+thread 'gate::tests::hook_01_stop_hook_active_is_silent' (4104816) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::hook_02_passing_checks_are_silent stdout ----
+
+thread 'gate::tests::hook_02_passing_checks_are_silent' (4104817) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::gate_15_unicode_output stdout ----
+
+thread 'gate::tests::gate_15_unicode_output' (4104815) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::gate_09_diff_failure_is_reported stdout ----
+
+thread 'gate::tests::gate_09_diff_failure_is_reported' (4104812) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::hook_03_failing_checks_nudge_with_40_lines stdout ----
+
+thread 'gate::tests::hook_03_failing_checks_nudge_with_40_lines' (4104818) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::merge_02_fail stdout ----
+
+thread 'gate::tests::merge_02_fail' (4104820) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+---- gate::tests::merge_01_pass_writes_merge_checks stdout ----
+
+thread 'gate::tests::merge_01_pass_writes_merge_checks' (4104819) panicked at src/gate/mod.rs:61:5:
+not yet implemented
+
+
+failures:
+    gate::tests::argv_01_no_args_prints_usage
+    gate::tests::argv_02_dash_arg_prints_usage
+    gate::tests::argv_03_three_args_print_usage
+    gate::tests::argv_04_second_arg_must_be_merge
+    gate::tests::argv_05_hook_takes_no_args
+    gate::tests::div_gate_01_missing_job_is_named
+    gate::tests::div_gate_02_missing_round_folder_is_named
+    gate::tests::div_gate_03_missing_config_is_named
+    gate::tests::div_gate_04_invalid_hook_event_is_named
+    gate::tests::div_gate_05_prompt_without_job_is_named
+    gate::tests::div_gate_06_merge_of_missing_job_is_named
+    gate::tests::div_gate_07_config_is_read_before_the_arguments
+    gate::tests::gate_01_pass_writes_checks_files
+    gate::tests::gate_02_failing_checks_log_stdout_then_stderr
+    gate::tests::gate_03_protected_paths_follow_fnmatch
+    gate::tests::gate_04_protected_and_failing
+    gate::tests::gate_05_tail_is_80_lines_with_universal_newlines
+    gate::tests::gate_06_no_output
+    gate::tests::gate_07_round_zero_is_refused
+    gate::tests::gate_08_rev_parse_failure_is_reported
+    gate::tests::gate_09_diff_failure_is_reported
+    gate::tests::gate_10_diff_uses_the_base_branch
+    gate::tests::gate_14_missing_checks_sh_fails
+    gate::tests::gate_15_unicode_output
+    gate::tests::hook_01_stop_hook_active_is_silent
+    gate::tests::hook_02_passing_checks_are_silent
+    gate::tests::hook_03_failing_checks_nudge_with_40_lines
+    gate::tests::merge_01_pass_writes_merge_checks
+    gate::tests::merge_02_fail
+
+test result: FAILED. 118 passed; 29 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `--lib`

@@ -1,9 +1,13 @@
 //! Rust port of Software Factory v2 (see MIGRATION.md).
 
+pub mod gate;
 pub mod job;
 pub mod py;
 pub mod route;
 pub mod system;
+
+#[cfg(test)]
+mod testing;
 
 /// The process result a ported command must reproduce.
 #[derive(Debug, Clone, PartialEq, Eq)]

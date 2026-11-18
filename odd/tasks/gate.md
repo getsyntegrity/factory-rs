@@ -16,8 +16,8 @@ Branch: `feat/gate` (stacked on `feat/job-sync-agents`). Delivery: `ask-on-risk`
 | ID | Specs | Task | Route | Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
 | T1 | S1 S2 S5 | Record v2 gate cases (harness `tests/parity/gate`, git double, checks.sh fixtures, hook stdin), twice, original replay 100% | inline | done | 29 cases; second recording identical (seconds stable at 0s, no normalizer); original 29/29; oracle clean |
-| T2 | S1 S3 S4 | Rust gate core: argv, round check, protected paths (fnmatch), checks run, checks.md/log, merge variant, RED→GREEN | inline | pending | |
-| T3 | S1 S3 S4 | `--hook`, binary, replay vs Rust, gates, coverage, MIGRATION.md | inline | pending | |
+| T2 | S1 S3 S4 | Rust gate core: argv, round check, protected paths (fnmatch), checks run, checks.md/log, merge variant, RED→GREEN | inline | done | RED 29 failing, GREEN 147; fnmatch RED then GREEN |
+| T3 | S1 S3 S4 | `--hook`, binary, replay vs Rust, gates, coverage, MIGRATION.md | inline | done | gate 22/29 + DIV-GATE-01..07; 163 tests; coverage 97.58%; flaky 0/400 after lock-test fix |
 
 Route evidence: one sequential behavior, no parallel units, so no writer is delegated.
 
@@ -25,3 +25,4 @@ Route evidence: one sequential behavior, no parallel units, so no writer is dele
 
 - L1 (2026-11-18, user): "si avanzar con la migracion"
 - L2 (T1): first recording exposed a fixture bug (bash double quotes printed `\n` literally); fixed with `$'...'` quoting, verified by running the generated checks.sh, re-recorded from scratch. v2 facts pinned: captured output is read with universal newlines (CRLF in checks.log becomes LF); fnmatch `*` crosses `/`, `?`, `[ab]`, `[!x]`; renames/copies report the old path; `T` (type change) counts; `A` is skipped; bash's own error lands in checks.log with the sandbox path (rust-anything shows it as [CWD]). Tracebacks: example-001, gate-11, gate-12, gate-13, hook-04, hook-05, merge-03 (job `-weird` missing).
+- L3 (T2/T3): hook implemented with T2 (it shares load_job and run_checks). gate/disk.rs and the unrecorded crash-path tests were written test-after, not RED-first. Flakiness run found a race in job::disk lock test (fork inheriting the flock descriptor); fixed with process_lock, 0/400.

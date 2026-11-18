@@ -1,0 +1,13 @@
+cargo fmt --check: OK
+clippy:     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.88s
+cargo test: test result: ok. 163 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+build:     Finished `release` profile [optimized] target(s) in 1.26s
+coverage: bin/gate.rs lines 0.00%
+coverage: bin/job.rs lines 0.00%
+coverage: bin/route.rs lines 0.00%
+coverage: gate/disk.rs lines 96.45%
+coverage: gate/fake.rs lines 99.29%
+coverage: gate/mod.rs lines 100.00%
+coverage: TOTAL lines 97.58%
+flaky runs: 1/120
+flaky runs after fix: 0/400

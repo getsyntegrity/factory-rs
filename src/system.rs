@@ -68,11 +68,10 @@ mod tests {
     use super::*;
     use std::fs;
     use std::os::unix::fs::PermissionsExt;
-    use std::sync::{Mutex, MutexGuard};
+    use std::sync::MutexGuard;
 
-    /// A temporary install. Tests that write or run executables hold a global
-    /// lock: a `fork` in another test thread can inherit a script's write
-    /// descriptor and make its `exec` fail with ETXTBSY ("Text file busy").
+    /// A temporary install. Tests that write or run executables hold
+    /// [`crate::testing::process_lock`].
     struct Fixture {
         dir: tempfile::TempDir,
         _serial: MutexGuard<'static, ()>,
@@ -80,8 +79,7 @@ mod tests {
 
     impl Fixture {
         fn empty() -> Self {
-            static SERIAL: Mutex<()> = Mutex::new(());
-            let _serial = SERIAL.lock().unwrap_or_else(|e| e.into_inner());
+            let _serial = crate::testing::process_lock();
             Fixture {
                 dir: tempfile::tempdir().unwrap(),
                 _serial,

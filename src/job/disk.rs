@@ -270,6 +270,9 @@ mod tests {
 
     #[test]
     fn lock_creates_the_lock_file_once_and_holds_it() {
+        // A fork in another test thread inherits the lock's descriptor until
+        // its exec, holding the flock after `drop(disk)`; keep forks out.
+        let _serial = crate::testing::process_lock();
         let repo = Repo::new();
         repo.write("factory/jobs/a/job.json", "{}")
             .write("factory/jobs/a/.lock", "stale");

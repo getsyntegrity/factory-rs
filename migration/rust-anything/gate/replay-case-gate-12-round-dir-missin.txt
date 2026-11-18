@@ -1,0 +1,3 @@
+0/1 cases passed
+- gate-12-round-dir-missin: stderr
+Report: /home/pablog/factory-rs/tests/parity/gate/rust/app-cases/replay-report.md

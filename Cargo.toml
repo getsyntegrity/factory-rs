@@ -3,9 +3,9 @@ name = "factory-rs"
 version = "0.1.0"
 edition = "2024"
 
-# One binary per Software Factory v2 executable. `route` is ported; `job`
-# answers `sync` and `agents` and hands every other argv to v2's Python job;
-# `gate` is still the Python original.
+# One binary per Software Factory v2 executable. `route` and `gate` are
+# ported; `job` answers `sync` and `agents` and hands every other argv to v2's
+# Python job.
 [[bin]]
 name = "route"
 path = "src/bin/route.rs"
@@ -13,6 +13,10 @@ path = "src/bin/route.rs"
 [[bin]]
 name = "job"
 path = "src/bin/job.rs"
+
+[[bin]]
+name = "gate"
+path = "src/bin/gate.rs"
 
 [dependencies]
 # preserve_order: v2 relies on Python dict insertion order for config tables

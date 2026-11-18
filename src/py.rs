@@ -250,6 +250,93 @@ pub fn truthy(value: &Value) -> bool {
     }
 }
 
+/// `fnmatch.fnmatch(name, pattern)` on POSIX: `*` matches anything (also
+/// `/`), `?` one character, `[seq]` / `[!seq]` a set with `a-z` ranges; a
+/// `[` without a closing `]` is literal.
+pub fn fnmatch(name: &str, pattern: &str) -> bool {
+    let name: Vec<char> = name.chars().collect();
+    matches(&name, &glob_tokens(pattern))
+}
+
+enum Glob {
+    Any,
+    One,
+    Set {
+        negated: bool,
+        ranges: Vec<(char, char)>,
+    },
+    Literal(char),
+}
+
+/// Splits a pattern the way `fnmatch.translate` reads it.
+fn glob_tokens(pattern: &str) -> Vec<Glob> {
+    let p: Vec<char> = pattern.chars().collect();
+    let mut tokens = Vec::new();
+    let mut i = 0;
+    while i < p.len() {
+        let c = p[i];
+        i += 1;
+        match c {
+            '*' => tokens.push(Glob::Any),
+            '?' => tokens.push(Glob::One),
+            '[' => {
+                let mut j = i;
+                if p.get(j) == Some(&'!') {
+                    j += 1;
+                }
+                if p.get(j) == Some(&']') {
+                    j += 1;
+                }
+                while j < p.len() && p[j] != ']' {
+                    j += 1;
+                }
+                if j >= p.len() {
+                    tokens.push(Glob::Literal('['));
+                    continue;
+                }
+                let negated = p[i] == '!';
+                let body = &p[if negated { i + 1 } else { i }..j];
+                let mut ranges = Vec::new();
+                let mut k = 0;
+                while k < body.len() {
+                    if body.get(k + 1) == Some(&'-') && k + 2 < body.len() {
+                        ranges.push((body[k], body[k + 2]));
+                        k += 3;
+                    } else {
+                        ranges.push((body[k], body[k]));
+                        k += 1;
+                    }
+                }
+                tokens.push(Glob::Set { negated, ranges });
+                i = j + 1;
+            }
+            c => tokens.push(Glob::Literal(c)),
+        }
+    }
+    tokens
+}
+
+fn matches(name: &[char], tokens: &[Glob]) -> bool {
+    match tokens.split_first() {
+        None => name.is_empty(),
+        Some((Glob::Any, rest)) => (0..=name.len()).any(|skip| matches(&name[skip..], rest)),
+        Some((token, rest)) => {
+            let Some((&c, tail)) = name.split_first() else {
+                return false;
+            };
+            let hit = match token {
+                Glob::One => true,
+                Glob::Literal(l) => *l == c,
+                Glob::Set { negated, ranges } => {
+                    ranges.iter().any(|&(lo, hi)| lo <= c && c <= hi) != *negated
+                }
+                Glob::Any => unreachable!("handled above"),
+            };
+            hit && matches(tail, rest)
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -410,6 +497,35 @@ mod tests {
             json!({"a": null}),
         ] {
             assert!(truthy(&v), "{v}");
+        }
+    }
+
+    #[test]
+    fn fnmatch_matches_like_python() {
+        let cases = [
+            ("factory/checks.sh", "factory/checks.sh", true),
+            ("docs/deep/x.md", "docs/*.md", true),
+            ("src/ab.rs", "src/?.rs", false),
+            ("src/a.rs", "src/?.rs", true),
+            ("lib/cat.py", "lib/[ab]*", false),
+            ("lib/b", "lib/[ab]*", true),
+            ("data/x1", "data/[!x]*", false),
+            ("data/y1", "data/[!x]*", true),
+            ("a[b", "a[b", true),
+            ("a]", "a[]]", true),
+            ("a-", "a[!]-]", false),
+            ("ab", "a[!]-]", true),
+            ("m", "[a-z]", true),
+            ("M", "[a-z]", false),
+            ("-", "[a-]", true),
+            ("x/y", "x?y", true),
+            ("a\nb", "a*b", true),
+            ("abc", "*", true),
+            ("", "*", true),
+            ("a", "", false),
+        ];
+        for (name, pattern, want) in cases {
+            assert_eq!(fnmatch(name, pattern), want, "{name:?} {pattern:?}");
         }
     }
 }

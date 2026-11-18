@@ -1,0 +1,2 @@
+29/29 cases passed
+Report: /home/pablog/factory-rs/tests/parity/gate/rust/app-cases/replay-report.md

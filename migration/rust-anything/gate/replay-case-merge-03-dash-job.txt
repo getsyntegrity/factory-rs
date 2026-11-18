@@ -1,0 +1,3 @@
+0/1 cases passed
+- merge-03-dash-job: stderr
+Report: /home/pablog/factory-rs/tests/parity/gate/rust/app-cases/replay-report.md
