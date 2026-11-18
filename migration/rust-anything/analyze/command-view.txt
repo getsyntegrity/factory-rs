@@ -1,0 +1,1 @@
+rust-anything analyze .oracle/analyze-view --whole-app --lang python -o migration/rust-anything/analyze/plan-view.md

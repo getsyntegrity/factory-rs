@@ -1,0 +1,189 @@
+{
+  "schema": "rust-anything/analyze@1",
+  "language": "python",
+  "summary": {
+    "packages": 1,
+    "source_files": 3,
+    "test_files": 0,
+    "ui_files": 0,
+    "loc": 727,
+    "units": 1,
+    "ready": 0,
+    "caution": 1,
+    "blocked": 0,
+    "keep": 0,
+    "parse_errors": 0
+  },
+  "packages": [
+    {
+      "name": "analyze-view",
+      "dir": "",
+      "order": 1,
+      "runtime": "portable",
+      "workspace_deps": [],
+      "test_files": 0,
+      "units": [
+        "factory/bin/"
+      ]
+    }
+  ],
+  "units": [
+    {
+      "id": "factory/bin/",
+      "package": "analyze-view",
+      "files": [
+        "factory/bin/gate.py",
+        "factory/bin/job.py",
+        "factory/bin/route.py"
+      ],
+      "loc": 727,
+      "wave": 0,
+      "readiness": 18,
+      "status": "caution",
+      "bridge": "pyo3",
+      "platforms": [],
+      "risks": [
+        {
+          "risk": "unordered-iteration",
+          "severity": "high",
+          "count": 19,
+          "samples": [
+            "factory/bin/job.py:42",
+            "factory/bin/job.py:43",
+            "factory/bin/job.py:44"
+          ]
+        },
+        {
+          "risk": "string-offsets",
+          "severity": "high",
+          "count": 13,
+          "samples": [
+            "factory/bin/gate.py:73",
+            "factory/bin/gate.py:77",
+            "factory/bin/gate.py:102"
+          ]
+        },
+        {
+          "risk": "regex-syntax",
+          "severity": "high",
+          "count": 1,
+          "samples": [
+            "factory/bin/job.py:169"
+          ]
+        },
+        {
+          "risk": "dynamic-regex",
+          "severity": "high",
+          "count": 1,
+          "samples": [
+            "factory/bin/job.py:169"
+          ]
+        },
+        {
+          "risk": "dynamic-typing",
+          "severity": "medium",
+          "count": 51,
+          "samples": [
+            "factory/bin/gate.py:29",
+            "factory/bin/gate.py:34",
+            "factory/bin/gate.py:41"
+          ]
+        },
+        {
+          "risk": "division-semantics",
+          "severity": "medium",
+          "count": 3,
+          "samples": [
+            "factory/bin/job.py:665",
+            "factory/bin/job.py:666",
+            "factory/bin/job.py:666"
+          ]
+        },
+        {
+          "risk": "class-inheritance",
+          "severity": "medium",
+          "count": 1,
+          "samples": [
+            "factory/bin/job.py:59"
+          ]
+        },
+        {
+          "risk": "exceptions",
+          "severity": "low",
+          "count": 5,
+          "samples": [
+            "factory/bin/job.py:75",
+            "factory/bin/job.py:336",
+            "factory/bin/job.py:521"
+          ]
+        },
+        {
+          "risk": "number-semantics",
+          "severity": "low",
+          "count": 4,
+          "samples": [
+            "factory/bin/job.py:134",
+            "factory/bin/job.py:169",
+            "factory/bin/job.py:505"
+          ]
+        }
+      ],
+      "internal_deps": [],
+      "workspace_deps": [],
+      "external_deps": [],
+      "direct_tests": 0,
+      "fan_in": 0,
+      "density": 7.7,
+      "priority": 30,
+      "exports": 55,
+      "bridgeable": 47,
+      "notes": [
+        "Leaf: imports no other unit.",
+        "No tests found: write characterization tests against the original code first."
+      ]
+    }
+  ],
+  "start_here": [
+    "factory/bin/"
+  ],
+  "dependencies": [],
+  "whole_app": {
+    "shape": "cli",
+    "entry_points": [
+      {
+        "kind": "cli",
+        "path": "factory/bin/gate.py",
+        "evidence": "`if __name__ == \"__main__\"` at factory/bin/gate.py:120"
+      },
+      {
+        "kind": "cli",
+        "path": "factory/bin/job.py",
+        "evidence": "`if __name__ == \"__main__\"` at factory/bin/job.py:717"
+      },
+      {
+        "kind": "cli",
+        "path": "factory/bin/route.py",
+        "evidence": "`if __name__ == \"__main__\"` at factory/bin/route.py:50"
+      }
+    ],
+    "dependencies": [],
+    "pieces": [
+      {
+        "wave": 0,
+        "units": [
+          "factory/bin/"
+        ],
+        "loc": 727,
+        "tangled": false
+      }
+    ],
+    "decisions": [
+      {
+        "id": "D1",
+        "topic": "shape",
+        "question": "The app is a cli, entered through factory/bin/gate.py, factory/bin/job.py, factory/bin/route.py. Port every entry point, in that shape?",
+        "recommendation": "Yes: a clap front door (`app front-door`) takes every command over first"
+      }
+    ]
+  }
+}

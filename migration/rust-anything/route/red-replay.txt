@@ -1,0 +1,24 @@
+0/22 cases passed
+- 01-no-args: status, stderr
+- 02-two-args: status, stderr
+- 03-job-missing: status, stderr
+- 04-no-intake: status, stderr, file factory/jobs/001-add-a-thing/.lock
+- 05-low-no-surfaces: stdout, file factory/jobs/001-add-a-thing/.lock, file factory/jobs/001-add-a-thing/job.json
+- 06-medium-no-surfaces: stdout, file factory/jobs/001-add-a-thing/.lock, file factory/jobs/001-add-a-thing/job.json
+- 07-high-no-surfaces: stdout, file factory/jobs/001-add-a-thing/.lock, file factory/jobs/001-add-a-thing/job.json
+- 08-surface-ui: stdout, file factory/jobs/001-add-a-thing/.lock, file factory/jobs/001-add-a-thing/job.json
+- 09-surface-security: stdout, file factory/jobs/001-add-a-thing/.lock, file factory/jobs/001-add-a-thing/job.json
+- 10-surfaces-ui-security: stdout, file factory/jobs/001-add-a-thing/.lock, file factory/jobs/001-add-a-thing/job.json
+- 11-unknown-risk: status, stderr, file factory/jobs/001-add-a-thing/.lock, file factory/jobs/001-add-a-thing/job.json
+- 12-unknown-surface: status, stderr, file factory/jobs/001-add-a-thing/.lock, file factory/jobs/001-add-a-thing/job.json
+- 13-sync-fails: status, stderr
+- 14-agents-fails: status, stderr
+- 15a-invalid-chars-id: status, stderr
+- 15b-issue-number-id: status, stderr, file factory/jobs/001-add-a-thing/.lock, file factory/jobs/001-add-a-thing/job.json
+- 16a-config-missing: status, stderr
+- 16b-config-invalid: status, stderr
+- 17-intake-rejected: status, stderr, file factory/jobs/001-add-a-thing/.lock, file factory/jobs/001-add-a-thing/job.json
+- 18-intake-without-risk: status, stderr, file factory/jobs/001-add-a-thing/.lock, file factory/jobs/001-add-a-thing/job.json
+- ... and 2 more
+Report: /home/pablog/factory-rs/tests/parity/route/rust/app-cases/replay-report.md
+exit 1

@@ -1,0 +1,6 @@
+cargo fmt --check: OK
+clippy:     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
+cargo test: test result: ok. 47 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+build:     Finished `release` profile [optimized] target(s) in 0.49s
+coverage: TOTAL                             760                12    98.42%          99                 4    95.96%         611                11    98.20%           0                 0         -
+flaky check: 0/150 failing runs of cargo test --lib after ETXTBSY fix

@@ -1,0 +1,1 @@
+rust-anything app record tests/parity/route --inputs tests/parity/route/inputs.jsonl --no-traps --name route -- sh launch.sh original

@@ -1,0 +1,4 @@
+md exit 0
+json exit 0 (rust-anything analyze .oracle/v2 --whole-app --lang python --json > plan.json)
+view md exit 0
+view json exit 0

@@ -1,0 +1,5 @@
+bin.name = "route"
+args = ["999-no-such-job"]
+status.code = 1
+fs.sandbox = true
+fs.base = "03-job-missing.in"

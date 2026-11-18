@@ -1,0 +1,5 @@
+bin.name = "route"
+args = ["1"]
+status.code = 1
+fs.sandbox = true
+fs.base = "15b-issue-number-id.in"

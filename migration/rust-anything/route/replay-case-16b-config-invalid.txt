@@ -1,0 +1,3 @@
+0/1 cases passed
+- 16b-config-invalid: stderr
+Report: /home/pablog/factory-rs/tests/parity/route/rust/app-cases/replay-report.md

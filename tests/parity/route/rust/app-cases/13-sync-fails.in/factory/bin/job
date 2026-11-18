@@ -1,0 +1,5 @@
+#!/bin/sh
+# Double for factory/bin/job: `sync` fails.
+echo "double: sync $*" >&2
+echo "sync exploded" >&2
+exit 4

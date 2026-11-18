@@ -1,0 +1,126 @@
+   Compiling factory-rs v0.1.0 (/home/pablog/factory-rs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running unittests src/lib.rs (target/debug/build/factory-rs/edc422fd7432d024/out/factory_rs-edc422fd7432d024)
+
+running 47 tests
+test py::tests::dumps_escapes_like_ensure_ascii ... ok
+test py::tests::dumps_scalars_and_arrays ... ok
+test py::tests::repr_escapes_backslash_and_control_characters ... ok
+test py::tests::repr_escapes_single_quote_when_both_quotes_appear ... ok
+test py::tests::dumps_uses_python_separators_and_keeps_key_order ... ok
+test py::tests::repr_of_none_is_none ... ok
+test py::tests::repr_keeps_printable_non_ascii ... ok
+test py::tests::repr_switches_to_double_quotes_when_only_single_quotes_appear ... ok
+test py::tests::repr_uses_single_quotes_by_default ... ok
+test route::tests::case_02_two_args_prints_usage ... ok
+test route::tests::case_06_medium_risk_routes_code_sonnet ... ok
+test route::tests::case_03_sync_error_is_reported_stripped ... ok
+test route::tests::case_05_low_risk_routes_code_haiku ... ok
+test route::tests::case_04_null_intake_is_refused ... ok
+test route::tests::case_07_high_risk_routes_code_sonnet ... ok
+test route::tests::case_11_unknown_risk_lists_routing_keys ... ok
+test route::tests::case_08_ui_surface_adds_ux_and_ui ... ok
+test route::tests::case_18_missing_risk_is_shown_as_none ... ok
+test route::tests::case_19_risk_is_shown_with_python_repr ... ok
+test route::tests::case_15a_unresolvable_id_reports_job_error ... ok
+test route::tests::case_12_unknown_surface_lists_surface_keys ... ok
+test route::tests::case_17_agents_refusal_from_job_is_reported ... ok
+test route::tests::case_09_security_surface_adds_security ... ok
+test route::tests::case_13_sync_failure_stops_before_reading_job ... ok
+test route::tests::config_without_tables_is_named ... FAILED
+test route::tests::div_route_01_missing_config_is_named ... FAILED
+test route::tests::div_route_02_invalid_config_is_named_with_its_position ... FAILED
+test route::tests::case_10_surfaces_add_in_order ... ok
+test route::tests::case_01_no_args_prints_usage ... ok
+test route::tests::unreadable_config_is_named ... FAILED
+test route::tests::empty_routing_entry_counts_as_unknown_risk ... ok
+test route::tests::surface_overrides_keep_first_position_and_take_new_model ... ok
+test route::tests::empty_intake_object_counts_as_no_intake ... ok
+test route::tests::invalid_job_json_is_named_with_its_position ... FAILED
+test route::tests::job_that_cannot_start_is_named ... FAILED
+test route::tests::case_14_agents_failure_is_reported_with_python_json_argument ... ok
+test route::tests::div_route_04_missing_config_wins_over_bad_arguments ... FAILED
+test route::tests::div_route_03_id_without_job_folder_is_named ... FAILED
+test system::tests::factory_is_the_parent_of_the_executables_bin_directory ... ok
+test system::tests::route_main_reports_an_unknown_executable_path ... ok
+test system::tests::job_that_cannot_start_is_an_error ... ok
+test system::tests::read_reports_missing_files ... ok
+test system::tests::route_main_runs_route_against_the_executables_installation ... ok
+test system::tests::read_resolves_paths_inside_factory ... ok
+test system::tests::job_passes_args_and_captures_stderr_but_not_stdout ... ok
+test system::tests::route_main_passes_non_utf8_args_lossily ... ok
+test system::tests::job_nonzero_exit_is_a_failure ... ok
+
+failures:
+
+---- route::tests::config_without_tables_is_named stdout ----
+
+thread 'route::tests::config_without_tables_is_named' (4009969) panicked at src/route.rs:445:9:
+assertion `left == right` failed
+  left: "route: config.json has no routing table\n"
+ right: "route: factory/config.json has no routing table\n"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- route::tests::div_route_01_missing_config_is_named stdout ----
+
+thread 'route::tests::div_route_01_missing_config_is_named' (4009970) panicked at src/route.rs:445:9:
+assertion `left == right` failed
+  left: "route: cannot read config.json: No such file or directory\n"
+ right: "route: factory/config.json is missing\n"
+
+---- route::tests::div_route_02_invalid_config_is_named_with_its_position stdout ----
+
+thread 'route::tests::div_route_02_invalid_config_is_named_with_its_position' (4009971) panicked at src/route.rs:445:9:
+assertion `left == right` failed
+  left: "route: invalid JSON in config.json: key must be a string at line 1 column 3\n"
+ right: "route: factory/config.json is not valid JSON (line 1, column 3)\n"
+
+---- route::tests::unreadable_config_is_named stdout ----
+
+thread 'route::tests::unreadable_config_is_named' (4009979) panicked at src/route.rs:445:9:
+assertion `left == right` failed
+  left: "route: cannot read config.json: denied\n"
+ right: "route: cannot read factory/config.json\n"
+
+---- route::tests::invalid_job_json_is_named_with_its_position stdout ----
+
+thread 'route::tests::invalid_job_json_is_named_with_its_position' (4009976) panicked at src/route.rs:445:9:
+assertion `left == right` failed
+  left: "route: invalid JSON in jobs/001-add-a-thing/job.json: key must be a string at line 2 column 3\n"
+ right: "route: factory/jobs/001-add-a-thing/job.json is not valid JSON (line 2, column 3)\n"
+
+---- route::tests::job_that_cannot_start_is_named stdout ----
+
+thread 'route::tests::job_that_cannot_start_is_named' (4009977) panicked at src/route.rs:445:9:
+assertion `left == right` failed
+  left: "route: cannot run job: gone\n"
+ right: "route: cannot run factory/bin/job\n"
+
+---- route::tests::div_route_04_missing_config_wins_over_bad_arguments stdout ----
+
+thread 'route::tests::div_route_04_missing_config_wins_over_bad_arguments' (4009973) panicked at src/route.rs:445:9:
+assertion `left == right` failed
+  left: "route: cannot read config.json: No such file or directory\n"
+ right: "route: factory/config.json is missing\n"
+
+---- route::tests::div_route_03_id_without_job_folder_is_named stdout ----
+
+thread 'route::tests::div_route_03_id_without_job_folder_is_named' (4009972) panicked at src/route.rs:445:9:
+assertion `left == right` failed
+  left: "route: cannot read jobs/1/job.json: No such file or directory\n"
+ right: "route: job 1 has no factory/jobs/1/job.json\n"
+
+
+failures:
+    route::tests::config_without_tables_is_named
+    route::tests::div_route_01_missing_config_is_named
+    route::tests::div_route_02_invalid_config_is_named_with_its_position
+    route::tests::div_route_03_id_without_job_folder_is_named
+    route::tests::div_route_04_missing_config_wins_over_bad_arguments
+    route::tests::invalid_job_json_is_named_with_its_position
+    route::tests::job_that_cannot_start_is_named
+    route::tests::unreadable_config_is_named
+
+test result: FAILED. 39 passed; 8 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

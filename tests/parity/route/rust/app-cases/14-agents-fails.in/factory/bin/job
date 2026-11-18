@@ -1,0 +1,7 @@
+#!/bin/sh
+# Double for factory/bin/job: `sync` passes, `agents` fails and echoes its argv.
+case "$1" in
+  sync) echo "$2: intake round 0 gate -"; exit 0 ;;
+  agents) printf 'agents refused: [%s] [%s]\n' "$2" "$3" >&2; exit 3 ;;
+esac
+exit 9

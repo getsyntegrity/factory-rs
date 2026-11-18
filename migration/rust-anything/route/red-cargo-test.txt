@@ -1,0 +1,290 @@
+    Updating crates.io index
+     Locking 28 packages to highest Rust 1.100.0 compatible versions
+ Downloading crates ...
+  Downloaded errno v0.3.15
+  Downloaded rustix v1.1.6
+   Compiling serde_core v1.0.229
+   Compiling libc v0.2.191
+   Compiling zmij v1.0.23
+   Compiling equivalent v1.0.3
+   Compiling hashbrown v0.17.1
+   Compiling rustix v1.1.6
+   Compiling serde_json v1.0.154
+   Compiling getrandom v0.4.3
+   Compiling bitflags v2.13.2
+   Compiling linux-raw-sys v0.12.1
+   Compiling itoa v1.0.19
+   Compiling memchr v2.8.3
+   Compiling cfg-if v1.0.5
+   Compiling foldhash v0.2.0
+   Compiling fastrand v2.5.0
+   Compiling once_cell v1.21.4
+   Compiling indexmap v2.14.2
+   Compiling tempfile v3.27.0
+   Compiling factory-rs v0.1.0 (/home/pablog/factory-rs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.19s
+     Running unittests src/lib.rs (target/debug/build/factory-rs/edc422fd7432d024/out/factory_rs-edc422fd7432d024)
+
+running 36 tests
+test py::tests::dumps_scalars_and_arrays ... FAILED
+test py::tests::dumps_escapes_like_ensure_ascii ... FAILED
+test py::tests::repr_escapes_backslash_and_control_characters ... FAILED
+test py::tests::dumps_uses_python_separators_and_keeps_key_order ... FAILED
+test py::tests::repr_keeps_printable_non_ascii ... FAILED
+test py::tests::repr_escapes_single_quote_when_both_quotes_appear ... FAILED
+test py::tests::repr_of_none_is_none ... FAILED
+test py::tests::repr_switches_to_double_quotes_when_only_single_quotes_appear ... FAILED
+test py::tests::repr_uses_single_quotes_by_default ... FAILED
+test route::tests::case_01_no_args_prints_usage ... FAILED
+test route::tests::case_02_two_args_prints_usage ... FAILED
+test route::tests::case_05_low_risk_routes_code_haiku ... FAILED
+test route::tests::case_03_sync_error_is_reported_stripped ... FAILED
+test route::tests::case_06_medium_risk_routes_code_sonnet ... FAILED
+test route::tests::case_04_null_intake_is_refused ... FAILED
+test route::tests::case_07_high_risk_routes_code_sonnet ... FAILED
+test route::tests::case_08_ui_surface_adds_ux_and_ui ... FAILED
+test route::tests::case_09_security_surface_adds_security ... FAILED
+test route::tests::case_11_unknown_risk_lists_routing_keys ... FAILED
+test route::tests::case_12_unknown_surface_lists_surface_keys ... FAILED
+test route::tests::case_10_surfaces_add_in_order ... FAILED
+test route::tests::case_13_sync_failure_stops_before_reading_job ... FAILED
+test route::tests::surface_overrides_keep_first_position_and_take_new_model ... FAILED
+test route::tests::case_14_agents_failure_is_reported_with_python_json_argument ... FAILED
+test route::tests::case_15a_unresolvable_id_reports_job_error ... FAILED
+test system::tests::factory_is_the_parent_of_the_executables_bin_directory ... FAILED
+test route::tests::empty_routing_entry_counts_as_unknown_risk ... FAILED
+test route::tests::case_17_agents_refusal_from_job_is_reported ... FAILED
+test route::tests::case_18_missing_risk_is_shown_as_none ... FAILED
+test route::tests::case_19_risk_is_shown_with_python_repr ... FAILED
+test route::tests::empty_intake_object_counts_as_no_intake ... FAILED
+test system::tests::job_nonzero_exit_is_a_failure ... FAILED
+test system::tests::job_that_cannot_start_is_an_error ... FAILED
+test system::tests::read_reports_missing_files ... FAILED
+test system::tests::job_passes_args_and_captures_stderr_but_not_stdout ... FAILED
+test system::tests::read_resolves_paths_inside_factory ... FAILED
+
+failures:
+
+---- py::tests::dumps_scalars_and_arrays stdout ----
+
+thread 'py::tests::dumps_scalars_and_arrays' (3994727) panicked at src/py.rs:13:5:
+not yet implemented: [null,true,false,3,1.5,[],{}]
+
+---- py::tests::dumps_escapes_like_ensure_ascii stdout ----
+
+thread 'py::tests::dumps_escapes_like_ensure_ascii' (3994726) panicked at src/py.rs:13:5:
+not yet implemented: "q\"b\\n\n\t\b\f\r\u0001ñ😀"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- py::tests::repr_escapes_backslash_and_control_characters stdout ----
+
+thread 'py::tests::repr_escapes_backslash_and_control_characters' (3994729) panicked at src/py.rs:8:5:
+not yet implemented: Some("a\\b\t\n\r\u{1}\u{7f}")
+
+---- py::tests::dumps_uses_python_separators_and_keeps_key_order stdout ----
+
+thread 'py::tests::dumps_uses_python_separators_and_keeps_key_order' (3994728) panicked at src/py.rs:13:5:
+not yet implemented: {"reviewers":{"code":"sonnet","ux":"sonnet","ui":"haiku"}}
+
+---- py::tests::repr_keeps_printable_non_ascii stdout ----
+
+thread 'py::tests::repr_keeps_printable_non_ascii' (3994731) panicked at src/py.rs:8:5:
+not yet implemented: Some("año")
+
+---- py::tests::repr_escapes_single_quote_when_both_quotes_appear stdout ----
+
+thread 'py::tests::repr_escapes_single_quote_when_both_quotes_appear' (3994730) panicked at src/py.rs:8:5:
+not yet implemented: Some("a'b\"c")
+
+---- py::tests::repr_of_none_is_none stdout ----
+
+thread 'py::tests::repr_of_none_is_none' (3994732) panicked at src/py.rs:8:5:
+not yet implemented: None
+
+---- py::tests::repr_switches_to_double_quotes_when_only_single_quotes_appear stdout ----
+
+thread 'py::tests::repr_switches_to_double_quotes_when_only_single_quotes_appear' (3994733) panicked at src/py.rs:8:5:
+not yet implemented: Some("it's")
+
+---- py::tests::repr_uses_single_quotes_by_default stdout ----
+
+thread 'py::tests::repr_uses_single_quotes_by_default' (3994734) panicked at src/py.rs:8:5:
+not yet implemented: Some("extreme")
+
+---- route::tests::case_01_no_args_prints_usage stdout ----
+
+thread 'route::tests::case_01_no_args_prints_usage' (3994735) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_02_two_args_prints_usage stdout ----
+
+thread 'route::tests::case_02_two_args_prints_usage' (3994736) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_05_low_risk_routes_code_haiku stdout ----
+
+thread 'route::tests::case_05_low_risk_routes_code_haiku' (3994739) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_03_sync_error_is_reported_stripped stdout ----
+
+thread 'route::tests::case_03_sync_error_is_reported_stripped' (3994737) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_06_medium_risk_routes_code_sonnet stdout ----
+
+thread 'route::tests::case_06_medium_risk_routes_code_sonnet' (3994740) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_04_null_intake_is_refused stdout ----
+
+thread 'route::tests::case_04_null_intake_is_refused' (3994738) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_07_high_risk_routes_code_sonnet stdout ----
+
+thread 'route::tests::case_07_high_risk_routes_code_sonnet' (3994741) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_08_ui_surface_adds_ux_and_ui stdout ----
+
+thread 'route::tests::case_08_ui_surface_adds_ux_and_ui' (3994742) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_09_security_surface_adds_security stdout ----
+
+thread 'route::tests::case_09_security_surface_adds_security' (3994743) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_11_unknown_risk_lists_routing_keys stdout ----
+
+thread 'route::tests::case_11_unknown_risk_lists_routing_keys' (3994745) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_12_unknown_surface_lists_surface_keys stdout ----
+
+thread 'route::tests::case_12_unknown_surface_lists_surface_keys' (3994746) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_10_surfaces_add_in_order stdout ----
+
+thread 'route::tests::case_10_surfaces_add_in_order' (3994744) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_13_sync_failure_stops_before_reading_job stdout ----
+
+thread 'route::tests::case_13_sync_failure_stops_before_reading_job' (3994747) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::surface_overrides_keep_first_position_and_take_new_model stdout ----
+
+thread 'route::tests::surface_overrides_keep_first_position_and_take_new_model' (3994755) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_14_agents_failure_is_reported_with_python_json_argument stdout ----
+
+thread 'route::tests::case_14_agents_failure_is_reported_with_python_json_argument' (3994748) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_15a_unresolvable_id_reports_job_error stdout ----
+
+thread 'route::tests::case_15a_unresolvable_id_reports_job_error' (3994749) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- system::tests::factory_is_the_parent_of_the_executables_bin_directory stdout ----
+
+thread 'system::tests::factory_is_the_parent_of_the_executables_bin_directory' (3994756) panicked at src/system.rs:19:9:
+not yet implemented
+
+---- route::tests::empty_routing_entry_counts_as_unknown_risk stdout ----
+
+thread 'route::tests::empty_routing_entry_counts_as_unknown_risk' (3994754) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_17_agents_refusal_from_job_is_reported stdout ----
+
+thread 'route::tests::case_17_agents_refusal_from_job_is_reported' (3994750) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_18_missing_risk_is_shown_as_none stdout ----
+
+thread 'route::tests::case_18_missing_risk_is_shown_as_none' (3994751) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::case_19_risk_is_shown_with_python_repr stdout ----
+
+thread 'route::tests::case_19_risk_is_shown_with_python_repr' (3994752) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- route::tests::empty_intake_object_counts_as_no_intake stdout ----
+
+thread 'route::tests::empty_intake_object_counts_as_no_intake' (3994753) panicked at src/route.rs:38:5:
+not yet implemented
+
+---- system::tests::job_nonzero_exit_is_a_failure stdout ----
+
+thread 'system::tests::job_nonzero_exit_is_a_failure' (3994757) panicked at src/system.rs:19:9:
+not yet implemented
+
+---- system::tests::job_that_cannot_start_is_an_error stdout ----
+
+thread 'system::tests::job_that_cannot_start_is_an_error' (3994759) panicked at src/system.rs:19:9:
+not yet implemented
+
+---- system::tests::read_reports_missing_files stdout ----
+
+thread 'system::tests::read_reports_missing_files' (3994760) panicked at src/system.rs:19:9:
+not yet implemented
+
+---- system::tests::job_passes_args_and_captures_stderr_but_not_stdout stdout ----
+
+thread 'system::tests::job_passes_args_and_captures_stderr_but_not_stdout' (3994758) panicked at src/system.rs:19:9:
+not yet implemented
+
+---- system::tests::read_resolves_paths_inside_factory stdout ----
+
+thread 'system::tests::read_resolves_paths_inside_factory' (3994761) panicked at src/system.rs:19:9:
+not yet implemented
+
+
+failures:
+    py::tests::dumps_escapes_like_ensure_ascii
+    py::tests::dumps_scalars_and_arrays
+    py::tests::dumps_uses_python_separators_and_keeps_key_order
+    py::tests::repr_escapes_backslash_and_control_characters
+    py::tests::repr_escapes_single_quote_when_both_quotes_appear
+    py::tests::repr_keeps_printable_non_ascii
+    py::tests::repr_of_none_is_none
+    py::tests::repr_switches_to_double_quotes_when_only_single_quotes_appear
+    py::tests::repr_uses_single_quotes_by_default
+    route::tests::case_01_no_args_prints_usage
+    route::tests::case_02_two_args_prints_usage
+    route::tests::case_03_sync_error_is_reported_stripped
+    route::tests::case_04_null_intake_is_refused
+    route::tests::case_05_low_risk_routes_code_haiku
+    route::tests::case_06_medium_risk_routes_code_sonnet
+    route::tests::case_07_high_risk_routes_code_sonnet
+    route::tests::case_08_ui_surface_adds_ux_and_ui
+    route::tests::case_09_security_surface_adds_security
+    route::tests::case_10_surfaces_add_in_order
+    route::tests::case_11_unknown_risk_lists_routing_keys
+    route::tests::case_12_unknown_surface_lists_surface_keys
+    route::tests::case_13_sync_failure_stops_before_reading_job
+    route::tests::case_14_agents_failure_is_reported_with_python_json_argument
+    route::tests::case_15a_unresolvable_id_reports_job_error
+    route::tests::case_17_agents_refusal_from_job_is_reported
+    route::tests::case_18_missing_risk_is_shown_as_none
+    route::tests::case_19_risk_is_shown_with_python_repr
+    route::tests::empty_intake_object_counts_as_no_intake
+    route::tests::empty_routing_entry_counts_as_unknown_risk
+    route::tests::surface_overrides_keep_first_position_and_take_new_model
+    system::tests::factory_is_the_parent_of_the_executables_bin_directory
+    system::tests::job_nonzero_exit_is_a_failure
+    system::tests::job_passes_args_and_captures_stderr_but_not_stdout
+    system::tests::job_that_cannot_start_is_an_error
+    system::tests::read_reports_missing_files
+    system::tests::read_resolves_paths_inside_factory
+
+test result: FAILED. 0 passed; 36 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

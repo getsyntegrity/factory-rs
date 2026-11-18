@@ -1,0 +1,5 @@
+bin.name = "route"
+args = ["001-add-a-thing", "extra"]
+status.code = 1
+fs.sandbox = true
+fs.base = "02-two-args.in"

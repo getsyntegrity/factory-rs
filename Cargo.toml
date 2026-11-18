@@ -1,0 +1,18 @@
+[package]
+name = "factory-rs"
+version = "0.1.0"
+edition = "2024"
+
+# One binary per Software Factory v2 executable. Only `route` is ported so far;
+# `job` and `gate` still run as the Python originals.
+[[bin]]
+name = "route"
+path = "src/bin/route.rs"
+
+[dependencies]
+# preserve_order: v2 relies on Python dict insertion order for config tables
+# and reviewer output.
+serde_json = { version = "1", features = ["preserve_order"] }
+
+[dev-dependencies]
+tempfile = "3"
