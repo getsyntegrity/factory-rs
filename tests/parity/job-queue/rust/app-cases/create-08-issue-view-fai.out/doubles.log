@@ -1,0 +1,6 @@
+$ gh (cwd .)
+  [issue]
+  [view]
+  [5]
+  [--json]
+  [number,title,body,author,labels,state,url,comments]

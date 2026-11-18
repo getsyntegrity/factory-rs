@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["create", "5"]
+status.code = 0
+fs.sandbox = true
+fs.base = "create-01-new-job.in"

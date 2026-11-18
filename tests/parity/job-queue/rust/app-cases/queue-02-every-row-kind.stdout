@@ -1,0 +1,9 @@
+resume	1	001-running	build	round 1
+resume	2	002-replied	needs-info	author replied
+hold	10	-	-	concurrency 3 reached
+hold	11	-	-	concurrency 3 reached
+wait	3	003-waiting	needs-info	waiting for the author
+wait	4	004-human-pr	needs-human	merge PR #9, or give feedback
+wait	5	005-human	needs-human	give feedback
+skip	6	006-rejected	rejected	rejected; delete factory/jobs/006-rejected to retry
+skip	8	008-closed-running	review	issue is closed or no longer labeled factory

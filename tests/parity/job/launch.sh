@@ -15,9 +15,10 @@
 # `gh` and `git` are doubles put first on PATH. Every call appends its working
 # directory (relative to the sandbox) and argv to ./doubles.log, so replay
 # compares the calls themselves. A call answers from
-# doubles/<tool>/<key>.{stdout,stderr,code}, where <key> is its first two
-# arguments joined by "_" with anything outside [A-Za-z0-9-] as "_"; without
-# those files it prints nothing and exits 0.
+# doubles/<tool>/<key>.{stdout,stderr,code}, where <key> is its first three
+# arguments joined by "_" when such files exist, else its first two (anything
+# outside [A-Za-z0-9-] becomes "_"); without those files it prints nothing
+# and exits 0.
 #
 # Everything this script installs is removed afterwards.
 set -u
@@ -66,8 +67,10 @@ rel=${here#"$DOUBLES_SANDBOX"}
   printf '$ %s (cwd .%s)\n' "$tool" "$rel"
   for a in "$@"; do printf '  [%s]\n' "$a"; done
 } >> "$DOUBLES_SANDBOX/doubles.log"
-key=$(printf '%s_%s' "${1:-}" "${2:-}" | sed 's/[^A-Za-z0-9-]/_/g')
-answers="$DOUBLES_SANDBOX/doubles/$tool/$key"
+key3=$(printf '%s_%s_%s' "${1:-}" "${2:-}" "${3:-}" | sed 's/[^A-Za-z0-9-]/_/g')
+key2=$(printf '%s_%s' "${1:-}" "${2:-}" | sed 's/[^A-Za-z0-9-]/_/g')
+answers="$DOUBLES_SANDBOX/doubles/$tool/$key3"
+ls "$answers".* >/dev/null 2>&1 || answers="$DOUBLES_SANDBOX/doubles/$tool/$key2"
 [ -f "$answers.stdout" ] && cat "$answers.stdout"
 [ -f "$answers.stderr" ] && cat "$answers.stderr" >&2
 exit "$(cat "$answers.code" 2>/dev/null || echo 0)"

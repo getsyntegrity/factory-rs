@@ -1,0 +1,20 @@
+{
+  "id": "001-add-dark-mode-toggle",
+  "issue": 5,
+  "title": "Add Dark-Mode toggle, please!",
+  "issue_url": "https://github.com/acme/app/issues/5",
+  "pr": null,
+  "pr_url": null,
+  "branch": "factory/001-add-dark-mode-toggle",
+  "worktree": "[CWD]/.worktrees/001-add-dark-mode-toggle",
+  "stage": "intake",
+  "round": 0,
+  "round_limit": 3,
+  "intake": null,
+  "agents": null,
+  "gate": null,
+  "reviews": {},
+  "cost_usd": 0.0,
+  "started": "[..]",
+  "ended": null
+}

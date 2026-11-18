@@ -1,0 +1,17 @@
+$ gh (cwd .)
+  [issue]
+  [view]
+  [005]
+  [--json]
+  [number,title,body,author,labels,state,url,comments]
+$ gh (cwd .)
+  [issue]
+  [view]
+  [5]
+  [--json]
+  [number,title,body,author,labels,state,url,comments]
+$ gh (cwd .)
+  [api]
+  [user]
+  [--jq]
+  [.login]

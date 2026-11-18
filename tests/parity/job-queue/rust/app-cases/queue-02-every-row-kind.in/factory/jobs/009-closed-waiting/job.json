@@ -1,0 +1,25 @@
+{
+  "id": "009-closed-waiting",
+  "issue": 9,
+  "title": "Add a thing",
+  "issue_url": null,
+  "pr": null,
+  "pr_url": null,
+  "branch": "factory/009-closed-waiting",
+  "worktree": ".worktrees/009-closed-waiting",
+  "stage": "needs-info",
+  "round": 0,
+  "round_limit": 3,
+  "intake": {
+    "decision": "ACCEPT",
+    "rescoped": false,
+    "risk": "low",
+    "surfaces": []
+  },
+  "agents": null,
+  "gate": null,
+  "reviews": {},
+  "cost_usd": 0.0,
+  "started": "2026-11-18T00:00:00Z",
+  "ended": null
+}

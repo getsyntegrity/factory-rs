@@ -1,0 +1,11 @@
+$ gh (cwd .)
+  [issue]
+  [list]
+  [--label]
+  [factory]
+  [--state]
+  [open]
+  [--limit]
+  [200]
+  [--json]
+  [number,title]

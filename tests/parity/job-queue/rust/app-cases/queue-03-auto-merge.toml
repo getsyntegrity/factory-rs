@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["queue"]
+status.code = 0
+fs.sandbox = true
+fs.base = "queue-03-auto-merge.in"

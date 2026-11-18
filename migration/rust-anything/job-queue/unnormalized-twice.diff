@@ -1,0 +1,25 @@
+diff --color -r -x rust-anything.json tests/parity/jq-probe-1/rust/app-cases/create-01-new-job.out/factory/jobs/001-add-dark-mode-toggle/job.json tests/parity/jq-probe-2/rust/app-cases/create-01-new-job.out/factory/jobs/001-add-dark-mode-toggle/job.json
+18c18
+<   "started": "2026-11-18T15:56:50Z",
+---
+>   "started": "2026-11-18T15:56:[..]",
+diff --color -r -x rust-anything.json tests/parity/jq-probe-1/rust/app-cases/create-02-next-number.out/factory/jobs/011-add-a-thing/job.json tests/parity/jq-probe-2/rust/app-cases/create-02-next-number.out/factory/jobs/011-add-a-thing/job.json
+18c18
+<   "started": "2026-11-18T15:56:50Z",
+---
+>   "started": "2026-11-18T15:56:[..]",
+diff --color -r -x rust-anything.json tests/parity/jq-probe-1/rust/app-cases/create-07-wordless-title.out/factory/jobs/001-issue/job.json tests/parity/jq-probe-2/rust/app-cases/create-07-wordless-title.out/factory/jobs/001-issue/job.json
+18c18
+<   "started": "2026-11-18T15:56:50Z",
+---
+>   "started": "2026-11-18T15:56:[..]",
+diff --color -r -x rust-anything.json tests/parity/jq-probe-1/rust/app-cases/queue-03-auto-merge.out/factory/jobs/001-merged-pr/job.json tests/parity/jq-probe-2/rust/app-cases/queue-03-auto-merge.out/factory/jobs/001-merged-pr/job.json
+37c37
+<   "ended": "2026-11-18T15:56:50Z"
+---
+>   "ended": "2026-11-18T15:56:52Z"
+diff --color -r -x rust-anything.json tests/parity/jq-probe-1/rust/app-cases/queue-03-auto-merge.out/factory/jobs/002-human-merged/job.json tests/parity/jq-probe-2/rust/app-cases/queue-03-auto-merge.out/factory/jobs/002-human-merged/job.json
+37c37
+<   "ended": "2026-11-18T15:56:50Z"
+---
+>   "ended": "2026-11-18T15:56:52Z"

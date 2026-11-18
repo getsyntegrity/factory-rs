@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["create", "abc"]
+status.code = 1
+fs.sandbox = true
+fs.base = "create-09-not-a-number.in"

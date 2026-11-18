@@ -326,20 +326,16 @@ impl Workspace for Fake {
             log.push_str(&format!("  [{a}]\n"));
         }
         self.writes.borrow_mut().insert("doubles.log".into(), log);
-        let key: String = format!(
-            "{}_{}",
-            args.first().unwrap_or(&""),
-            args.get(1).unwrap_or(&"")
-        )
-        .chars()
-        .map(|c| {
-            if c.is_ascii_alphanumeric() || c == '-' {
-                c
-            } else {
-                '_'
-            }
-        })
-        .collect();
+        let key = |n: usize| -> String {
+            let parts: Vec<&str> = (0..n).map(|i| args.get(i).copied().unwrap_or("")).collect();
+            parts
+                .join("_")
+                .chars()
+                .map(|c| if c.is_ascii_alphanumeric() || c == '-' { c } else { '_' })
+                .collect()
+        };
+        let has = |k: &str| self.sandbox.keys().any(|p| p.starts_with(&format!("doubles/{program}/{k}.")));
+        let key = if has(&key(3)) { key(3) } else { key(2) };
         let answer = |suffix: &str| {
             self.sandbox
                 .get(&format!("doubles/{program}/{key}.{suffix}"))

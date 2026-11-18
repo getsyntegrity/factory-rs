@@ -1,0 +1,5 @@
+bin.name = "job"
+args = ["queue"]
+status.code = 0
+fs.sandbox = true
+fs.base = "queue-02-every-row-kind.in"

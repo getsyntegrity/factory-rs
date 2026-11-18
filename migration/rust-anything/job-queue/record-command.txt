@@ -1,0 +1,1 @@
+rust-anything app record tests/parity/job-queue --inputs tests/parity/job-queue/inputs.jsonl --no-traps --name job --normalize timestamps -- sh launch.sh original
